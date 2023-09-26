@@ -6,30 +6,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
-const mongoose_1 = require("@nestjs/mongoose");
+const users_module_1 = require("../users/users.module");
+const auth_service_1 = require("./auth.service");
+const auth_controller_1 = require("./auth.controller");
 const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
-const users_module_1 = require("./users/users.module");
-const auth_module_1 = require("./authentication/auth.module");
-let AppModule = class AppModule {
+const jwt_strategy_1 = require("./jwt.strategy");
+let AuthModule = class AuthModule {
 };
-exports.AppModule = AppModule;
-exports.AppModule = AppModule = __decorate([
+exports.AuthModule = AuthModule;
+exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forRoot('mongodb://localhost:27017'),
+            users_module_1.UsersModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             jwt_1.JwtModule.register({
-                secret: 'WeReallyNeedToChangeThisSecretKey',
-                signOptions: { expiresIn: '60m' },
+                secretOrPrivateKey: 'WeReallyNeedToChangeThisSecretKey',
+                signOptions: { expiresIn: 3600 },
             }),
-            users_module_1.UsersModule,
-            auth_module_1.AuthModule,
         ],
-        controllers: [],
-        providers: [],
+        providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
+        controllers: [auth_controller_1.AuthController],
+        exports: [auth_service_1.AuthService],
     })
-], AppModule);
-//# sourceMappingURL=app.module.js.map
+], AuthModule);
+//# sourceMappingURL=auth.module.js.map
