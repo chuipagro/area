@@ -1,8 +1,8 @@
 import React from 'react';
 import '../app/App.css';
-import { Text, VStack, Box, Stack, Heading } from '@chakra-ui/react';
+import { Text, VStack } from '@chakra-ui/react';
 
-
+/*
 function Feature({ title, desc }: { title: string, desc: string }) {
     return (
         <Box p={45} bg={"white"} shadow='md' borderRadius={'12px'} border={"none"} >
@@ -12,7 +12,7 @@ function Feature({ title, desc }: { title: string, desc: string }) {
     );
 }
 
-/*
+
 function StackEx() {
     return (
         <Stack spacing={8} direction='row'>
