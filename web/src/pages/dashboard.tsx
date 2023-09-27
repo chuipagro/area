@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Text, VStack, Box, Stack, Heading, Divider } from '@chakra-ui/react';
+import { Text, VStack, Box, Stack, Heading } from '@chakra-ui/react';
 
 
 function Feature({ title, desc }: { title: string, desc: string }) {
@@ -12,6 +12,7 @@ function Feature({ title, desc }: { title: string, desc: string }) {
     );
 }
 
+/*
 function StackEx() {
     return (
         <Stack spacing={8} direction='row'>
@@ -29,7 +30,7 @@ function StackEx() {
             />
         </Stack>
     )
-}
+}*/
 
 
 export const Home2 = (): JSX.Element => {

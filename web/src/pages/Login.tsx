@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Center, Text, VStack, Link, Button, Divider, Box, HStack } from '@chakra-ui/react';
+import { Center, Text, VStack, Link, Button, Divider } from '@chakra-ui/react';
 import { InputText } from '../component/TexInput';
 import { Taskbar } from '../component/Taskbar';
 
