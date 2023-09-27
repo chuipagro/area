@@ -50,4 +50,3 @@ jobs:
             ${{ secrets.GIT_SSH_PRIVATE_KEY }}
 
     needs:
-        - build
