@@ -1,13 +1,12 @@
 import React from 'react';
 import '../app/App.css';
 import { Center, Text, VStack, Link, Button, Divider } from '@chakra-ui/react';
-//import { useToast } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 import { InputText } from '../component/TexInput';
 import { Taskbar } from '../component/Taskbar';
 
 export function Display({ name, surname, mail, password, checkPassword }: { name: string, surname: string, mail: string, password: string; checkPassword: string; }): JSX.Element {
 
-    /*
     const handleClick = () => {
         console.log("name = ", name)
         console.log("surname = ", surname)
@@ -15,7 +14,7 @@ export function Display({ name, surname, mail, password, checkPassword }: { name
         console.log("password = ", password)
         console.log("checkPassword = ", checkPassword)
     };
-    const toast = useToast()*/
+    const toast = useToast();
 
     return (
         <Center mt="160px">

@@ -14,9 +14,15 @@ jobs:
       - name: Repository checkout
         uses: actions/checkout@v3
       - name: Build web
-        run: cd web/ && npm install && npm run build
+        run: |
+          cd web/ 
+          npm install 
+          npm run build -- --no-warning
       - name: Build server
-        run: cd server/ && npm install && npm run build
+        run: |
+          cd backend/
+          npm install 
+          npm run build -- --no-warning
 
   test:
     name: Run tests
