@@ -15,8 +15,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Build web
         run: |
-          cd web/ 
-          npm install 
+          cd web/
+          npm install
           npm run build -- --no-warning
       - name: Build server
         run: |
