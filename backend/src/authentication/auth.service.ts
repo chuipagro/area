@@ -6,14 +6,14 @@ import { JwtPayload } from './jwt-payload.interface';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
 
   async signIn(username: string, password: string): Promise<string | null> {
     // TODO: check if username and password are valid
     const user = await this.usersService.findOne(username);
-    if (user && user.password === password) {
+    if (user && user.arguments.password === password) {
       const payload: JwtPayload = { username };
       return this.jwtService.sign(payload);
     }
@@ -22,7 +22,7 @@ export class AuthService {
 
   async signUp(username: string, password: string): Promise<string | null> {
     // TODO: check if username is available
-    const user = await this.usersService.create({ username, password });
+    const user = await this.usersService.create( password, username );
     if (user) {
       const payload: JwtPayload = { username };
       return this.jwtService.sign(payload);
