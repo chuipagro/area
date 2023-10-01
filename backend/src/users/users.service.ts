@@ -7,16 +7,16 @@ import { v4 as uuidv4 } from 'uuid';
 export class UsersService {
   constructor(@InjectModel('User') private userModel: Model<typeof UserModel>) {}
 
-  async create(username: string, password: string): Promise<typeof UserModel> {
+  async create(mail: string, username: string, password: string): Promise<typeof UserModel> {
     const uid = uuidv4();
-    console.log("uid:", uid, "username:", username, "password:", password)
-    const createdUser = new this.userModel({ uid, username, password });
+    console.log("uid:", uid, "mail:", mail, "username:", username, "password:", password)
+    const createdUser = new this.userModel({ uid, mail, username, password });
 
     try {
       return await createdUser.save();
     } catch (error) {
       if (error.code === 11000) {
-        throw new ConflictException('Ce nom d\'utilisateur est déjà pris');
+        throw new ConflictException('Ce mail ou ce nom d\'utilisateur est déjà utilisé');
       }
       throw error;
     }
