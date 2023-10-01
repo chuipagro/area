@@ -1,19 +1,13 @@
-/*import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/HomePage.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
-import 'package:http/http.dart' as http;
+import 'package:mobile/GetStartedEditorPage.dart';
 
 class GetStartedPage extends StatefulWidget {
     final String title;
 
-    GetStartedPage({Key? key, required this.title}) : super(key: key);
+    const GetStartedPage({Key? key, required this.title}) : super(key: key);
 
     @override
     _GetStartedPageState createState() => _GetStartedPageState();
@@ -21,38 +15,6 @@ class GetStartedPage extends StatefulWidget {
 
 class _GetStartedPageState extends State<GetStartedPage> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-
-    bool isPasswordForgotten = false;
-    bool isEmailForgotten = false;
-
-    Future<void> signInWithGoogle() async {
-        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-        if (googleUser == null) {
-            return;
-        }
-        
-        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-        final AuthCredential credentialGoogle = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken,
-            idToken: googleAuth.idToken,
-        );
-    }
-
-    Future<void> signInWithFacebook() async {
-        try {
-            final LoginResult result = await FacebookAuth.instance.login();
-
-            if (result.status == LoginStatus.success) {
-                final AccessToken accessToken = result.accessToken!;
-                final AuthCredential credentialFacebook = FacebookAuthProvider.credential(accessToken.token);
-            }
-        } catch (e) {
-            print('Erreur lors de la connexion avec Facebook : $e');
-        }
-    }
 
     @override
     Widget build(BuildContext context) {
@@ -63,8 +25,8 @@ class _GetStartedPageState extends State<GetStartedPage> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                            SizedBox(height: 60.0),
-                            Align(
+                            const SizedBox(height: 100.0),
+                            const Align(
                                 alignment: Alignment.center,
                                 child: Text(
                                 'LPPLL',
@@ -74,74 +36,152 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                     ),
                                 ),
                             ),
-                            SizedBox(height: 20.0),
+                            const SizedBox(height: 20.0),
 
-                            Align(
+                            const Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                'Get started',
+                                'Get Started',
                                 style: TextStyle(
                                     fontSize: 30.0,
                                     fontWeight: FontWeight.normal,
                                     ),
                                 ),
                             ),
-                            SizedBox(height: 100.0),
-
-                            ElevatedButton(
-                                onPressed: () {
-                                    signInWithFacebook();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(40.0),
-                                    ),
-                                    minimumSize: Size(350, 55),
+                            const SizedBox(height: 80.0),
+    
+                            Container(
+                                height: 70,
+                                width: 360,
+                                decoration: BoxDecoration(
+                                    color: const Color.fromARGB(255, 15, 67, 136),
+                                    borderRadius: BorderRadius.circular(40.0),
+                                    border: Border.all(color: Colors.black),
                                 ),
-                                child: Text(
-                                    'Continuer avec Facebook',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20.0,
+                                child: TextButton(
+                                    onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => GetStartedEditorPage(title: 'GetStartedEditorPage')),
+                                        );
+                                    },
+                                    style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
                                     ),
-                                ),
-                            ),
-                            SizedBox(height: 20.0),
-
-                           ElevatedButton(
-                                onPressed: () {
-                                    signInWithGoogle();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(40.0),
-                                    ),
-                                    minimumSize: Size(350, 55),
-                                ),
-                                child: Text(
-                                    'Continuer avec Google',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20.0,
+                                    child: Row(
+                                        children: <Widget>[
+                                            const SizedBox(width: 20.0),
+                                            Image.asset(
+                                                'assets/images/FacebookLogo.png',
+                                                width: 35.0,
+                                                height: 35.0,
+                                            ),
+                                            const SizedBox(width: 20.0),
+                                            const Text(
+                                                'Continue avec Facebook',
+                                                style: TextStyle(
+                                                    fontSize: 20.0,
+                                                    color: Colors.white,
+                                                ),
+                                            ),
+                                        ],
                                     ),
                                 ),
                             ),
-                            SizedBox(height: 20.0),
+                            const SizedBox(height: 30.0),
 
+                            Container(
+                                height: 65,
+                                width: 360,
+                                decoration: BoxDecoration(
+                                    color: const Color.fromARGB(255, 255, 255, 255),
+                                    borderRadius: BorderRadius.circular(40.0),
+                                    border: Border.all(color: Colors.black),
+                                ),
+                                child: TextButton(
+                                    onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => GetStartedEditorPage(title: 'GetStartedEditorPage')),
+                                        );
+                                    },
+                                    style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                    ),
+                                    child: Row(
+                                        children: <Widget>[
+                                            const SizedBox(width: 20.0),
+                                            Image.asset(
+                                                'assets/images/GoogleLogo.png',
+                                                width: 35.0,
+                                                height: 35.0,
+                                            ),
+                                            const SizedBox(width: 20.0),
+                                            const Text(
+                                                'Continue avec Google',
+                                                style: TextStyle(
+                                                    fontSize: 20.0,
+                                                    color: Colors.black,
+                                                ),
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            ),
+                            const SizedBox(height: 30.0),
+
+                            Container(
+                                height: 65,
+                                width: 360,
+                                decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 77, 92, 146),
+                                    borderRadius: BorderRadius.circular(40.0),
+                                    border: Border.all(color: Colors.black),
+                                ),
+                                child: TextButton(
+                                    onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => GetStartedEditorPage(title: 'GetStartedEditorPage')),
+                                        );
+                                    },
+                                    style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                    ),
+                                    child: Row(
+                                        children: <Widget>[
+                                            const SizedBox(width: 20.0),
+                                            Image.asset(
+                                                'assets/images/DiscordLogo.png',
+                                                width: 35.0,
+                                                height: 35.0,
+                                            ),
+                                            const SizedBox(width: 20.0),
+                                            const Text(
+                                                'Continue avec Discord',
+                                                style: TextStyle(
+                                                    fontSize: 20.0,
+                                                    color: Colors.white,
+                                                ),
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            ),
+                            const SizedBox(height: 60.0),
+    
                             RichText(
                                 text: TextSpan(
                                     text: 'Continuer avec ',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 19.0,
                                         color: Colors.black,
                                         fontWeight: FontWeight.normal,
                                     ),
                                     children: <TextSpan>[
                                         TextSpan(
-                                            text: 'Log ib',
-                                            style: TextStyle(
+                                            text: 'Log in',
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                             ),
                                             recognizer: TapGestureRecognizer()
@@ -150,30 +190,22 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                                         context,
                                                         MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
                                                     );
-                                                    setState(() {
-                                                        isPasswordForgotten = false;
-                                                        isEmailForgotten = false;
-                                                    });
                                                 },
                                         ),
-                                        TextSpan(
+                                        const TextSpan(
                                             text: ' or ',
                                         ),
                                         TextSpan(
                                             text: 'Sign up',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                             ),
                                             recognizer: TapGestureRecognizer()
                                                 ..onTap = () {
                                                     Navigator.push(
                                                         context,
-                                                        MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
+                                                        MaterialPageRoute(builder: (context) => const SignUpPage(title: 'SignUpPage')),
                                                     );
-                                                    setState(() {
-                                                        isPasswordForgotten = false;
-                                                        isEmailForgotten = false;
-                                                    });
                                                 },
                                         ),
                                     ],
@@ -185,4 +217,4 @@ class _GetStartedPageState extends State<GetStartedPage> {
             ),
         );
     }
-}*/
+}

@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/HomePage.dart';
 import 'package:mobile/SignUpPage.dart';
-//import 'package:mobile/GetStartedPage.dart';
-//import 'package:http/http.dart' as http;
+import 'package:mobile/GetStartedPage.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
     final String title;
@@ -184,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                                 onPressed: () {
                                     Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => const SignUpPage()),
+                                        MaterialPageRoute(builder: (context) => SignUpPage(title: 'SignUpPage')),
                                     );
                                     setState(() {
                                       isPasswordForgotten = false;
@@ -252,8 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 ..onTap = () {
                                                     Navigator.push(
                                                         context,
-                                                        //MaterialPageRoute(builder: (context) => GetStartedPage(title: 'GetStartedPage')),
-                                                        MaterialPageRoute(builder: (context) => LoginPage(title: 'GetStartedPage')),
+                                                        MaterialPageRoute(builder: (context) => GetStartedPage(title: 'GetStartedPage')),
                                                     );
                                                     setState(() {
                                                         isPasswordForgotten = false;
@@ -273,8 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 ..onTap = () {
                                                     Navigator.push(
                                                         context,
-                                                        //MaterialPageRoute(builder: (context) => GetStartedPage(title: 'GetStartedPage')),
-                                                        MaterialPageRoute(builder: (context) => LoginPage(title: 'GetStartedPage')),
+                                                        MaterialPageRoute(builder: (context) => GetStartedPage(title: 'GetStartedPage')),
                                                     );
                                                     setState(() {
                                                         isPasswordForgotten = false;
