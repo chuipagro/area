@@ -10,9 +10,11 @@ import { AreaController } from './area/area.controller';
 import { AreaService } from './area/area.service';
 import { AreaModule } from './area/area.module';
 
+const uri = 'mongodb+srv://Pablo:gaxSCEoBEYAgTn3x@atlascluster.nidn1nj.mongodb.net/?retryWrites=true&w=majority';
+
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017'),
+    MongooseModule.forRoot(uri),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: 'WeReallyNeedToChangeThisSecretKey',

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   @Post('changePassword')
   async changePassword(
@@ -48,6 +48,7 @@ export class UserController {
   async getUid(
     @Body('username') username: string,
   ): Promise<string> {
+    console.log("username:", username)
     return "uid";
   }
 
