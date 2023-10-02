@@ -101,7 +101,6 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 child: TextFormField(
                                 controller: emailController,
-                                obscureText: true,
                                 decoration: InputDecoration(
                                     hintText: 'Email',
                                     border: InputBorder.none,

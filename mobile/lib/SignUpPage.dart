@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:mobile/LoginPage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUpPage extends StatefulWidget {
     const SignUpPage({Key? key, required this.title}) : super(key: key);
@@ -11,235 +11,257 @@ class SignUpPage extends StatefulWidget {
     _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController confirmPasswordController = TextEditingController();
+class Step1 extends StatefulWidget {
+    final Function nextPage;
+    final Function updateEmail;
 
-    bool isPasswordForgotten = false;
-    bool isEmailForgotten = false;
-
-    Future<void> signUpUser() async {
-      // Ajoutez ici la logique d'inscription de l'utilisateur
-      // Vous pouvez envoyer les données au serveur, par exemple
-    }
+    Step1({required this.nextPage, required this.updateEmail});
 
     @override
-    void initState() {
-        super.initState();
-        isPasswordForgotten = false;
-        isEmailForgotten = false;
+    _Step1State createState() => _Step1State();
+}
+
+class _Step1State extends State<Step1> {
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    String email = '';
+
+    @override
+    Widget build(BuildContext context) {
+        return Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+                key: _formKey,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        TextFormField(
+                            decoration: const InputDecoration(labelText: 'Entrez votre email'),
+                            onChanged: (value) {
+                                setState(() {
+                                    email = value;
+                                });
+                            },
+                            validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                    return 'Veuillez entrer votre email';
+                                }
+                                return null;
+                            },
+                        ),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                            onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                    widget.updateEmail(email);
+                                    widget.nextPage();
+                                }
+                            },
+                            child: const Text('Suivant'),
+                        ),
+                    ],
+                ),
+            ),
+        );
+    }
+}
+
+class Step2 extends StatefulWidget {
+    final Function nextPage;
+    final Function previousPage;
+    final Function updatePassword;
+
+    Step2({required this.nextPage, required this.previousPage, required this.updatePassword});
+
+    @override
+    _Step2State createState() => _Step2State();
+}
+
+class _Step2State extends State<Step2> {
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    String password = '';
+
+    @override
+    Widget build(BuildContext context) {
+        return Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+                key: _formKey,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        TextFormField(
+                            obscureText: true,
+                            decoration: const InputDecoration(labelText: 'Entrez votre mot de passe'),
+                            onChanged: (value) {
+                                setState(() {
+                                    password = value;
+                                });
+                            },
+                            validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                    return 'Veuillez entrer votre mot de passe';
+                                }
+                                return null;
+                            },
+                        ),
+                        const SizedBox(height: 16.0),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                        widget.previousPage();
+                                    },
+                                    child: const Text('Précédent'),
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                            widget.updatePassword(password);
+                                            widget.nextPage();
+                                        }
+                                    },
+                                    child: const Text('Suivant'),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ),
+        );
+    }
+}
+
+class Step3 extends StatefulWidget {
+    final Function previousPage;
+    final String email;
+    final String password;
+
+    Step3({required this.previousPage, required this.email, required this.password});
+
+    @override
+    _Step3State createState() => _Step3State();
+}
+
+class _Step3State extends State<Step3> {
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    String username = '';
+
+    @override
+    Widget build(BuildContext context) {
+        return Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+                key: _formKey,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        TextFormField(
+                            decoration: const InputDecoration(labelText: 'Entrez votre username'),
+                            onChanged: (value) {
+                                setState(() {
+                                    username = value;
+                                });
+                            },
+                            validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                    return 'Veuillez entrer votre username';
+                                }
+                                return null;
+                            },
+                        ),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                            onPressed: () {
+                                //donner arg au back pour checker que tout est ok
+                                Fluttertoast.showToast(
+                                    msg: "Enregistrement réussi !",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.green,
+                                    textColor: Colors.white,
+                                );
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
+                                );
+                            },
+                            child: const Text('Inscription'),
+                        ),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                            onPressed: () {
+                                widget.previousPage();
+                            },
+                            child: const Text('Précédent'),
+                        ),
+                    ],
+                ),
+            ),
+        );
+    }
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+    final PageController _pageController = PageController(initialPage: 0);
+    
+    String email = '';
+    String password = '';
+    
+    int _currentPage = 0;
+
+    void nextPage() {
+        if (_currentPage < 2) {
+            _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.ease);
+            setState(() {
+                _currentPage += 1;
+            });
+        }
+    }
+
+    void previousPage() {
+        if (_currentPage < 2) {
+            _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.ease);
+            setState(() {
+                _currentPage -= 1;
+            });
+        }
     }
 
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            body: SingleChildScrollView(
-            child: Form(
-                key: _formKey,
-                child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 60.0),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'LPPLL',
-                      style: TextStyle(
-                        fontSize: 100.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 100.0),
-                  Container(
-                    width: 350,
-                    height: 50,
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                       color: Colors.black54,
-                       width: 2.0,
-                     ),
-                     borderRadius: BorderRadius.circular(30.0),
-                   ),
-                   child: TextFormField(
-                     controller: emailController,
-                     obscureText: false,
-                     decoration: InputDecoration(
-                       hintText: 'Email',
-                       border: InputBorder.none,
-                       labelStyle: TextStyle(
-                         fontWeight: FontWeight.bold,
-                       ),
-                       contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                     ),
-                     validator: (value) {
-                       if (value?.isEmpty ?? true) {
-                         setState(() {
-                           isEmailForgotten = true;
-                         });
-                         return null;
-                       }
-                       setState(() {
-                         isEmailForgotten = false;
-                       });
-                       return null;
-                     },
-                    ),
-                  ),
-                  if (isEmailForgotten)
-                    Text(
-                      'Email manquant',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  SizedBox(height: 20.0),
-                  Container(
-                    width: 350,
-                    height: 50,
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black54,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    child: TextFormField(
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Mot de passe',
-                        border: InputBorder.none,
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                      ),
-                      validator: (value) {
-                        if (value?.isEmpty ?? true) {
-                          setState(() {
-                            isPasswordForgotten = true;
-                          });
-                          return null;
-                        }
-                        setState(() {
-                          isPasswordForgotten = false;
-                        });
-                        return null;
-                      },
-                    ),
-                  ),
-                  if (isPasswordForgotten)
-                    Text(
-                      'Mot de passe manquant',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  SizedBox(height: 20.0),
-                  Container(
-                    width: 350,
-                    height: 50,
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black54,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    child: TextFormField(
-                      controller: confirmPasswordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Confirmez le mot de passe',
-                        border: InputBorder.none,
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                      ),
-                      validator: (value) {
-                        if (value != passwordController.text) {
-                          return 'Les mots de passe ne correspondent pas';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        signUpUser();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40.0),
-                      ),
-                      minimumSize: Size(350, 55),
-                    ),
-                    child: Text(
-                      'S\'inscrire',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 60.0),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Déjà un compte ? ',
-                      style: TextStyle(
-                        fontSize: 19.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.normal,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Connectez-vous',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
-                                );
-                                setState(() {
-                                    isPasswordForgotten = false;
-                                    isEmailForgotten = false;
-                                });
-                            },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            appBar: AppBar(
+                title: const Text("Inscription en plusieurs étapes"),
             ),
-          ),
+            body: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                    Step1(
+                        nextPage: nextPage,
+                        updateEmail: (String newEmail) {
+                            setState(() {
+                                email: newEmail;
+                            });
+                        },
+                    ),
+                    Step2(
+                        nextPage: nextPage,
+                        previousPage: previousPage,
+                        updatePassword: (String newPaswword) {
+                            setState(() {
+                                password: newPaswword;
+                            });
+                        },
+                    ),
+                    Step3(
+                        previousPage: previousPage,
+                        email: email,
+                        password: password,
+                    ),
+                ],
+            ),
         );
-      }
     }
+}
