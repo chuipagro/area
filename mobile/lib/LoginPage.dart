@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         if (response.statusCode == 200) {
-            Navigator.push(
+           Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
             );
