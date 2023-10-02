@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 export class AuthController {
@@ -15,7 +15,10 @@ export class AuthController {
   }
 
   @Post('signin')
-  async signIn(@Body('username') username: string, @Body('password') password: string): Promise<{
+  async signIn(
+    @Body('username') username: string,
+    @Body('password') password: string):
+    Promise<{
     token: string | null
   }> {
     console.log("signin")
@@ -23,14 +26,18 @@ export class AuthController {
   }
 
   @Post('signup')
-  async signUp(@Body('username') username: string, @Body('password') password: string): Promise<{
+  async signUp(
+    @Body('mail') mail: string,
+    @Body('username') username: string,
+    @Body('password') password: string):
+    Promise<{
     token: string | null
   }> {
-    if (!username || !password) {
-      throw new Error('Username and password are required');
+    if (!username || !password || !mail) {
+      throw new Error('no empty field allowed');
     }
     console.log("username:", username, "password:", password)
-    await this.authService.usersService.create(username, password);
-    return { token: await this.authService.signUp(username, password) };
+    await this.authService.usersService.create(mail, username, password);
+    return { token: await this.authService.signUp(mail, username, password) };
   }
 }

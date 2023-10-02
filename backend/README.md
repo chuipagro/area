@@ -32,6 +32,55 @@
 $ npm install
 ```
 
+## Database Installation && Setup
+
+```bash
+#                                            Installation
+
+## for ubuntu 20.04
+
+# install curl and gnupg
+sudo apt-get install gnupg curl
+
+# import the public key used by the package management system
+curl -fsSL https://pgp.mongodb.com/server-7.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+   --dearmor
+
+# create a list file for MongoDB
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+
+# install
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+
+
+## for fedora
+
+sudo cat > /etc/yum.repos.d/mongodb.repo &lt;&lt;EOF
+[mongodb-upstream]
+name=MongoDB Upstream Repository
+baseurl=https://repo.mongodb.org/yum/redhat/8Server/mongodb-org/4.2/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc
+EOF
+
+sudo dnf install mongodb-org
+```
+
+```bash
+#                                            Setup
+
+# start mongodb
+
+sudo systemctl start mongod
+
+# check status
+
+sudo systemctl status mongod
+```
+
 ## Running the app
 
 ```bash
@@ -45,17 +94,61 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## API CALLS
+
+```bash
+for now : localhost:3000
+ # sign in
+-> /auth/signin
+
+need:
+1 mail (str) ou username (str)
+2 password (str)
+
+ # sign up
+-> /auth/signup
+
+need:
+1 mail (str)
+2 username (str)
+3 password (str)
+
+ # change password
+-> /user/changepassword
+
+need:
+1 uid (str)
+2 password (str)
+3 new password (str)
+
+
+ # change mail
+-> /user/changemail
+
+need:
+1 uid (str)
+2 new mail (str)
+
+ # change username
+-> /user/changeusername
+
+need:
+1 uid (str)
+3 new username (str)
+
+ # delete account
+-> /user/deleteaccount
+
+need:
+1 uid (str)
+```
+
+
 ## Test
 
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
 ## Support
