@@ -149,23 +149,20 @@ class _Step3State extends State<Step3> {
     String username = '';
 
     Future<void> registerUser() async {
-        print("good");
-        print(username);
         final response = await http.post(
-            Uri.parse('http://10.68.246.206:3000/auth/signup'),
+            Uri.parse('http://10.0.3.2:3000/auth/signup'),
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
             body: {
-                'mail': 'lilfchvgjbkni',
-                'username': 'cfvhgbjkn',
-                'password': '1cytvghbj2356',
+                'mail': widget.email,
+                'username': username,
+                'password': widget.password,
             },
         );
 
         print(response.statusCode);
-        if (response.statusCode == 200) {
-            print("GOOODDDDDDDD");
+        if (response.statusCode == 201) {
             Fluttertoast.showToast(
                 msg: "Enregistrement réussi !",
                 toastLength: Toast.LENGTH_SHORT,
@@ -178,13 +175,13 @@ class _Step3State extends State<Step3> {
                 MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
             );
         } else {
-            print("MERDE");
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                     content: Text('Echec'),
                 ),
             );
         }
+      return;
     }
 
     @override
@@ -271,7 +268,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         nextPage: nextPage,
                         updateEmail: (String newEmail) {
                             setState(() {
-                                email: newEmail;
+                                email = newEmail;
                             });
                         },
                     ),
@@ -280,7 +277,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         previousPage: previousPage,
                         updatePassword: (String newPaswword) {
                             setState(() {
-                                password: newPaswword;
+                                password = newPaswword;
                             });
                         },
                     ),

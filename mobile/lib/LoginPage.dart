@@ -23,17 +23,15 @@ class _LoginPageState extends State<LoginPage> {
     bool isEmailForgotten = false;
 
     Future<void> loginUser() async {
-        final urlLogin = Uri.parse('http://localhost:3000');
-
         final response = await http.post(
-            urlLogin,
+            Uri.parse('http://10.0.3.2:3000/auth/signin'),
             body: {
-                'email': emailController.text,
+                'mail': emailController.text,
                 'password': passwordController.text,
             },
         );
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 201) {
            Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
