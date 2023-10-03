@@ -3,6 +3,6 @@ import 'package:mobile/LoginPage.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: LoginPage(title: 'LoginPage',),
+    home: LoginPage(title: 'LoginPage'),
   ));
 }
