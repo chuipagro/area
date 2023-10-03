@@ -2,6 +2,10 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 
+const uri = "mongodb+srv://Pablo:gaxSCEoBEYAgTn3x@atlascluster.nidn1nj.mongodb.net/?retryWrites=true&w=majority"
+
+
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
