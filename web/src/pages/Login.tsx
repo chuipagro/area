@@ -10,11 +10,10 @@ export const Login = (): JSX.Element => {
     const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('')
 
-    const callApi = async (mail: String, username: String, password: String) => {
+    const callApi = async (mail: String, password: String) => {
         try {
             const response = await axios.post('http://localhost:3000/auth/signup', {
                 mail,
-                username,
                 password,
             });
             return response.data;
@@ -24,8 +23,8 @@ export const Login = (): JSX.Element => {
         }
     }
 
-    const handleSignup = (mail: String, username: String, password: String) => {
-        callApi(mail, username, password).then(response => {
+    const handleSignup = (mail: String, password: String) => {
+        callApi(mail, password).then(response => {
         }).catch(error => {
             console.log(error);
         });
@@ -37,13 +36,19 @@ export const Login = (): JSX.Element => {
             <Center mt="160px">
                 <VStack spacing="32px">
                     {/* <Text> {name} {surname} {mail} {password} {checkPassword} </Text> */}
-                    <Button onClick={() => handleSignup(name, mail, password)} colorScheme='purple' variant='outline' >
+                    <Button onClick={() => handleSignup(mail, password)} colorScheme='purple' variant='outline' >
                         {/* <Link onClick={handleClick} color='purple' href='/home'>
                             register
                         </Link> */}
                     </Button >
                 </VStack>
             </Center>
+        );
+    }
+
+    function Title() {
+        return (
+            <Text marginTop={10} marginLeft={860} color="black" fontSize={{ base: '20px', md: '30px', lg: '60px' }}>Login</Text>
         );
     }
 
