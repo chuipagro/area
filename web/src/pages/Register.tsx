@@ -1,43 +1,56 @@
 import React from 'react';
 import '../app/App.css';
 import { Center, Text, VStack, Link, Button, Divider } from '@chakra-ui/react';
-import { useToast } from '@chakra-ui/react'
 import { InputText } from '../component/TexInput';
 import { Taskbar } from '../component/Taskbar';
+import { useEffect, useState } from 'react';
+import axios from "axios";
 
-export function Display({ name, surname, mail, password, checkPassword }: { name: string, surname: string, mail: string, password: string; checkPassword: string; }): JSX.Element {
-
-    const handleClick = () => {
-        console.log("name = ", name)
-        console.log("surname = ", surname)
-        console.log("mail = ", mail)
-        console.log("password = ", password)
-        console.log("checkPassword = ", checkPassword)
-    };
-    const toast = useToast();
-
-    return (
-        <Center mt="160px">
-            <VStack spacing="32px">
-                <Button colorScheme='purple' variant='outline' >
-                    <Link color='purple' href='/home'>
-                        validate
-                    </Link>
-                </Button >
-            </VStack>
-        </Center>
-    );
-}
 
 export const Register = (): JSX.Element => {
     const [name, setName] = React.useState('');
-    const [surname, setSurname] = React.useState('');
     const [mail, setMail] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [checkPassword, setCheckPassword] = React.useState('');
+    const [password, setPassword] = React.useState('')
+
+    const callApi = async (mail: String, username: String, password: String) => {
+        try {
+            const response = await axios.post('http://localhost:3000/auth/signup', {
+                mail,
+                username,
+                password,
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Il y a eu une erreur!', error);
+            return null;
+        }
+    }
+
+    const handleSignup = (mail: String, username: String, password: String) => {
+        callApi(mail, username, password).then(response => {
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
+    function Display({ name, mail, password }: { name: string, mail: string, password: string; }): JSX.Element {
+
+        return (
+            <Center mt="160px">
+                <VStack spacing="32px">
+                    {/* <Text> {name} {surname} {mail} {password} {checkPassword} </Text> */}
+                    <Button onClick={() => handleSignup(name, mail, password)} colorScheme='purple' variant='outline' >
+                        {/* <Link onClick={handleClick} color='purple' href='/home'>
+                            register
+                        </Link> */}
+                    </Button >
+                </VStack>
+            </Center>
+        );
+    }
 
     return <div style={{
-        backgroundImage: `url(https://upload.wikimedia.org/wikipedia/commons/4/45/White_box_55x90.png)`, backgroundRepeat: "no-repeat", backgroundSize: "cover",
+        backgroundColor: "white", backgroundRepeat: "no-repeat", backgroundSize: "cover",
         height: 930, width: 1905
     }}>
 
@@ -46,7 +59,6 @@ export const Register = (): JSX.Element => {
             <Text color="black" fontSize={{ base: '20px', md: '30px', lg: '60px' }}>Register</Text>
 
             <InputText setValue={setName} placeHolder="name" type="text" color={'purple'} />
-            <InputText setValue={setSurname} placeHolder="surname" type="text" color={'purple'} />
             <Center height='50px'>
                 <Divider orientation='vertical' />
             </Center>
@@ -55,9 +67,7 @@ export const Register = (): JSX.Element => {
                 <Divider orientation='vertical' />
             </Center>
             <InputText setValue={setPassword} placeHolder="password" type="password" color={'purple'} />
-            <InputText setValue={setCheckPassword} placeHolder="check password" type="password" color={'purple'} />
-
-            <Display name={name} surname={surname} mail={mail} password={password} checkPassword={checkPassword} />
+            <Display name={name} mail={mail} password={password} ></Display>
 
             <Button colorScheme='purple' variant='outline' >
                 <Link color='purple' href='/login'>
@@ -72,4 +82,3 @@ export const Register = (): JSX.Element => {
         </VStack>
     </div>
 }
-
