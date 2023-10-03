@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/LoginPage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatefulWidget {
     const SignUpPage({Key? key, required this.title}) : super(key: key);
@@ -147,6 +148,45 @@ class _Step3State extends State<Step3> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     String username = '';
 
+    Future<void> registerUser() async {
+        print("good");
+        print(username);
+        final response = await http.post(
+            Uri.parse('http://10.68.246.206:3000/auth/signup'),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
+            body: {
+                'mail': 'lilfchvgjbkni',
+                'username': 'cfvhgbjkn',
+                'password': '1cytvghbj2356',
+            },
+        );
+
+        print(response.statusCode);
+        if (response.statusCode == 200) {
+            print("GOOODDDDDDDD");
+            Fluttertoast.showToast(
+                msg: "Enregistrement réussi !",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+            );
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
+            );
+        } else {
+            print("MERDE");
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: Text('Echec'),
+                ),
+            );
+        }
+    }
+
     @override
     Widget build(BuildContext context) {
         return Container(
@@ -173,18 +213,7 @@ class _Step3State extends State<Step3> {
                         const SizedBox(height: 16.0),
                         ElevatedButton(
                             onPressed: () {
-                                //donner arg au back pour checker que tout est ok
-                                Fluttertoast.showToast(
-                                    msg: "Enregistrement réussi !",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    backgroundColor: Colors.green,
-                                    textColor: Colors.white,
-                                );
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
-                                );
+                                registerUser();
                             },
                             child: const Text('Inscription'),
                         ),
