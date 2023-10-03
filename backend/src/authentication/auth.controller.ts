@@ -40,8 +40,6 @@ export class AuthController {
     if (!username || !password || !mail) {
       throw new Error('no empty field allowed');
     }
-    console.log("username:", username, "password:", password)
-    await this.authService.usersService.create(mail, username, password);
     return { token: await this.authService.signUp(mail, username, password) };
   }
 }
