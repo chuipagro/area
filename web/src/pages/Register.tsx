@@ -3,7 +3,6 @@ import '../app/App.css';
 import { Center, Text, VStack, Link, Button, Divider } from '@chakra-ui/react';
 import { InputText } from '../component/TexInput';
 import { Taskbar } from '../component/Taskbar';
-import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom"
 import axios from "axios";
 
@@ -43,11 +42,8 @@ export const Register = (): JSX.Element => {
         return (
             <Center mt="160px">
                 <VStack spacing="32px">
-                    {/* <Text> {name} {surname} {mail} {password} {checkPassword} </Text> */}
                     <Button onClick={() => handleSignup(name, mail, password)} colorScheme='purple' variant='outline' >
-                        {/* <Link onClick={handleClick} color='purple' href='/home'>
-                            register
-                        </Link> */}
+                        Sign up
                     </Button >
                 </VStack>
             </Center>

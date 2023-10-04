@@ -3,12 +3,16 @@ import '../app/App.css';
 import { Center, Text, VStack, Link, Button, Divider } from '@chakra-ui/react';
 import { InputText } from '../component/TexInput';
 import { Taskbar } from '../component/Taskbar';
+import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 
+
 export const Login = (): JSX.Element => {
-    const [name, setName] = React.useState('');
+    const navigate = useNavigate()
     const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('')
+    const [isError, setIsError] = React.useState(false)
+
 
     const callApi = async (mail: String, password: String) => {
         try {
@@ -16,9 +20,13 @@ export const Login = (): JSX.Element => {
                 mail,
                 password,
             });
+            if (response.data) {
+                navigate('/home');
+            }
             return response.data;
         } catch (error) {
             console.error('Il y a eu une erreur!', error);
+            setIsError(true);
             return null;
         }
     }
@@ -27,22 +35,40 @@ export const Login = (): JSX.Element => {
         callApi(mail, password).then(response => {
         }).catch(error => {
             console.log(error);
+            setIsError(true);
         });
     }
 
-    function Display({ mail, password }: { mail: string, password: string; }): JSX.Element {
+    function DisplaySignInButtun({ mail, password }: { mail: string, password: string; }): JSX.Element {
 
-        return (
+        let rows = [];
+        if (!isError) {
+            rows.push(
+                <Center mt="160px">
+                    <VStack spacing="32px">
+                        <Button onClick={() => handleSignup(mail, password)} colorScheme='black' variant='outline' >
+                            Sign in
+                        </Button >
+                    </VStack>
+                </Center>)
+        }
+        rows = [];
+        rows.push(
             <Center mt="160px">
                 <VStack spacing="32px">
-                    {/* <Text> {name} {surname} {mail} {password} {checkPassword} </Text> */}
-                    <Button onClick={() => handleSignup(name, mail)} colorScheme='purple' variant='outline' >
-                        {/* <Link onClick={handleClick} color='purple' href='/home'>
-                            register
-                        </Link> */}
+                    <Button onClick={() => handleSignup(mail, password)} colorScheme='red' variant='outline' >
+                        Sign in
                     </Button >
+                    <Text color={'red'} > can't login</Text>
                 </VStack>
-            </Center>
+            </Center>)
+
+
+
+        return (
+            <VStack>
+                {rows}
+            </VStack>
         );
     }
 
@@ -70,7 +96,7 @@ export const Login = (): JSX.Element => {
 
 
         <VStack marginTop={-750} spacing="5px">
-            <Display mail={mail} password={password} ></Display>
+            <DisplaySignInButtun mail={mail} password={password} ></DisplaySignInButtun>
             <Button colorScheme='black' variant='outline' >
                 <Link color='black' href='/register'>
                     Create an account
