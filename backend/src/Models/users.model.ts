@@ -1,6 +1,14 @@
-import * as mongoose from 'mongoose';
+import { Schema, model, connect } from 'mongoose';
 
-export const UserSchema = new mongoose.Schema({
+export interface IUser {
+  uid: string;
+  mail: string;
+  username: string;
+  password: string;
+  token?: string;
+}
+
+export const UserSchema = new Schema<IUser>({
   uid: { type: String, required: true, unique: true },
   mail: { type: String, required: true, unique: true , allowEmptyContent: false},
   username: { type: String, required: true, unique: true , allowEmptyContent: false},
@@ -8,4 +16,4 @@ export const UserSchema = new mongoose.Schema({
   token: { type: String, required: false },
 });
 
-export const UserModel = mongoose.model('User', UserSchema);
+export const UserModel = model<IUser>('User', UserSchema);

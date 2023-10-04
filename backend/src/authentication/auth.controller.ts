@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
-import { UserService } from '../user/user.service';
 import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import { UserService } from '../user/user.service';
 
 // swagger import
 

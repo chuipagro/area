@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import IUser, { UserService } from '../user/user.service';
+import { UserService } from '../user/user.service';
 import { JwtPayload } from './jwt-payload.interface';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AuthService {
     Promise<string | null> {
     const user = await this.usersService.findByMail(mail);
     if (user) {
-      if ((user as any).password !== password)
+      if (user.password !== password)
         return null;
       const payload: JwtPayload = { mail: mail };
       const token = this.jwtService.sign(payload);

@@ -1,26 +1,21 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserModel } from '../Models/users.model';
+import { IUser, UserModel } from '../Models/users.model';
 import { v4 as uuidv4 } from 'uuid';
 
-interface IUser extends Document {
-  uid: string;
-  mail: string;
-  username: string;
-  password: string;
-  token?: string;
-}
 @Injectable()
 export class UserService {
   constructor(@InjectModel('User') private userModel: Model<typeof UserModel>) {}
 
-  async findByToken(token: string): Promise< typeof UserModel | null> {
-    return this.userModel.findOne({ token: token }).exec();
+  async findByToken(token: string): Promise<IUser | null> {
+    const user = await this.userModel.findOne({ token: token }).exec();
+    return user ? user.toObject() as IUser : null;
   }
 
-  async findByMail(mail: string): Promise< typeof UserModel | null> {
-    return this.userModel.findOne({ mail: mail }).exec();
+  async findByMail(mail: string): Promise< IUser | null> {
+    const user = await this.userModel.findOne({ mail: mail }).exec();
+    return user ? user.toObject() as IUser : null;
   }
 
   async create(mail: string, username: string, password: string): Promise<typeof UserModel> {
@@ -39,8 +34,8 @@ export class UserService {
   }
 
 
-  async changePassword(token: String, password: String, newPassword: String): Promise<void> {
-    const user = await UserModel.findOne(token).exec();
+  async changePassword(accessToken: String, password: String, newPassword: String): Promise<void> {
+    const user = await UserModel.findOne({ token:accessToken }).exec();
     if (!user) {
       throw new Error('User not found');
     }
@@ -54,7 +49,7 @@ export class UserService {
   }
 
   async changeMail(token: String, mail: String): Promise<void> {
-    const existingUser = await UserModel.findOne({ token: token });
+    const existingUser = await UserModel.findOne(token);
     if (existingUser) {
       throw new Error('Username already in use');
     }
@@ -73,7 +68,7 @@ export class UserService {
   }
 
   async changeUsername(token: String, userName: String): Promise<void> {
-    const existingUser = await UserModel.findOne({ token: token });
+    const existingUser = await UserModel.findOne({ token });
     if (existingUser) {
       throw new Error('Username already in use');
     }
@@ -87,5 +82,3 @@ export class UserService {
     await user.save();
   }
 }
-
-export default IUser;
