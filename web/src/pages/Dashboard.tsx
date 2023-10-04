@@ -20,7 +20,6 @@ function StackEx() {
     const rows = [];
     for (let i = 0; i < numrows; i++) {
         if (i % 5 === 0 || i + 1 >= numrows) {
-            // Display the element alone on every third row
             rows.push(
                 <VStack key={i}>
                     <Feature
@@ -32,8 +31,6 @@ function StackEx() {
                 </VStack>
             );
         } else {
-            // Display elements in pairs on other rows
-            //if () // Don't render a pair if there's no second element
             const pair = (
                 <HStack key={i}>
                     <Feature
@@ -53,7 +50,7 @@ function StackEx() {
                 </HStack>
             );
             rows.push(pair);
-            i++; // Increment i again for the second element in the pair
+            i++;
         }
     }
     return (
