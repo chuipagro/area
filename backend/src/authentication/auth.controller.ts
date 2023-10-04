@@ -2,6 +2,10 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 
+const uri = "mongodb+srv://Pablo:gaxSCEoBEYAgTn3x@atlascluster.nidn1nj.mongodb.net/?retryWrites=true&w=majority"
+
+
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -36,8 +40,6 @@ export class AuthController {
     if (!username || !password || !mail) {
       throw new Error('no empty field allowed');
     }
-    console.log("username:", username, "password:", password)
-    await this.authService.usersService.create(mail, username, password);
     return { token: await this.authService.signUp(mail, username, password) };
   }
 }
