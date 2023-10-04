@@ -1,6 +1,11 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Response } from 'express';
 import { UserService } from '../user/user.service';
+import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+
+// swagger import
+
 
 const uri = "mongodb+srv://Pablo:gaxSCEoBEYAgTn3x@atlascluster.nidn1nj.mongodb.net/?retryWrites=true&w=majority"
 
@@ -11,35 +16,80 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   async checkExistingUser(username: string): Promise<boolean> {
-    const user = await this.authService.usersService.findOne(username);
+    const user = await this.authService.usersService.findByToken(username);
     if (!user) {
       return false;
     }
     return true;
   }
 
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        mail: {
+          type: 'string',
+        },
+        password: {
+          type: 'string',
+        }
+      },
+    },
+  })
+
+  @ApiOkResponse({
+    description: 'Token',
+    type: String,
+    status: 200,
+  })
+
   @Post('signin')
   async signIn(
-    @Body('username') username: string,
-    @Body('password') password: string):
-    Promise<{
-    token: string | null
-  }> {
-    console.log("signin")
-    return { token: await this.authService.signIn(username, password) };
+    @Res() res: Response,
+    @Body('mail') mail: string,
+    @Body('password') password: string)
+  : Promise<any> {
+    const token = await this.authService.signIn(mail, password);
+    if (!token) {
+      throw new Error('User not found or wrong password');
+    }
+    return res.status(200).send({ token: token });
   }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        mail: {
+          type: 'string',
+        },
+        username: {
+          type: 'string',
+        },
+        password: {
+          type: 'string',
+        },
+      },
+    },
+  })
+
+  @ApiOkResponse({
+    description: 'message',
+    type: String,
+    status: 200,
+  })
 
   @Post('signup')
   async signUp(
+    @Res() res: Response,
     @Body('mail') mail: string,
     @Body('username') username: string,
-    @Body('password') password: string):
-    Promise<{
-    token: string | null
-  }> {
+    @Body('password') password: string)
+    : Promise<any> {
     if (!username || !password || !mail) {
       throw new Error('no empty field allowed');
     }
-    return { token: await this.authService.signUp(mail, username, password) };
+    await this.authService.signUp(mail, username, password);
+    return res.status(200).send({ message: 'User created' });
   }
 }

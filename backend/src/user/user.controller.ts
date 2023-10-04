@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 
 @Controller('user')
 export class UserController {
@@ -34,7 +34,7 @@ export class UserController {
     return { token: null };
   }
 
-  @Post('deleteAccount')
+  @Delete('deleteAccount')
   async deleteAccount(
     @Body('uid') username: string,
   ): Promise<{
@@ -48,8 +48,7 @@ export class UserController {
   async getUid(
     @Body('username') username: string,
   ): Promise<string> {
-    console.log("username:", username)
+    const uid = await this.getUid(username);
     return "uid";
   }
-
 }
