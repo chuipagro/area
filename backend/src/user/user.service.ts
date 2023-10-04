@@ -81,4 +81,14 @@ export class UserService {
     user.username = userName.toString();
     await user.save();
   }
+
+  async disconnect(token: String): Promise<void>
+  {
+    const user = await UserModel.findOne({ token: token }).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.token = null;
+    await user.save();
+  }
 }

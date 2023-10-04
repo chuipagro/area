@@ -125,4 +125,30 @@ export class UserController {
   ): Promise<Response> {
     return res.status(200).send({ message: 'account deleted' });
   }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'user disconnected',
+    type: String,
+    status: 200,
+  })
+
+  @Post('disconnect')
+  async disconnect(
+    @Res() res: Response,
+    @Body('token') token: string,
+  ): Promise<Response> {
+    await this.UserService.disconnect(token);
+    return res.status(200).send({ message: 'user disconnected' });
+  }
 }
