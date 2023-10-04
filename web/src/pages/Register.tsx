@@ -4,10 +4,12 @@ import { Center, Text, VStack, Link, Button, Divider } from '@chakra-ui/react';
 import { InputText } from '../component/TexInput';
 import { Taskbar } from '../component/Taskbar';
 import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom"
 import axios from "axios";
 
 
 export const Register = (): JSX.Element => {
+    const navigate = useNavigate()
     const [name, setName] = React.useState('');
     const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('')
@@ -19,6 +21,9 @@ export const Register = (): JSX.Element => {
                 username,
                 password,
             });
+            if (response.data) {
+                navigate('/home');
+            }
             return response.data;
         } catch (error) {
             console.error('Il y a eu une erreur!', error);

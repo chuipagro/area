@@ -36,7 +36,7 @@ export const Login = (): JSX.Element => {
             <Center mt="160px">
                 <VStack spacing="32px">
                     {/* <Text> {name} {surname} {mail} {password} {checkPassword} </Text> */}
-                    <Button onClick={() => handleSignup(mail, password)} colorScheme='purple' variant='outline' >
+                    <Button onClick={() => handleSignup(name, mail)} colorScheme='purple' variant='outline' >
                         {/* <Link onClick={handleClick} color='purple' href='/home'>
                             register
                         </Link> */}
