@@ -11,7 +11,7 @@ import { JwtStrategy } from './jwt.strategy';
     UserModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secretOrPrivateKey: 'WeReallyNeedToChangeThisSecretKey',
+      secret: 'WeReallyNeedToChangeThisSecretKey',
       signOptions: { expiresIn: 3600 },
     }),
   ],

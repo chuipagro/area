@@ -11,14 +11,17 @@ export class AuthService {
   ) {}
 
   async signIn(
-    username: string,
+    mail: string,
     password: string):
     Promise<string | null> {
-    // TODO: check if username and password are valid
-    const user = await this.usersService.findOne(username);
-    if (user && user.arguments.password === password) {
-      const payload: JwtPayload = { username: username };
-      return this.jwtService.sign(payload);
+    const user = await this.usersService.findByMail(mail);
+    if (user) {
+      if (user.password !== password)
+        return null;
+      const payload: JwtPayload = { mail: mail };
+      const token = this.jwtService.sign(payload);
+      await this.usersService.updateUserToken(mail, token);
+      return token;
     }
     return null;
   }
@@ -27,12 +30,7 @@ export class AuthService {
     mail: string,
     username: string,
     password: string):
-    Promise<string | null> {
-    const user = await this.usersService.create( mail, username, password );
-    if (user) {
-      const payload: JwtPayload = { username: mail };
-      return this.jwtService.sign(payload);
-    }
-    return null;
+    Promise<void> {
+    const user = await this.usersService.create( mail, username, password);
   }
 }
