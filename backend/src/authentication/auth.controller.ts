@@ -1,27 +1,11 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
-import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
-import { UserService } from '../user/user.service';
-
-// swagger import
-
-
-const uri = "mongodb+srv://Pablo:gaxSCEoBEYAgTn3x@atlascluster.nidn1nj.mongodb.net/?retryWrites=true&w=majority"
-
-
+import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  async checkExistingUser(username: string): Promise<boolean> {
-    const user = await this.authService.usersService.findByToken(username);
-    if (!user) {
-      return false;
-    }
-    return true;
-  }
 
   @ApiBody({
     schema: {

@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 
 @Controller('user')
