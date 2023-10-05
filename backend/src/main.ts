@@ -11,7 +11,6 @@ async function bootstrap() {
     .setTitle('AREA')
     .setDescription('API for AREA project')
     .setVersion('1.0')
-    .addTag('test')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
