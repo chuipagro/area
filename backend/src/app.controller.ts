@@ -1,10 +1,13 @@
 import { Controller, Get, Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import mongoose from 'mongoose';
+import * as process from 'process';
+
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {
+
     this.connectToDatabase().then(r => console.log('Connected to MongoDB'));
   }
 
@@ -14,7 +17,10 @@ export class AppController {
   }
   private async connectToDatabase() {
     try {
-      await mongoose.connect('mongodb+srv://Pablo:gaxSCEoBEYAgTn3x@atlascluster.nidn1nj.mongodb.net/?retryWrites=true&w=majority', {
+      if (process.env.MONGO_URI === undefined) {
+        throw new Error('MONGO_URI is undefined');
+      }
+      await mongoose.connect(process.env.MONGO_URI.toString(), {
       });
     } catch (error) {
       console.error('Error connecting to MongoDB', error);

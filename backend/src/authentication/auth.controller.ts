@@ -76,4 +76,29 @@ export class AuthController {
     await this.authService.signUp(mail, username, password);
     return res.status(200).send({ message: 'User created' });
   }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'is connected',
+    type: Boolean,
+    status: 200,
+  })
+
+  @Post('isConnected')
+  async isConnected(
+    @Res() res: Response,
+    @Body('token') token: string,
+  ): Promise<Response> {
+    return res.status(200).send({ isConnected: await this.authService.isConnected(token) });
+  }
 }

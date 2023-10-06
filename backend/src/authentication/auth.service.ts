@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { JwtPayload } from './jwt-payload.interface';
+import * as jwt from 'jsonwebtoken';
+import * as process from 'process';
 
 @Injectable()
 export class AuthService {
@@ -32,5 +34,20 @@ export class AuthService {
     password: string):
     Promise<void> {
     const user = await this.usersService.create( mail, username, password);
+  }
+
+  async isConnected(
+    token: string):
+    Promise<boolean> {
+    const user = await this.usersService.findByToken(token);
+    if (!user) {
+      return false;
+    }
+    try {
+      const payload = jwt.verify(token, process.env.JWT_KEY as string);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
