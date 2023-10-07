@@ -59,14 +59,14 @@ flutter:
     - assets/images/GoogleLogo.png
     - assets/images/DiscordLogo.png
     - assets/images/YoutubeLogo.png
-    - assets/images/homePage/addArea.png
-    - assets/images/homePage/homeButton.png
-    - assets/images/homePage/profilButton.png
-    - assets/images/homePage/barreHorizontale.png
-    - assets/images/homePage/TimeLogo.png
-    - assets/images/homePage/parameter.png
-    - assets/images/homePage/fuckGoBack.png
-    - assets/images/ServicesPage/resherchBarre.png
+    - assets/images/addArea.png
+    - assets/images/homeButton.png
+    - assets/images/profilButton.png
+    - assets/images/barreHorizontale.png
+    - assets/images/TimeLogo.png
+    - assets/images/parameter.png
+    - assets/images/fuckGoBack.png
+    - assets/images/resherchBarre.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -62,6 +62,11 @@ class _HomePageState extends State<HomePage> {
   PageState currentPageState = PageState.Areas;
   int indexOfServicesToPrint = 0;
   List<int> indexForCreationPage = [-1, -1, -1, -1];
+  bool areaNameIsNotEmpty = false;
+
+  TextEditingController nameInput = TextEditingController();
+  TextEditingController searchController = TextEditingController();
+  TextEditingController searchControllerReaction = TextEditingController();
 
   void homeButtonPress() {
     setState(() {
@@ -131,6 +136,7 @@ class _HomePageState extends State<HomePage> {
 
   void addArea(String name) {
     setState(() {
+      nameInput.text = '';
       createdAreas.add(CreatedArea(name: name, isActive: true, areaIdOne: indexForCreationPage[0], areaIdTwo: indexForCreationPage[2], areaOneActionId: indexForCreationPage[1], areaTwoActionId: indexForCreationPage[3], createdBy: 'Moi'));
       indexForCreationPage = [-1, -1, -1, -1];
       currentPageState = PageState.Areas;
@@ -167,7 +173,10 @@ class _HomePageState extends State<HomePage> {
         pageContent = buildHomePageContent();
         break;
       case PageState.AddArea:
-        pageContent = buildAddAreaPageContent(); 
+        searchController = TextEditingController();
+        searchControllerReaction = TextEditingController();
+        pageContent = buildAddAreaPageContent(nameInput);
+        break;
       case PageState.Profil:
         pageContent = buildProfilPageContent(); 
         break;
@@ -175,10 +184,10 @@ class _HomePageState extends State<HomePage> {
         pageContent = buildAreasStatusContent(); 
         break;
       case PageState.ServicesActions:
-        pageContent = buildServicesActionsContent();
+        pageContent = buildServicesActionsContent(searchController);
         break;
       case PageState.ServicesReactions:
-        pageContent = buildServicesReactionsContent();
+        pageContent = buildServicesReactionsContent(searchControllerReaction);
         break;
       case PageState.ActionsList:
         pageContent = buildActionsListContent();
@@ -225,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/fuckGoBack.png'),
+                      image: AssetImage('assets/images/fuckGoBack.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -346,7 +355,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/fuckGoBack.png'),
+                      image: AssetImage('assets/images/fuckGoBack.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -455,7 +464,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/fuckGoBack.png'),
+                      image: AssetImage('assets/images/fuckGoBack.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -501,7 +510,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/fuckGoBack.png'),
+                      image: AssetImage('assets/images/fuckGoBack.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -515,10 +524,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildServicesReactionsContent() {
+  Widget buildServicesReactionsContent(TextEditingController searchControllerReaction) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    TextEditingController searchController = TextEditingController();
 
     return Scaffold(
       body: Center(
@@ -534,7 +542,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/fuckGoBack.png'),
+                      image: AssetImage('assets/images/fuckGoBack.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -563,7 +571,7 @@ class _HomePageState extends State<HomePage> {
                   height: 3,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/barreHorizontale.png'),
+                      image: AssetImage('assets/images/barreHorizontale.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -589,7 +597,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Expanded(
                       child: TextField(
-                        controller: searchController,
+                        controller: searchControllerReaction,
                         onChanged: (value) {
                           setState(() {});
                         },
@@ -623,8 +631,8 @@ class _HomePageState extends State<HomePage> {
                     final element1 = elements[startIndex];
                     final element2 = endIndex < elements.length ? elements[endIndex] : null;
 
-                    bool showElement1 = element1.titre.contains(searchController.text) && element1.reactions.isNotEmpty;
-                    bool showElement2 = element2 == null ? false : element2.reactions.isNotEmpty && element2.titre.contains(searchController.text);
+                    bool showElement1 = element1.titre.contains(searchControllerReaction.text) && element1.reactions.isNotEmpty;
+                    bool showElement2 = element2 == null ? false : element2.reactions.isNotEmpty && element2.titre.contains(searchControllerReaction.text);
 
                     return Row(
                       children: [
@@ -646,7 +654,7 @@ class _HomePageState extends State<HomePage> {
                                     child: GestureDetector(
                                       onTap: onElementTap,
                                       child: Image.asset(
-                                        'assets/images/homePage/parameter.png',
+                                        'assets/images/parameter.png',
                                         width: 24.0,
                                         height: 24.0,
                                       ),
@@ -689,7 +697,7 @@ class _HomePageState extends State<HomePage> {
                                     child: GestureDetector(
                                       onTap: onElementTap,
                                       child: Image.asset(
-                                        'assets/images/homePage/parameter.png',
+                                        'assets/images/parameter.png',
                                         width: 24.0,
                                         height: 24.0,
                                       ),
@@ -725,10 +733,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildServicesActionsContent() {
+  Widget buildServicesActionsContent(TextEditingController searchController) {
   final screenWidth = MediaQuery.of(context).size.width;
   final screenHeight = MediaQuery.of(context).size.height;
-  TextEditingController searchController = TextEditingController();
 
   return Scaffold(
     body: Center(
@@ -744,7 +751,7 @@ class _HomePageState extends State<HomePage> {
                 height: 22,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/homePage/fuckGoBack.png'),
+                    image: AssetImage('assets/images/fuckGoBack.png'),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(10.0),
@@ -773,7 +780,7 @@ class _HomePageState extends State<HomePage> {
                 height: 3,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/homePage/barreHorizontale.png'),
+                    image: AssetImage('assets/images/barreHorizontale.png'),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(10.0),
@@ -858,7 +865,7 @@ class _HomePageState extends State<HomePage> {
                                         onActionList(startIndex);
                                       },
                                     child: Image.asset(
-                                      'assets/images/homePage/parameter.png',
+                                      'assets/images/parameter.png',
                                       width: 24.0,
                                       height: 24.0,
                                     ),
@@ -901,7 +908,7 @@ class _HomePageState extends State<HomePage> {
                                   child: GestureDetector(
                                     onTap: onElementTap,
                                     child: Image.asset(
-                                      'assets/images/homePage/parameter.png',
+                                      'assets/images/parameter.png',
                                       width: 24.0,
                                       height: 24.0,
                                     ),
@@ -937,17 +944,17 @@ class _HomePageState extends State<HomePage> {
   );
 }
 
-  Widget buildAddAreaPageContent() {
+  Widget buildAddAreaPageContent(TextEditingController nameInput) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final bool designedElementForAction = indexForCreationPage[0] >= 0;
     final bool designedElementForReaction = indexForCreationPage[2] >= 0;
-    TextEditingController nameInput = TextEditingController();
-    bool areaNameIsNotEmpty = false;
+    String nameOfArea = nameInput.text;
+
 
     void validateForm() {
       setState(() {
-        areaNameIsNotEmpty = nameInput.text.isNotEmpty;
+        areaNameIsNotEmpty = nameOfArea.isNotEmpty;
       });
     }
 
@@ -976,11 +983,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                       contentPadding: EdgeInsets.symmetric(vertical: 10.0),
                     ),
-                    validator: (value) {
-                      setState(() {
-                        areaNameIsNotEmpty = value?.isNotEmpty ?? false;
-                      });
-                      return null;
+                    onChanged: (value) {
+                        nameOfArea = value;
+                        validateForm();
                     },
                   ),
                 ),
@@ -1008,7 +1013,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/fuckGoBack.png'),
+                      image: AssetImage('assets/images/fuckGoBack.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -1152,7 +1157,7 @@ class _HomePageState extends State<HomePage> {
                 top: screenHeight * 0.8,
                 child: GestureDetector(
                   onTap: () {
-                    addArea('test');
+                    addArea(nameOfArea);
                   },
                   child: Container(
                     height: screenHeight * 0.07,
@@ -1198,7 +1203,7 @@ class _HomePageState extends State<HomePage> {
             //       height: 40,
             //       decoration: BoxDecoration(
             //         image: DecorationImage(
-            //           image: AssetImage('assets/images/homePage/homeButton.png'),
+            //           image: AssetImage('assets/images/homeButton.png'),
             //           fit: BoxFit.cover,
             //         ),
             //         borderRadius: BorderRadius.circular(10.0),
@@ -1216,7 +1221,7 @@ class _HomePageState extends State<HomePage> {
                   height: 40,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/addArea.png'),
+                      image: AssetImage('assets/images/addArea.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -1234,7 +1239,7 @@ class _HomePageState extends State<HomePage> {
             //       height: 40,
             //       decoration: BoxDecoration(
             //         image: DecorationImage(
-            //           image: AssetImage('assets/images/homePage/profilButton.png'),
+            //           image: AssetImage('assets/images/profilButton.png'),
             //           fit: BoxFit.cover,
             //         ),
             //         borderRadius: BorderRadius.circular(10.0),
@@ -1263,7 +1268,7 @@ class _HomePageState extends State<HomePage> {
                   height: 3,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/homePage/barreHorizontale.png'),
+                      image: AssetImage('assets/images/barreHorizontale.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -1299,7 +1304,7 @@ class _HomePageState extends State<HomePage> {
                             child: GestureDetector(
                               onTap: onElementTap,
                               child: Image.asset(
-                                'assets/images/homePage/parameter.png',
+                                'assets/images/parameter.png',
                                 width: 24.0,
                                 height: 24.0,
                               ),
