@@ -11,7 +11,13 @@ export const CreateArea = (): JSX.Element => {
     const [isError, setIsError] = React.useState(false)
     const [action, setAction] = React.useState(false)
     const [reaction, setReaction] = React.useState(false)
-    const [feurVisible, setFeurVisible] = React.useState(true);
+    const [actionVisibility, setactionVisibility] = React.useState(true);
+
+
+
+    //for the json
+    const [actionService, setActionService] = React.useState("");
+    const [actionServiceAction, setActionServiceAction] = React.useState(""); // faut changer le nom c'est vrm guez comme nom
 
     type Data = {
         [key: string]: {
@@ -29,6 +35,7 @@ export const CreateArea = (): JSX.Element => {
             };
         };
     };
+    const actionRows = [""];
 
     const jsonData: Data = {
         "discord": {
@@ -99,6 +106,13 @@ export const CreateArea = (): JSX.Element => {
             setReaction(false)
     }
 
+    const handleActionsVisibility = () => {
+        if (!actionVisibility)
+            setactionVisibility(true);
+        if (actionVisibility)
+            setactionVisibility(false)
+    }
+
 
 
     function Title() {
@@ -107,17 +121,52 @@ export const CreateArea = (): JSX.Element => {
         );
     }
 
-    function Feature({ title, desc, color, size, data }: { title: string, desc: string, color: string, size: number, data: any }) {
-        //console.log(data.key);
-        return (
-            <Box p={5} shadow='md' borderWidth='1px' boxSize={300} inlineSize={size} color={'#CCCCCC'} backgroundColor={color}>
+    function DisplayActions({ title, actions }: { title: string; actions: { [actionKey: string]: string } }) {
+        const actionBoxes: JSX.Element[] = [];
+        setActionService("");
+        setActionService(title);
+        console.log(actions);
+        Object.keys(actions).forEach((actionKey) => {
+            const actionDescription = actions[actionKey];
+            console.log(`Action: ${actionKey}, Description: ${actionDescription}`);
+            const actionBox = (
+                <Box
+                    key={actionKey} // Make sure to provide a unique key for each element
+                    p={5}
+                    shadow="md"
+                    borderWidth="1px"
+                    boxSize={300}
+                    inlineSize={300} // Adjust the size as needed
+                    color={"#CCCCCC"}
+                    backgroundColor={"red"}
+                    onClick={handleActionsVisibility}
+                >
+                    <Heading fontSize="xl">{actionKey}</Heading>
+                    <Text mt={4}>{actionDescription}</Text>
+                </Box>
+            );
+            actionBoxes.push(actionBox);
+        });
+        return <VStack>
+            {actionBoxes}
+        </VStack>;
+    }
+
+    function DisplayService({ title, desc, color, size, data }: { title: string, desc: string, color: string, size: number, data: any }) {
+        const rows = [];
+
+        rows.push(
+            <Box onClick={() => actionRows.push(data.actions.actionDescription)} p={5} shadow='md' borderWidth='1px' boxSize={300} inlineSize={size} color={'#CCCCCC'} backgroundColor={color}>
                 <Heading fontSize='xl'>{title}</Heading>
                 <Text mt={4}>{desc}</Text>
             </Box>
         )
+        return (
+            <VStack>{rows}</VStack>
+        )
     }
 
-    function Feur() {
+    function Services() {
         const rows = [];
         let numrows = Object.keys(jsonData).length;
         const jsonKeys = Object.keys(jsonData);
@@ -151,22 +200,22 @@ export const CreateArea = (): JSX.Element => {
         }
 
         // Now you can iterate over the dataArray with a numeric index
-        for (let i = 0; i < dataArray.length; i++) {
-            const serviceObject = dataArray[i];
-            console.log(`Service: ${serviceObject.service}`);
-            console.log(`Logo URL: ${serviceObject.logo}`);
-            let color: string = `rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`
-            console.log(`Color: ${serviceObject.color.red}, ${serviceObject.color.green}, ${serviceObject.color.blue}`);
-            console.log(`Actions: ${serviceObject.actions.action1}, ${serviceObject.actions.action2}`);
-            console.log(`Reactions: ${serviceObject.reaction.reaction1}, ${serviceObject.reaction.reaction2}`);
-        }
+        // for (let i = 0; i < dataArray.length; i++) {
+        //     const serviceObject = dataArray[i];
+        //     console.log(`Service: ${serviceObject.service}`);
+        //     console.log(`Logo URL: ${serviceObject.logo}`);
+        //     let color: string = `rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`
+        //     console.log(`Color: ${serviceObject.color.red}, ${serviceObject.color.green}, ${serviceObject.color.blue}`);
+        //     console.log(`Actions: ${serviceObject.actions.action1}, ${serviceObject.actions.action2}`);
+        //     console.log(`Reactions: ${serviceObject.reaction.reaction1}, ${serviceObject.reaction.reaction2}`);
+        // }
 
 
         for (let i = 0; i < dataArray.length; i++) {
             const serviceObject = dataArray[i];
             rows.push(
                 <VStack key={i}>
-                    <Feature
+                    <DisplayService
                         title={`${serviceObject.service}`}
                         desc='The future can be even brighter but a goal without a plan is just a wish'
                         color={`rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`}
@@ -174,57 +223,21 @@ export const CreateArea = (): JSX.Element => {
                         data={serviceObject}
                     />
                 </VStack>)
-            // if (i + 1 >= numrows) {
-            //     rows.push(
-            //         <VStack key={i}>
-            //             <Feature
-            //                 title={`${serviceObject.service}`}
-            //                 desc='The future can be even brighter but a goal without a plan is just a wish'
-            //                 color={`rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`}
-            //                 size={nb1}
-            //                 data={serviceObject}
-
-            //             />
-            //         </VStack>
-            //     );
-            // } else {
-            //     const pair = (
-            //         <HStack key={i} spacing={'10px'} >
-            //             <Feature
-            //                 title={`${serviceObject.service}`}
-            //                 desc='The future can be even brighter but a goal without a plan is just a wish'
-            //                 color={`rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`}
-            //                 size={nb2}
-            //                 data={serviceObject}
-            //             />
-            //             {i + 1 < dataArray.length && (
-            //                 <Feature
-            //                     title={`${serviceObject.service}`}
-            //                     desc='The future can be even brighter but a goal without a plan is just a wish'
-            //                     color={`rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`}
-            //                     size={nb2}
-            //                     data={serviceObject}
-            //                 />
-            //             )}
-            //         </HStack>
-            //     );
-            //     rows.push(pair);
-            // i++;
-            // }
-            // i++
         }
         return (
             <VStack>
-                <Text>ouais</Text>
+
                 {rows}
             </VStack>
         );
     }
 
     function Display() {
-        let rows = [];
 
+        let rows = [];
+        console.log(actionRows);
         if (!action && !reaction) (
+            //setactionVisibility(true),
             rows.push(
                 <HStack spacing="500px">
                     <Box onClick={handleAction} marginTop={200} marginLeft={300} boxSize={370} blockSize={500} borderRadius='md' bg='grey' color='white' px={4} h={8}>test</Box>
@@ -237,7 +250,7 @@ export const CreateArea = (): JSX.Element => {
             rows.push(
                 <div>
                     <img src={leftArrow} onClick={handleAction} width={30} style={{ marginRight: '1800px' }} ></img>
-                    <Feur></Feur>
+                    <Services></Services>
                 </div>
             )
         )
