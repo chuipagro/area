@@ -951,7 +951,6 @@ class _HomePageState extends State<HomePage> {
     final bool designedElementForReaction = indexForCreationPage[2] >= 0;
     String nameOfArea = nameInput.text;
 
-
     void validateForm() {
       setState(() {
         areaNameIsNotEmpty = nameOfArea.isNotEmpty;
