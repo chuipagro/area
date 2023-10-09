@@ -15,6 +15,8 @@ export const Register = (): JSX.Element => {
 
     const callApi = async (mail: String, username: String, password: String) => {
         try {
+            const mailSend = mail.toString();
+            localStorage.setItem('userMail', mailSend);
             const response = await axios.post('http://localhost:3000/auth/signup', {
                 mail,
                 username,
@@ -31,7 +33,7 @@ export const Register = (): JSX.Element => {
     }
 
     const handleSignup = (mail: String, username: String, password: String) => {
-        callApi(mail, username, password).then(response => {
+        callApi(username, mail, password).then(response => {
         }).catch(error => {
             console.log(error);
         });

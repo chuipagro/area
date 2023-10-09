@@ -2,42 +2,62 @@ import React from 'react';
 import '../app/App.css';
 import { Button, Box, HStack, Link } from '@chakra-ui/react';
 
-
+import { useNavigate } from "react-router-dom"
 
 export function Taskbar() {
+    const navigate = useNavigate()
     return (
-        <Box bg='black' w='100%' p={10} color='white'>
-            {/* <HStack>
-                <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} >
-                    <Link color='white' href='/login'>
-                        LPPLL
-                    </Link>
-                </Button>
+        <Box
+            backgroundColor="black"
+            width="100px"
+            height="100%"
+            position="fixed"
+            top="0"
+            left="0"
+            boxShadow="md"
+        >
+            <Box
+                backgroundColor="blue"
+                boxSize={10}
+                position="fixed"
+                top="500"
+                left="30"
+                boxShadow="md"
+                onClick={() => navigate('/create')}>
 
-                <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} left={700} >
-                    <Link color='white' href='/partnership'>
-                        Partnership
-                    </Link>
-                </Button>
+            </Box>
+            <Box
+                backgroundColor="blue"
+                boxSize={10}
+                position="fixed"
+                top="400"
+                left="30"
+                boxShadow="md"
+                onClick={() => navigate('/home')}>
 
-                <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} left={700}>
-                    <Link color='white' href='/explore'>
-                        Explore
-                    </Link>
-                </Button>
+            </Box>
+            {/* for the profile */}
+            {/* <Box
+                backgroundColor="blue"
+                boxSize={10}
+                position="fixed"
+                top="600"
+                left="30"
+                boxShadow="md" >
 
-                <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} left={700}>
-                    <Link color='white' href='/developers'>
-                        Developers
-                    </Link>
-                </Button>
+            </Box> */}
+            <Box
+                backgroundColor="red"
+                boxSize={10}
+                position="fixed"
+                top="600"
+                left="30"
+                boxShadow="md"
+                onClick={() => navigate('/login')}>
 
-                <Button colorScheme='red' variant='solid' fontSize={{ base: '35px' }} left={750}>
-                    <Link color='black' href='/login-with-service'>
-                        Get started
-                    </Link>
-                </Button>
-            </HStack> */}
-        </Box>
-    )
+            </Box>
+
+
+        </Box>)
+
 }

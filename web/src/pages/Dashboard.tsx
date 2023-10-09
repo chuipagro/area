@@ -1,7 +1,7 @@
 import React from 'react';
 import '../app/App.css';
 import { Grid, GridItem, Text, Stack, Box, Heading, Tbody, VStack, HStack } from '@chakra-ui/react';
-
+import { Taskbar } from '../component/VerticalTaskbar';
 
 function Feature({ title, desc, color, size }: { title: string, desc: string, color: string, size: number }) {
     return (
@@ -68,6 +68,7 @@ export const Dashboard = (): JSX.Element => {
         backgroundColor: "white", backgroundRepeat: "no-repeat", backgroundSize: "cover",
         height: 930, width: 1920
     }}>
+        <Taskbar></Taskbar>
         <StackEx></StackEx>
     </div>
 }

@@ -9,13 +9,16 @@ import axios from 'axios';
 
 export const Login = (): JSX.Element => {
     const navigate = useNavigate()
-    const [mail, setMail] = React.useState('');
+    const [mail, setMail] = React.useState("");
     const [password, setPassword] = React.useState('')
     const [isError, setIsError] = React.useState(false)
 
 
     const callApi = async (mail: String, password: String) => {
         try {
+            const mailSend = mail.toString();
+            localStorage.setItem('userMail', mailSend);
+            // console.log(mailSend);
             const response = await axios.post('http://localhost:3000/auth/signup', {
                 mail,
                 password,
