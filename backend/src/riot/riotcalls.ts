@@ -1,25 +1,25 @@
 import { RiotApi } from './riotapi';
+import { AuthService } from '../authentication/auth.service';
 
 export class RiotCalls {
-  private static riotApi = new RiotApi();
 
   public static async getSummonerByName(name: string): Promise<any> {
-    return await this.riotApi.getSummonerByName(name);
+    return await RiotApi.getSummonerByName(name);
   }
 
   public static async getSummonerByPuuid(puuid: string): Promise<any> {
-    return await this.riotApi.getSummonerByPuuid(puuid);
+    return await RiotApi.getSummonerByPuuid(puuid);
   }
 
   public static async getSummonerBySummonerId(summonerId: string): Promise<any> {
-    return await this.riotApi.getSummonerBySummonerId(summonerId);
+    return await RiotApi.getSummonerBySummonerId(summonerId);
   }
 
   public static async getMatchListByPuuid(puuid: string): Promise<any> {
-    return await this.riotApi.getMatchListByPuuid(puuid);
+    return await RiotApi.getMatchListByPuuid(puuid);
   }
 
   public static async getMatchById(matchId: string): Promise<any> {
-    return await this.riotApi.getMatchById(matchId);
+    return await RiotApi.getMatchById(matchId);
   }
 }
