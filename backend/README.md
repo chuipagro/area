@@ -97,50 +97,9 @@ $ npm run start:prod
 ## API CALLS
 
 ```bash
-for now : localhost:3000
- # sign in
--> /auth/signin
+$ for now : localhost:3000
 
-need:
-1 mail (str) ou username (str)
-2 password (str)
-
- # sign up
--> /auth/signup
-
-need:
-1 mail (str)
-2 username (str)
-3 password (str)
-
- # change password
--> /user/changepassword
-
-need:
-1 uid (str)
-2 password (str)
-3 new password (str)
-
-
- # change mail
--> /user/changemail
-
-need:
-1 uid (str)
-2 new mail (str)
-
- # change username
--> /user/changeusername
-
-need:
-1 uid (str)
-3 new username (str)
-
- # delete account
--> /user/deleteaccount
-
-need:
-1 uid (str)
+$ go to localhost:3000/documentation
 ```
 
 
