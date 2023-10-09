@@ -229,7 +229,8 @@ class _Step3State extends State<Step3> {
             },
         );
 
-        if (response.statusCode == 201) {
+        print(response.statusCode);
+        if (response.statusCode == 200) {
             Fluttertoast.showToast(
                 msg: "Enregistrement réussi !",
                 toastLength: Toast.LENGTH_SHORT,
@@ -283,7 +284,7 @@ class _Step3State extends State<Step3> {
               child: TextFormField(
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Mot de passe',
+                  hintText: 'Username',
                   isDense: true,
                 ),
                 style: TextStyle(
@@ -308,7 +309,7 @@ class _Step3State extends State<Step3> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(
               onPressed: () {
-                if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+                if (_formKey.currentState!.validate()) {
                   registerUser();
                 }
               },
