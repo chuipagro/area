@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/LoginPage.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile/Globals.dart' as globals;
 
 enum PageState {
   Areas,
@@ -141,6 +144,25 @@ class _HomePageState extends State<HomePage> {
       indexForCreationPage = [-1, -1, -1, -1];
       currentPageState = PageState.Areas;
     });
+  }
+
+  Future<void> onDeconectionTap() async {
+    final response = await http.post(
+      Uri.parse('http://' + globals.IPpc + ':3000/user/disconnect'),
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Échec de la déconnexion'),
+        ),
+      );
+    }
   }
 
     final List<Service> elements = [
@@ -1192,6 +1214,25 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Stack(
           children: [
+            Positioned(
+              top: screenHeight * 0.05,
+              right: screenWidth * 0.05,
+              child: TextButton(
+                onPressed: () {
+                  onDeconectionTap();
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.transparent, // Fond transparent
+                ),
+                child: Text(
+                  'Déconnexion',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 110, 110, 110), // Texte en blanc
+                    decoration: TextDecoration.underline, // Souligner le texte (optionnel)
+                  ),
+                ),
+              ),
+            ),
             // Positioned(
             //   left: screenWidth * 0.1,
             //   top: screenHeight * 0.9,
