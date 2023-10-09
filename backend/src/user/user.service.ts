@@ -1,16 +1,28 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserModel } from '../Models/users.model';
+import { IUser, UserModel } from '../Models/users.model';
 import { v4 as uuidv4 } from 'uuid';
+import { sendEmail } from '../utils/sendMail';
+
 @Injectable()
 export class UserService {
   constructor(@InjectModel('User') private userModel: Model<typeof UserModel>) {}
 
+  async findByToken(token: string): Promise<IUser | null> {
+    const user = await this.userModel.findOne({ token: token }).exec();
+    return user ? user.toObject() as IUser : null;
+  }
+
+  async findByMail(mail: string): Promise< IUser | null> {
+    const user = await this.userModel.findOne({ mail: mail }).exec();
+    return user ? user.toObject() as IUser : null;
+  }
+
   async create(mail: string, username: string, password: string): Promise<typeof UserModel> {
     const uid = uuidv4();
     console.log("uid:", uid, "mail:", mail, "username:", username, "password:", password)
-    const createdUser = new this.userModel({ uid, mail, username, password });
+    const createdUser = new this.userModel({ uid, mail, username, password, token: null });
 
     try {
       return await createdUser.save();
@@ -22,25 +34,61 @@ export class UserService {
     }
   }
 
-  async findOne(username: string): Promise<typeof UserModel | null> {
-    return this.userModel.findOne({ username }).exec();
+  async changePassword(accessToken: String, password: String, newPassword: String): Promise<void> {
+    const user = await UserModel.findOne({ token:accessToken }).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.password !== password) {
+      throw new Error('Wrong password');
+    }
+
+    user.password = newPassword.toString();
+    await user.save();
   }
 
-  async changePassword(uid: string, password: string, NewPassword: string): Promise<typeof UserModel | null> {
-    // TODO: check if password is valid
-    // TODO: change password
-    return null;
+  async changeMail(token: String, mail: String): Promise<void> {
+    const existingUser = await UserModel.findOne(token);
+    if (existingUser) {
+      throw new Error('Username already in use');
+    }
+
+    const user = await UserModel.findOne(token).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    user.mail = mail.toString();
+    await user.save();
   }
 
-  async changeMail(uid: string, mail: string): Promise<typeof UserModel | null> {
-    // TODO: check if mail is in a valid format and is not already used
-    // TODO: change mail
-    return null;
+  async updateUserToken(mail: string, token: string): Promise<void> {
+    await this.userModel.updateOne({ mail: mail }, { token: token }).exec();
   }
 
-  async changeUsername(uid: string, userName: string): Promise<typeof UserModel | null> {
-    // TODO: check if username is not already used
-    //TODO: change username
-    return null;
+  async changeUsername(token: String, userName: String): Promise<void> {
+    const existingUser = await UserModel.findOne({ token });
+    if (existingUser) {
+      throw new Error('Username already in use');
+    }
+
+    const user = await UserModel.findOne(token).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    user.username = userName.toString();
+    await user.save();
+  }
+
+  async disconnect(token: String): Promise<void>
+  {
+    const user = await UserModel.findOne({ token: token }).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.token = null;
+    await user.save();
   }
 }
