@@ -23,48 +23,88 @@ class Step1 extends StatefulWidget {
 }
 
 class _Step1State extends State<Step1> {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    String email = '';
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String email = '';
 
-    @override
-    Widget build(BuildContext context) {
-        return Container(
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: [
+          const SizedBox(height: 30.0),
+          const Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Form(
-                key: _formKey,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                        TextFormField(
-                            decoration: const InputDecoration(labelText: 'Entrez votre email'),
-                            onChanged: (value) {
-                                setState(() {
-                                    email = value;
-                                });
-                            },
-                            validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                    return 'Veuillez entrer votre email';
-                                }
-                                return null;
-                            },
-                        ),
-                        const SizedBox(height: 16.0),
-                        ElevatedButton(
-                            onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                    widget.updateEmail(email);
-                                    widget.nextPage();
-                                }
-                            },
-                            child: const Text('Suivant'),
-                        ),
-                    ],
+            child: Center(
+              child: Text(
+                'Entrez votre adresse mail',
+                style: TextStyle(
+                  fontSize: 20.0,
                 ),
+              ),
             ),
-        );
-    }
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              margin: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Adresse email',
+                  isDense: true,
+                ),
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    email = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre email';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ),
+          SizedBox(height: 300.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+                  widget.updateEmail(email);
+                  widget.nextPage();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+                onPrimary: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 32.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: Text('Suivant'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
+
 
 class Step2 extends StatefulWidget {
     final Function nextPage;
@@ -81,56 +121,84 @@ class _Step2State extends State<Step2> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     String password = '';
 
-    @override
-    Widget build(BuildContext context) {
-        return Container(
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: [
+          const SizedBox(height: 30.0),
+          const Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Form(
-                key: _formKey,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                        TextFormField(
-                            obscureText: true,
-                            decoration: const InputDecoration(labelText: 'Entrez votre mot de passe'),
-                            onChanged: (value) {
-                                setState(() {
-                                    password = value;
-                                });
-                            },
-                            validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                    return 'Veuillez entrer votre mot de passe';
-                                }
-                                return null;
-                            },
-                        ),
-                        const SizedBox(height: 16.0),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                        widget.previousPage();
-                                    },
-                                    child: const Text('Précédent'),
-                                ),
-                                ElevatedButton(
-                                    onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                            widget.updatePassword(password);
-                                            widget.nextPage();
-                                        }
-                                    },
-                                    child: const Text('Suivant'),
-                                ),
-                            ],
-                        ),
-                    ],
+            child: Center(
+              child: Text(
+                'Créez un mot de passe',
+                style: TextStyle(
+                  fontSize: 20.0,
                 ),
+              ),
             ),
-        );
-    }
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              margin: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextFormField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Mot de passe',
+                  isDense: true,
+                ),
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    password = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre mot de passe';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ),
+          SizedBox(height: 300.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+                  widget.updatePassword(password);
+                  widget.nextPage();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+                onPrimary: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 32.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: Text('Suivant'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class Step3 extends StatefulWidget {
@@ -161,7 +229,6 @@ class _Step3State extends State<Step3> {
             },
         );
 
-        print(response.statusCode);
         if (response.statusCode == 201) {
             Fluttertoast.showToast(
                 msg: "Enregistrement réussi !",
@@ -184,46 +251,130 @@ class _Step3State extends State<Step3> {
       return;
     }
 
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: [
+          const SizedBox(height: 30.0),
+          const Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                'Entrez votre username',
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              margin: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Mot de passe',
+                  isDense: true,
+                ),
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    username = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre username';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ),
+          SizedBox(height: 300.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+                  registerUser();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+                onPrimary: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 32.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: Text('Inscription'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CustomAppBar extends StatelessWidget {
+
+    final VoidCallback onBack;
+    final int currentPage;
+
+    CustomAppBar({required this.onBack, required this.currentPage});
+
     @override
     Widget build(BuildContext context) {
-        return Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-                key: _formKey,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                        TextFormField(
-                            decoration: const InputDecoration(labelText: 'Entrez votre username'),
-                            onChanged: (value) {
-                                setState(() {
-                                    username = value;
-                                });
-                            },
-                            validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                    return 'Veuillez entrer votre username';
-                                }
-                                return null;
-                            },
-                        ),
-                        const SizedBox(height: 16.0),
-                        ElevatedButton(
-                            onPressed: () {
-                                registerUser();
-                            },
-                            child: const Text('Inscription'),
-                        ),
-                        const SizedBox(height: 16.0),
-                        ElevatedButton(
-                            onPressed: () {
-                                widget.previousPage();
-                            },
-                            child: const Text('Précédent'),
-                        ),
-                    ],
+        Widget centerWidget;
+        if (currentPage == 0) {
+          centerWidget = Image.asset(
+                'assets/images/SearchBarrePage1.png',
+                width: 32,
+                height: 32,
+            );
+        } else if (currentPage == 1) {
+          centerWidget = Image.asset(
+                'assets/images/SearchBarrePage2.png',
+                width: 32,
+                height: 32,
+            );
+        } else {
+          centerWidget = Image.asset(
+                'assets/images/SearchBarrePage3.png',
+                width: 32,
+                height: 32,
+            );
+        }
+
+        return AppBar(
+            backgroundColor: Colors.white,
+            leading: IconButton(
+                icon: Image.asset(
+                    'assets/images/LeftArrow.png',
+                    width: 32,
+                    height: 32,
+                    ),
+                    onPressed: onBack,
                 ),
-            ),
+            centerTitle: false,
+            actions: [
+                Spacer(),
+                centerWidget,
+                Spacer(),
+                ],
         );
     }
 }
@@ -237,7 +388,7 @@ class _SignUpPageState extends State<SignUpPage> {
     int _currentPage = 0;
 
     void nextPage() {
-        if (_currentPage < 2) {
+        if (_currentPage <= 2) {
             _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.ease);
             setState(() {
                 _currentPage += 1;
@@ -246,7 +397,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     void previousPage() {
-        if (_currentPage < 2) {
+        if (_currentPage <= 2) {
             _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.ease);
             setState(() {
                 _currentPage -= 1;
@@ -257,8 +408,21 @@ class _SignUpPageState extends State<SignUpPage> {
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            appBar: AppBar(
-                title: const Text("Inscription en plusieurs étapes"),
+            appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                    child: CustomAppBar(
+                        onBack: () {
+                            if (_currentPage > 0) {
+                                previousPage();
+                            } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
+                                );
+                            }
+                        },
+                    currentPage: _currentPage,
+                ),
             ),
             body: PageView(
                 controller: _pageController,
