@@ -48,11 +48,16 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
+flutter:
+  assets:
+    - assets/images/LeftArrow.png
+    - assets/images/SearchBarrePage1.png
+    - assets/images/SearchBarrePage2.png
+    - assets/images/SearchBarrePage3.png
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter packages.
-flutter:
+# The following section is specific to Flutter packages.nj!
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -85,7 +90,7 @@ flutter:
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  #         weight: 700k,i!
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
