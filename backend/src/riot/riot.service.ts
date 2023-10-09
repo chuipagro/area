@@ -1,43 +1,47 @@
 import axios from 'axios';
-import process from 'process';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-export class RiotApi {
-  constructor() {
-    if (process.env.RIOT_API_KEY === undefined) {
+@Injectable()
+export class RiotService {
+  private apiKey: string | undefined;
+
+  constructor(private configService: ConfigService) {
+    this.apiKey = this.configService.get<string>('RIOT_API_KEY');
+    if (!this.apiKey) {
       throw new Error('RIOT_API_KEY is undefined');
     }
   }
-  private static apiKey = process.env.RIOT_API_KEY as string;
 
-  public static async getSummonerByName(name: string): Promise<any> {
+  async getSummonerByName(name: string): Promise<any> {
     const url = `https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}?api_key=${this.apiKey}`;
     return await axios.get(url).then((response: any) => {
       return response.data;
     });
   }
 
-  public static async getSummonerByPuuid(puuid: string): Promise<any> {
+  async getSummonerByPuuid(puuid: string): Promise<any> {
     const url = `https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${puuid}?api_key=${this.apiKey}`;
     return await axios.get(url).then((response: any) => {
       return response.data;
     });
   }
 
-  public static async getSummonerBySummonerId(summonerId: string): Promise<any> {
+  async getSummonerBySummonerId(summonerId: string): Promise<any> {
     const url = `https://euw1.api.riotgames.com/lol/summoner/v4/summoners/${summonerId}?api_key=${this.apiKey}`;
     return await axios.get(url).then((response: any) => {
       return response.data;
     });
   }
 
-  public static async getMatchListByPuuid(puuid: string): Promise<any> {
+  async getMatchListByPuuid(puuid: string): Promise<any> {
     const url = `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10&api_key=${this.apiKey}`;
     return await axios.get(url).then((response: any) => {
       return response.data;
     });
   }
 
-  public static async getMatchById(matchId: string): Promise<any> {
+  async getMatchById(matchId: string): Promise<any> {
     const url = `https://europe.api.riotgames.com/lol/match/v5/matches/${matchId}?api_key=${this.apiKey}`;
     return await axios.get(url).then((response: any) => {
       return response.data;

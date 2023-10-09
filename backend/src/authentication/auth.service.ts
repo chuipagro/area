@@ -3,13 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { JwtPayload } from './jwt-payload.interface';
 import * as jwt from 'jsonwebtoken';
-import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
+
 
 @Injectable()
 export class AuthService {
   constructor(
     readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async signIn(
@@ -44,7 +46,11 @@ export class AuthService {
       return false;
     }
     try {
-      const payload = jwt.verify(token, process.env.JWT_KEY as string);
+      const JWT_KEY = this.configService.get<string>('JWT_KEY');
+      if (JWT_KEY === undefined) {
+        throw new Error('JWT_KEY is undefined');
+      }
+      const payload = jwt.verify(token, JWT_KEY);
       return true;
     } catch (error) {
       return false;
