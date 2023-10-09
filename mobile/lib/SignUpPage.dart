@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/LoginPage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/Globals.dart' as globals;
 
 class SignUpPage extends StatefulWidget {
     const SignUpPage({Key? key, required this.title}) : super(key: key);
@@ -218,7 +219,7 @@ class _Step3State extends State<Step3> {
 
     Future<void> registerUser() async {
         final response = await http.post(
-            Uri.parse('http://10.0.3.2:3000/auth/signup'),
+            Uri.parse('http://'+globals.IPpc+':3000/auth/signup'),
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
