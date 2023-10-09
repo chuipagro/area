@@ -2,12 +2,12 @@ import { Controller, Get, Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import mongoose from 'mongoose';
 import * as process from 'process';
+import { sendEmail } from './utils/sendMail';
 
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {
-
     this.connectToDatabase().then(r => console.log('Connected to MongoDB'));
   }
 

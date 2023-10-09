@@ -50,4 +50,17 @@ export class AuthService {
       return false;
     }
   }
+
+  async refreshToken(
+    token: string):
+    Promise<string | null> {
+    const user = await this.usersService.findByToken(token);
+    if (!user) {
+      return null;
+    }
+    const payload: JwtPayload = { mail: user.mail };
+    const newToken = this.jwtService.sign(payload);
+    await this.usersService.updateUserToken(user.mail, newToken);
+    return newToken;
+  }
 }
