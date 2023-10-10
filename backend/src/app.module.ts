@@ -16,6 +16,7 @@ import { AreaModule } from './area/area.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
+import { ServicesModule } from './services/services.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { SpotifyModule } from './services/spotify/spotify.module';
     AreaModule,
     RiotModule,
     SpotifyModule,
+    ServicesModule,
   ],
   controllers: [AppController, AreaController],
   providers: [AppService, AreaService],
