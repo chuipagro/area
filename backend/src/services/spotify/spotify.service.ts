@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 export class SpotifyService {
   private clientID: string | undefined;
   private clientSECRET: string | undefined;
+  private authTOKEN: string | undefined;
 
   constructor(private configService: ConfigService) {
     this.clientID = this.configService.get<string>('SPOTIFY_CLIENT_ID');
@@ -17,15 +18,15 @@ export class SpotifyService {
     if (!this.clientSECRET) {
       throw new Error('SPOTIFY_CLIENT_SECRET is undefined');
     }
+    this.authTOKEN = Buffer.from(`${this.clientID}:${this.clientSECRET}`, 'utf-8').toString('base64');
   }
 
   async postToken(): Promise<any> {
     const url = `https://accounts.spotify.com/api/token`;
-    const auth_token = Buffer.from(`${this.clientID}:${this.clientSECRET}`, 'utf-8').toString('base64');
 
     return await axios.post(url, {'grant_type':'client_credentials'}, {
       headers: {
-        'Authorization': `Basic ${auth_token}`,
+        'Authorization': `Basic ${this.authTOKEN}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }).then((response: any) => {
