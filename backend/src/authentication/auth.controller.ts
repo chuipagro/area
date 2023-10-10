@@ -126,30 +126,4 @@ export class AuthController {
   ): Promise<Response> {
     return res.status(200).send({ token: await this.authService.refreshToken(token) });
   }
-
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        token: {
-          type: 'string',
-        }
-      }
-    }
-  })
-
-  @ApiOkResponse({
-    description: 'is Connect With Github',
-    type: Boolean,
-    status: 200,
-  })
-
-  @Post('isConnectWithGithub')
-  async isConnectWithGithub(
-    @Res() res: Response,
-    //arguments
-    @Body('token') token: string,
-  ): Promise<Response> {
-    return res.status(200).send({ message: 'Github created' });
-  }
 }

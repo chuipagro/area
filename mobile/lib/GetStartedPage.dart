@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
 import 'package:mobile/GetStartedEditorPage.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 
 class GetStartedPage extends StatefulWidget {
     final String title;
@@ -18,23 +18,23 @@ class _GetStartedPageState extends State<GetStartedPage> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final clientIdGithub = 'ecd75a418bce2c16c3f5';
-  final redirectUriGithub = 'http://10.0.2.1/auth/isConnectWithGithub';
 
   Future<void> _authenticateWithGitHub() async {
-    final callbackUrlScheme = 'https';
-
     final authUrl = 'https://github.com/login/oauth/authorize?'
         'client_id=$clientIdGithub&'
-        'redirect_uri=$redirectUriGithub&'
         'scope=user';
 
     try {
-      final result = await FlutterWebAuth.authenticate(
+      final result = await FlutterWebAuth2.authenticate(
         url: authUrl,
-        callbackUrlScheme: callbackUrlScheme,
+        callbackUrlScheme: 'area',
       );
 
       print('Authentification réussie : $result');
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GetStartedEditorPage(title: 'GetStartedEditorPage')),
+      );
     } catch (e) {
       print('Erreur d\'authentification : $e');
     }
