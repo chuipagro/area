@@ -29,4 +29,30 @@ export class SpotifyController {
     return res.status(200).send(result);
   }
 
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        track_id: {
+          type:'string'
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Post('getAudioFeaturesTrack')
+  async getAudioFeaturesTrack(
+    @Res() res: Response,
+    @Body('track_id') track_id: string,
+    ): Promise<Response> {
+    const result = await this.SpotifyService.getAudioFeaturesTrack(track_id);
+    return res.status(200).send(result);
+  }
+
 }

@@ -34,4 +34,17 @@ export class SpotifyService {
     });
   }
 
+  async getAudioFeaturesTrack(track_id: string): Promise<any> {
+    const access_token = await this.postToken();
+    const url = `https://api.spotify.com/v1/audio-features/${track_id}`;
+
+    return await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    }).then((response: any) => {
+      return response.data;
+    });
+  };
+
 }
