@@ -65,7 +65,7 @@ flutter:
     - assets/images/barreHorizontale.png
     - assets/images/TimeLogo.png
     - assets/images/parameter.png
-    - assets/images/fuckGoBack.png
+    - assets/images/goBackButton.png
     - assets/images/resherchBarre.png
 
   # The following line ensures that the Material Icons font is
