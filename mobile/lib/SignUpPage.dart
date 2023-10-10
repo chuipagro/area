@@ -218,8 +218,11 @@ class _Step3State extends State<Step3> {
     String username = '';
 
     Future<void> registerUser() async {
+        print(globals.IPpc);
+        print(widget.email);
+        print(username);
         final response = await http.post(
-            Uri.parse('http://'+globals.IPpc+':3000/auth/signup'),
+            Uri.parse('http://${globals.IPpc}:3000/auth/signup'),
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
