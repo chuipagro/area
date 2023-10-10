@@ -6,6 +6,10 @@ import axios from 'axios';
 import leftArrow from '../app/leftArrow.png'
 import { Taskbar } from '../component/VerticalTaskbar';
 
+
+/**
+ * This page display the create area page with the services and the actions/reactions
+ */
 export const CreateArea = (): JSX.Element => {
     const navigate = useNavigate()
     const [isError, setIsError] = React.useState(false)
@@ -25,6 +29,9 @@ export const CreateArea = (): JSX.Element => {
     const [jsonAREA, setJsonAREA] = React.useState({});
     const storedUsername = localStorage.getItem("userMail");
 
+    /**
+     * This function update the jsonAREA with the services and the actions/reactions
+     */
     const updateJsonAREA = () => {
         setJsonAREA({
             reaction_service: serviceReactionJson,
@@ -79,6 +86,9 @@ export const CreateArea = (): JSX.Element => {
 
     const [jsonData, setJsonData] = React.useState<Data | {}>({});
 
+    /**
+     * This function fetch the json data from the server in order to display the services and the actions/reactions available
+     */
     const fetchJsonData = async () => {
         try {
             const response = await axios.get('http://localhost:3000/AREA');
@@ -133,6 +143,9 @@ export const CreateArea = (): JSX.Element => {
     //     }
     // };
 
+    /**
+     * This function call the api to create the AREA
+     */
     const callApi = async () => {
         try {
             const headers = {
@@ -162,14 +175,9 @@ export const CreateArea = (): JSX.Element => {
         }
     };
 
-    const handleSignup = () => {
-        callApi().then(response => {
-        }).catch(error => {
-            console.log(error);
-            setIsError(true);
-        });
-    }
-
+    /**
+     * This function handle the what to display when the user click on the action button
+     */
     const handleAction = () => {
         if (!actionVisibility)
             setactionVisibility(true);
@@ -179,13 +187,21 @@ export const CreateArea = (): JSX.Element => {
             setAction(false)
     }
 
+    /**
+     * This function handle the what to display when the user click on the reaction button
+     */
     const handleReaction = () => {
+        if (!reactionVisibility)
+            setReactionVisibility(true);
         if (!reaction)
             setReaction(true);
         if (reaction)
             setReaction(false)
     }
 
+    /**
+     * This function handle the what to display when the user click on the action button
+     */
     const handleActionsVisibility = () => {
         if (!actionVisibility)
             setactionVisibility(true);
@@ -193,6 +209,9 @@ export const CreateArea = (): JSX.Element => {
             setactionVisibility(false)
     }
 
+    /**
+     * This function handle the what to display when the user click on the reaction button
+     */
     const handleReactionsVisibility = () => {
         if (!reactionVisibility)
             setReactionVisibility(true);
@@ -200,7 +219,9 @@ export const CreateArea = (): JSX.Element => {
             setReactionVisibility(false)
     }
 
-
+    /**
+     * This function display the title which is "Create your AREA"
+     */
     function Title() {
         return (
             <Text marginTop={10} marginLeft={790} color="black" fontSize={{ base: '20px', md: '30px', lg: '60px' }}>Create your AREA</Text>
@@ -210,6 +231,10 @@ export const CreateArea = (): JSX.Element => {
 
     //-----------------[REACTION]-------------------------
 
+    /**
+     * This function is used in the reaction part.
+     * it is called when the user click on a reaction and set the json of the reaction
+     **/
     function CallEndReactions({ reactionKey }: { reactionKey: string; }) {
 
         setReactionJson(reactionKey);
@@ -222,6 +247,10 @@ export const CreateArea = (): JSX.Element => {
         setDefaultReactionTitle(ReactionTitle);
     }
 
+    /**
+     * This function is used in the reaction part.
+     * it display the reactions available for a service
+     */
     function DisplayReactions({ title, reaction, color }: { title: string; reaction: { [reactionKey: string]: string }; color: string }) {
         const reactionBoxes: JSX.Element[] = [];
         Object.keys(reaction).forEach((reactionKey) => {
@@ -249,6 +278,10 @@ export const CreateArea = (): JSX.Element => {
         </VStack>;
     }
 
+    /**
+     * This function is used in the reaction part.
+     * it is called when the user click on a service and set the json of the service
+     **/
     function CallReactions({ title, color }: { title: string; color: string }) {
         if (reactionJson.length != 0) {
             setReactionJson("");
@@ -261,7 +294,10 @@ export const CreateArea = (): JSX.Element => {
         setReactionTitle(title);
     }
 
-
+    /**
+     * This function is used in the reaction part.
+     * it display the services available
+     */
     function DisplayServiceReaction({ title, desc, color, size, data, key }: { title: string, desc: string, color: string, size: number, data: any, key: number }) {
         const rows = [];
 
@@ -285,6 +321,10 @@ export const CreateArea = (): JSX.Element => {
         )
     }
 
+    /**
+     * This function is used in the reaction part.
+     * it parse the json received and display the services available
+     */
     function ServicesReaction() {
         const rows = [];
         let numrows = Object.keys(jsonData).length;
@@ -341,6 +381,10 @@ export const CreateArea = (): JSX.Element => {
 
     //-----------------[ACTION]-------------------------
 
+    /**
+     * This function is used in the action part.
+     * it is called when the user click on a action and set the json of the action
+     **/
     function CallEndActions({ actionKey }: { actionKey: string; }) {
 
         setActionJson(actionKey);
@@ -356,6 +400,10 @@ export const CreateArea = (): JSX.Element => {
         console.log(`title in call action = ${actionKey}`)
     }
 
+    /**
+     * This function is used in the action part.
+     * it display the actions available for a service
+     */
     function DisplayActions({ title, actions, color }: { title: string; actions: { [actionKey: string]: string }; color: string }) {
         const actionBoxes: JSX.Element[] = [];
         Object.keys(actions).forEach((actionKey) => {
@@ -383,6 +431,10 @@ export const CreateArea = (): JSX.Element => {
         </VStack>;
     }
 
+    /**
+     * This function is used in the action part.
+     * it is called when the user click on a service and set the json of the service
+     **/
     function CallActions({ title, color }: { title: string; color: string }) {
         if (actionJson.length != 0) {
             setActionJson("");
@@ -395,7 +447,10 @@ export const CreateArea = (): JSX.Element => {
         console.log(`title in call action = ${title}`)
     }
 
-
+    /**
+     * This function is used in the action part.
+     * it display the services available
+     */
     function DisplayService({ title, desc, color, size, data, key }: { title: string, desc: string, color: string, size: number, data: any, key: number }) {
         const rows = [];
 
@@ -418,6 +473,10 @@ export const CreateArea = (): JSX.Element => {
         )
     }
 
+    /**
+     * This function is used in the action part.
+     * it parse the json received and display the services available
+     */
     function Services() {
         const rows = [];
         let numrows = Object.keys(jsonData).length;
@@ -474,6 +533,10 @@ export const CreateArea = (): JSX.Element => {
 
     //-----------------[DISPLAY]-------------------------
 
+    /**
+     * This function display the services and the actions/reactions avalable to create an AREA
+     * what is displayed depends on the state of the variables
+     */
     function Display() {
 
         let rows = [];

@@ -6,14 +6,21 @@ import { Taskbar } from '../component/Taskbar';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 
-
+/**
+ * this page display a title and a button to login
+ */
 export const Login = (): JSX.Element => {
     const navigate = useNavigate()
     const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('')
     const [isError, setIsError] = React.useState(false)
 
-
+    /**
+     * this function call the api to login
+     * @param mail
+     * @param password
+     * @returns
+     */
     const callApi = async (mail: String, password: String) => {
         console.log(mail, password)
         try {
@@ -35,6 +42,12 @@ export const Login = (): JSX.Element => {
         }
     }
 
+    /**
+     * this function call the api to login
+     * @param mail
+     * @param password
+     * @returns
+     */
     const handleSignup = (mail: String, password: String) => {
         callApi(mail, password).then(response => {
         }).catch(error => {
@@ -43,6 +56,12 @@ export const Login = (): JSX.Element => {
         });
     }
 
+    /**
+     * this function display a button to login, if the request failed, it display the buttun in red with a message
+     * @param mail
+     * @param password
+     * @returns
+     */
     function DisplaySignInButtun({ mail, password }: { mail: string, password: string; }): JSX.Element {
 
         let rows = [];
@@ -75,6 +94,9 @@ export const Login = (): JSX.Element => {
         );
     }
 
+    /**
+     * This function display a title
+     */
     function Title() {
         return (
             <Text marginTop={10} marginLeft={860} color="black" fontSize={{ base: '20px', md: '30px', lg: '60px' }}>Login</Text>
