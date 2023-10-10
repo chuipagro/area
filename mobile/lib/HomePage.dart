@@ -5,38 +5,38 @@ import 'package:mobile/Globals.dart' as globals;
 import 'dart:convert';
 
 final servicesList = {
-        "discord": {
-            "logo": "assets/images/DiscordLogo.png",
-            "color": {
-                "red": 114,
-                "green": 137,
-                "blue": 218
-            },
-            "actions": {
-                "action1": "se faire ping",
-                "action2": "recevoir un message"
-            },
-            "reaction": {
-                "reaction1": "ping qq",
-                "reaction2": "envoyer un message"
-            }
-        },
-        "youtube": {
-            "logo": "assets/images/YoutubeLogo.png",
-            "color": {
-                "red": 255,
-                "green": 0,
-                "blue": 0
-            },
-            "actions": {
-                "action1": "qq poste une video",
-                "action2": "en gros y a une 2eme action"
-            },
-            "reaction": {
-                "reaction1": "poster une video",
-                "reaction2": "poster un commentaire qui dis first"
-            }
-        }
+  "discord": {
+      "logo": "assets/images/DiscordLogo.png",
+      "color": {
+          "red": 114,
+          "green": 137,
+          "blue": 218
+      },
+      "actions": {
+          "action1": "se faire ping",
+          "action2": "recevoir un message"
+      },
+      "reaction": {
+          "reaction1": "ping qq",
+          "reaction2": "envoyer un message"
+      }
+  },
+  "youtube": {
+      "logo": "assets/images/YoutubeLogo.png",
+      "color": {
+          "red": 255,
+          "green": 0,
+          "blue": 0
+      },
+      "actions": {
+          "action1": "qq poste une video",
+          "action2": "en gros y a une 2eme action"
+      },
+      "reaction": {
+          "reaction1": "poster une video",
+          "reaction2": "poster un commentaire qui dis first"
+      }
+  }
 };
 
 final areaList = {
@@ -81,7 +81,7 @@ enum PageState {
 
 class Service {
   final String titre;
-  final String IconPath;
+  final String iconPath;
   final int red;
   final int green;
   final int blue;
@@ -90,7 +90,7 @@ class Service {
 
   Service({
     required this.titre,
-    required this.IconPath,
+    required this.iconPath,
     required this.red,
     required this.green,
     required this.blue,
@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
 
       Service service = Service(
         titre: titre,
-        IconPath: iconPath,
+        iconPath: iconPath,
         red: red,
         green: green,
         blue: blue,
@@ -216,15 +216,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void> firstLoad() async
+  Future<void> loadAll() async
   {
-    if (loadData) {
-      final Map<String, dynamic> jsonResultServices = await callForAllAreas();
-      createServiceList(jsonResultServices);
-      final Map<String, dynamic> jsonResultArea = await callForAllAreas();
-      createAreaList(jsonResultArea);
-      loadData = false;
-    }
+    createdAreas.clear();
+    elements.clear();
+    final Map<String, dynamic> jsonResultServices = await callForAllAreas();
+    createServiceList(jsonResultServices);
+    final Map<String, dynamic> jsonResultArea = await callForAllAreas();
+    createAreaList(jsonResultArea);
   }
 
   void homeButtonPress() {
@@ -293,13 +292,49 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void addArea(String name) {
-    setState(() {
-      nameInput.text = '';
-      createdAreas.add(CreatedArea(name: name, isActive: true, areaIdOne: indexForCreationPage[0], areaIdTwo: indexForCreationPage[2], areaOneActionId: indexForCreationPage[1], areaTwoActionId: indexForCreationPage[3], createdBy: 'Moi'));
-      indexForCreationPage = [-1, -1, -1, -1];
-      currentPageState = PageState.Areas;
-    });
+  Future<bool> changeStatusOfArea(int areaIndex, bool newValue) async {
+    final reponse = await http.post(
+      Uri.parse('http://${globals.IPpc}:3000/user/areas/desactivate'),
+      body: {
+        'name': createdAreas[areaIndex].name,
+        'isActive': newValue.toString(),
+      },
+    );
+
+    if (reponse.statusCode == 200) {
+      setState(() {
+        currentPageState = PageState.Areas;
+      });
+      return true;
+    } else {
+      print('Échec de la désactivation de la zone : ${reponse.statusCode}');
+      return false;
+    }
+  }
+
+  Future<void> addArea(String name) async {
+    final reponse = await http.post(
+      Uri.parse('http://${globals.IPpc}:3000/user/areas'),
+      body: {
+        'name': name,
+        'isActive': true,
+        'serviceOneName': elements[indexForCreationPage[0]].titre,
+        'serviceTwoName': elements[indexForCreationPage[2]].titre,
+        'serviceOneActionDescription': elements[indexForCreationPage[0]].actions[indexForCreationPage[1]],
+        'serviceTwoActionDescription': elements[indexForCreationPage[2]].actions[indexForCreationPage[3]],
+        'createdBy': "Moi",
+      },
+    );
+
+    if (reponse.statusCode == 200) {
+      setState(() {
+        nameInput.text = '';
+        indexForCreationPage = [-1, -1, -1, -1];
+        currentPageState = PageState.Areas;
+      });
+    } else {
+      print('Échec de la création de la zone : ${reponse.statusCode}');
+    }
   }
 
   Future<void> onDeconectionTap() async {
@@ -391,7 +426,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/fuckGoBack.png'),
+                      image: AssetImage('assets/images/goBackButton.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -421,7 +456,7 @@ class _HomePageState extends State<HomePage> {
                   height: 100,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(elements[indexOfServicesToPrint].IconPath),
+                      image: AssetImage(elements[indexOfServicesToPrint].iconPath),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -512,7 +547,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/fuckGoBack.png'),
+                      image: AssetImage('assets/images/goBackButton.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -542,7 +577,7 @@ class _HomePageState extends State<HomePage> {
                   height: 100,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(elements[indexOfServicesToPrint].IconPath),
+                      image: AssetImage(elements[indexOfServicesToPrint].iconPath),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -621,7 +656,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/fuckGoBack.png'),
+                      image: AssetImage('assets/images/goBackButton.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -667,7 +702,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/fuckGoBack.png'),
+                      image: AssetImage('assets/images/goBackButton.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -699,7 +734,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/fuckGoBack.png'),
+                      image: AssetImage('assets/images/goBackButton.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -825,7 +860,7 @@ class _HomePageState extends State<HomePage> {
                                         onReactionList(startIndex);
                                       },
                                       child: Image.asset(
-                                        element1.IconPath,
+                                        element1.iconPath,
                                         width: screenHeight * 0.2,
                                         height: screenWidth * 0.2,
                                       ),
@@ -868,7 +903,7 @@ class _HomePageState extends State<HomePage> {
                                         onReactionList(endIndex);
                                       },
                                       child: Image.asset(
-                                        element2.IconPath,
+                                        element2.iconPath,
                                         width: screenHeight * 0.2,
                                         height: screenWidth * 0.2,
                                       ),
@@ -908,7 +943,7 @@ class _HomePageState extends State<HomePage> {
                 height: 22,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/fuckGoBack.png'),
+                    image: AssetImage('assets/images/goBackButton.png'),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(10.0),
@@ -1036,7 +1071,7 @@ class _HomePageState extends State<HomePage> {
                                         onActionList(startIndex);
                                       },
                                     child: Image.asset(
-                                      element1.IconPath,
+                                      element1.iconPath,
                                       width: screenHeight * 0.2,
                                       height: screenWidth * 0.2,
                                     ),
@@ -1079,7 +1114,7 @@ class _HomePageState extends State<HomePage> {
                                         onActionList(endIndex);
                                       },
                                     child: Image.asset(
-                                      element2.IconPath,
+                                      element2.iconPath,
                                       width: screenHeight * 0.2,
                                       height: screenWidth * 0.2,
                                     ),
@@ -1169,7 +1204,7 @@ class _HomePageState extends State<HomePage> {
                   height: 22,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/fuckGoBack.png'),
+                      image: AssetImage('assets/images/goBackButton.png'),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
@@ -1195,7 +1230,7 @@ class _HomePageState extends State<HomePage> {
                       top: screenHeight * 0.025, 
                       left: screenWidth * 0.36,
                       child: Image.asset(
-                        elements[indexForCreationPage[0] - 1].IconPath,
+                        elements[indexForCreationPage[0] - 1].iconPath,
                         width: screenWidth * 0.2,
                         height: screenHeight * 0.05,
                       ),
@@ -1260,7 +1295,7 @@ class _HomePageState extends State<HomePage> {
                       top: screenHeight * 0.025, 
                       left: screenWidth * 0.36,
                       child: Image.asset(
-                        elements[indexForCreationPage[2] - 1].IconPath,
+                        elements[indexForCreationPage[2] - 1].iconPath,
                         width: screenWidth * 0.2,
                         height: screenHeight * 0.05,
                       ),
@@ -1344,12 +1379,9 @@ class _HomePageState extends State<HomePage> {
   Widget buildHomePageContent() {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    // firstLoad();
-    if (loadData) {
-      createServiceList(servicesList);
-      createAreaList(areaList);
-      loadData = false;
-    }
+    loadAll();
+    // createServiceList(servicesList);
+    // createAreaList(areaList);
 
     return Scaffold(
       body: Center(
@@ -1497,7 +1529,7 @@ class _HomePageState extends State<HomePage> {
                             width: screenWidth * 0.08,
                             height: screenHeight * 0.08,
                             child: Image.asset(
-                              elements[element.areaIdOne - 1].IconPath,
+                              elements[element.areaIdOne - 1].iconPath,
                             ),
                           ),
                           Positioned(
@@ -1506,7 +1538,7 @@ class _HomePageState extends State<HomePage> {
                             width: screenWidth * 0.08,
                             height: screenHeight * 0.08,
                             child: Image.asset(
-                              elements[element.areaIdTwo - 1].IconPath,
+                              elements[element.areaIdTwo - 1].iconPath,
                             ),
                           ),
                           Positioned(
@@ -1566,8 +1598,7 @@ class _HomePageState extends State<HomePage> {
                                 Switch(
                                   value: element.isActive,
                                   onChanged: (newValue) {
-                                    element.isActive = newValue;
-                                    setState(() {});
+                                    changeStatusOfArea(index, newValue);
                                   },
                                 ),
                                 Text('ON'),
