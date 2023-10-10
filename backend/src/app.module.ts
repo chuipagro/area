@@ -18,6 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
 import { CronjobsModule } from './cronjobs/cronjobs.module';
+import { ServicesModule } from './services/services.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { CronjobsModule } from './cronjobs/cronjobs.module';
     RiotModule,
     SpotifyModule,
     CronjobsModule,
+    ServicesModule,
   ],
   controllers: [AppController, AreaController],
   providers: [AppService, AreaService],

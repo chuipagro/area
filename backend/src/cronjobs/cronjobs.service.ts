@@ -5,8 +5,9 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 export class CronjobsService {
   private readonly logger = new Logger(CronjobsService.name);
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_MINUTE)
   handleCron() {
-    console.log('Called every 30 seconds');
+
+    console.log('Called every minute');
   }
 }
