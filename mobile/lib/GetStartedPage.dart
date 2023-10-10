@@ -18,7 +18,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final clientIdGithub = 'ecd75a418bce2c16c3f5';
-  final redirectUriGithub = 'http://127.0.0.1:9101';
+  final redirectUriGithub = 'http://10.0.2.1/auth/isConnectWithGithub';
 
   Future<void> _authenticateWithGitHub() async {
     final callbackUrlScheme = 'https';

@@ -69,4 +69,19 @@ export class AuthService {
     await this.usersService.updateUserToken(user.mail, newToken);
     return newToken;
   }
+
+  async isConnectWithGithub(token: string): Promise<string | null> {
+    console.log(token)
+    //const access_token = await this.postToken();
+    //const url = `https://api.spotify.com/v1/browse/new-releases?country=${country}&limit=${limit}&offset=${offset}`;
+  //
+    //return await axios.get(url, {
+    //  headers: {
+    //    'Authorization': `Bearer ${access_token}`
+    //  }
+    //}).then((response: any) => {
+    //  return response.data;
+    //});
+    return '';
+  }
 }
