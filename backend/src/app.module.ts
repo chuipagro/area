@@ -14,7 +14,7 @@ import { AreaController } from './area/area.controller';
 import { AreaService } from './area/area.service';
 import { AreaModule } from './area/area.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RiotService } from './riot/riot.service';
+import { RiotModule } from './services/riot/riot.module';
 
 @Module({
   imports: [
@@ -37,6 +37,7 @@ import { RiotService } from './riot/riot.service';
     UserModule,
     AuthModule,
     AreaModule,
+    RiotModule,
   ],
   controllers: [AppController, AreaController],
   providers: [AppService, AreaService],
