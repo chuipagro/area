@@ -12,6 +12,7 @@ export const Register = (): JSX.Element => {
     const [name, setName] = React.useState('');
     const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('')
+    const [isError, setIsError] = React.useState(false)
 
     const callApi = async (mail: String, username: String, password: String) => {
         try {
@@ -28,6 +29,7 @@ export const Register = (): JSX.Element => {
             return response.data;
         } catch (error) {
             console.error('Il y a eu une erreur!', error);
+            setIsError(true);
             return null;
         }
     }
@@ -41,14 +43,34 @@ export const Register = (): JSX.Element => {
 
     function Display({ name, mail, password }: { name: string, mail: string, password: string; }): JSX.Element {
 
+
+
+        let rows = [];
+        if (!isError) {
+            rows.push(
+                <Center mt="160px">
+                    <VStack spacing="32px">
+                        <Button onClick={() => handleSignup(name, mail, password)} colorScheme='black' variant='outline' >
+                            Sign up
+                        </Button >
+                    </VStack>
+                </Center>)
+        } else {
+            rows = []
+            rows.push(
+                <Center mt="160px">
+                    <VStack spacing="32px">
+                        <Button onClick={() => handleSignup(name, mail, password)} colorScheme='red' variant='outline' >
+                            Sign up
+                        </Button >
+                        <Text color={'red'} > can't register</Text>
+                    </VStack>
+                </Center>)
+        }
         return (
-            <Center mt="160px">
-                <VStack spacing="32px">
-                    <Button onClick={() => handleSignup(name, mail, password)} colorScheme='purple' variant='outline' >
-                        Sign up
-                    </Button >
-                </VStack>
-            </Center>
+            <VStack>
+                {rows}
+            </VStack>
         );
     }
 
@@ -72,15 +94,15 @@ export const Register = (): JSX.Element => {
             <InputText setValue={setPassword} placeHolder="password" type="password" color={'purple'} />
             <Display name={name} mail={mail} password={password} ></Display>
 
-            <Button colorScheme='purple' variant='outline' >
-                <Link color='purple' href='/login'>
+            <Button colorScheme='black' variant='outline' >
+                <Link color='black' href='/login'>
                     Or login here
                 </Link>
             </Button >
 
-            <Link color='black' href='/login-with-service'>
+            {/* <Link color='black' href='/login-with-service'>
                 Continue with Google, Facebook or apple
-            </Link>
+            </Link> */}
 
         </VStack>
     </div>
