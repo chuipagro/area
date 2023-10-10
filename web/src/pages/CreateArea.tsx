@@ -86,7 +86,8 @@ export const CreateArea = (): JSX.Element => {
                 setJsonData(response.data);
             } else {
                 console.error('Failed to fetch JSON data');
-                navigate('/home');
+                // navigate('/home');
+                navigate('/create');
             }
         } catch (error) {
             console.error('Error fetching JSON data:', error);

@@ -26,7 +26,7 @@ export function Taskbar() {
                 onClick={() => navigate('/create')}>
 
             </Box>
-            <Box
+            {/* <Box
                 backgroundColor="blue"
                 boxSize={10}
                 position="fixed"
@@ -35,7 +35,7 @@ export function Taskbar() {
                 boxShadow="md"
                 onClick={() => navigate('/home')}>
 
-            </Box>
+            </Box> */}
             {/* for the profile */}
             {/* <Box
                 backgroundColor="blue"
