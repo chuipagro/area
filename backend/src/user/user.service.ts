@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { IUser, UserModel } from '../Models/users.model';
+import { IUser, UserModel } from '../models/users.model';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -16,12 +17,14 @@ import { AreaModule } from './area/area.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
+import { CronjobsModule } from './cronjobs/cronjobs.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URI'),
@@ -40,6 +43,7 @@ import { SpotifyModule } from './services/spotify/spotify.module';
     AreaModule,
     RiotModule,
     SpotifyModule,
+    CronjobsModule,
   ],
   controllers: [AppController, AreaController],
   providers: [AppService, AreaService],
