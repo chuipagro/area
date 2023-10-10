@@ -2,6 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:mobile/LoginPage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/Globals.dart' as globals;
+import 'dart:convert';
+
+final servicesList = {
+        "discord": {
+            "logo": "assets/images/DiscordLogo.png",
+            "color": {
+                "red": 114,
+                "green": 137,
+                "blue": 218
+            },
+            "actions": {
+                "action1": "se faire ping",
+                "action2": "recevoir un message"
+            },
+            "reaction": {
+                "reaction1": "ping qq",
+                "reaction2": "envoyer un message"
+            }
+        },
+        "youtube": {
+            "logo": "assets/images/YoutubeLogo.png",
+            "color": {
+                "red": 255,
+                "green": 0,
+                "blue": 0
+            },
+            "actions": {
+                "action1": "qq poste une video",
+                "action2": "en gros y a une 2eme action"
+            },
+            "reaction": {
+                "reaction1": "poster une video",
+                "reaction2": "poster un commentaire qui dis first"
+            }
+        }
+};
+
+final areaList = {
+  "area1": {
+    "title": "area1",
+    "active": true,
+    "createdBy": "alexandre",
+    "action": {
+      "service": 2,
+      "type": 1,
+    },
+    "reaction": {
+      "service": 1,
+      "type": 2,
+    },
+  },
+  "area2": {
+    "title": "area2",
+    "active": true,
+    "createdBy": "pier",
+    "action": {
+      "service": 1,
+      "type": 2,
+    },
+    "reaction": {
+      "service": 2,
+      "type": 1,
+    },
+  }
+};
 
 enum PageState {
   Areas,
@@ -66,10 +131,101 @@ class _HomePageState extends State<HomePage> {
   int indexOfServicesToPrint = 0;
   List<int> indexForCreationPage = [-1, -1, -1, -1];
   bool areaNameIsNotEmpty = false;
+  List<Service> elements = [];
+  List<CreatedArea> createdAreas = [];
+  bool loadData = true;
 
   TextEditingController nameInput = TextEditingController();
   TextEditingController searchController = TextEditingController();
   TextEditingController searchControllerReaction = TextEditingController();
+
+  Future<Map<String, dynamic>> callForAllServices() async {
+    final response = await http.post(
+      Uri.parse('http://' + globals.IPpc + ':3000/user/services'),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      return jsonResponse;
+    } else {
+      throw Exception('Échec de la requête pour les zones : ${response.statusCode}');
+    }
+  }
+
+  Future<Map<String, dynamic>> callForAllAreas() async {
+    final response = await http.post(
+      Uri.parse('http://' + globals.IPpc + ':3000/user/areas'),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      return jsonResponse;
+    } else {
+      throw Exception('Échec de la requête pour les zones : ${response.statusCode}');
+    }
+  }
+
+
+  void createServiceList(Map<String, dynamic> json) 
+  {
+    json.forEach((serviceName, serviceData) {
+      final String titre = serviceName;
+      final String iconPath = serviceData["logo"];
+      final int red = serviceData["color"]["red"];
+      final int green = serviceData["color"]["green"];
+      final int blue = serviceData["color"]["blue"];
+      final List<String> actions = List<String>.from(serviceData["actions"].values);
+      final List<String> reactions = List<String>.from(serviceData["reaction"].values);
+
+      Service service = Service(
+        titre: titre,
+        IconPath: iconPath,
+        red: red,
+        green: green,
+        blue: blue,
+        actions: actions,
+        reactions: reactions,
+      );
+
+      elements.add(service);
+    });
+  }
+
+  void createAreaList(Map<String, dynamic> json)
+  {
+    json.forEach((serviceName, serviceData) {
+      final String titre = serviceData["title"];
+      final bool isActive = serviceData["active"];
+      final String createdBy = serviceData["createdBy"];
+      final int serviceIndexOne = serviceData["action"]["service"];
+      final int serviceIndexTwo = serviceData["reaction"]["service"];
+      final int actionIndexServiceOne = serviceData["action"]["type"];
+      final int actionIndexServiceTwo = serviceData["reaction"]["type"];
+
+      CreatedArea area = CreatedArea(
+        name: titre,
+        isActive: isActive,
+        createdBy: createdBy,
+        areaIdOne: serviceIndexOne,
+        areaIdTwo: serviceIndexTwo,
+        areaOneActionId: actionIndexServiceOne,
+        areaTwoActionId: actionIndexServiceTwo,
+      );
+
+      createdAreas.add(area);
+    });
+  }
+
+  Future<void> firstLoad() async
+  {
+    if (loadData) {
+      final Map<String, dynamic> jsonResultServices = await callForAllAreas();
+      createServiceList(jsonResultServices);
+      final Map<String, dynamic> jsonResultArea = await callForAllAreas();
+      createAreaList(jsonResultArea);
+      loadData = false;
+    }
+  }
 
   void homeButtonPress() {
     setState(() {
@@ -164,28 +320,7 @@ class _HomePageState extends State<HomePage> {
       );
     }
   }
-
-    final List<Service> elements = [
-    Service(titre: 'discord', IconPath: 'assets/images/DiscordLogo.png', red: 89, green: 78, blue: 229, actions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer'], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-    Service(titre: 'facebook', IconPath: 'assets/images/FacebookLogo.png', red: 0, green: 0, blue: 255, actions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer'], reactions: []),
-    Service(titre: 'google', IconPath: 'assets/images/GoogleLogo.png', red: 160, green: 239, blue: 236, actions: [], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-    Service(titre: 'youtube', IconPath: 'assets/images/YoutubeLogo.png', red: 255, green: 0, blue: 0, actions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer'], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-    Service(titre: 'discord', IconPath: 'assets/images/DiscordLogo.png', red: 89, green: 78, blue: 229, actions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer'], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-    Service(titre: 'facebook', IconPath: 'assets/images/FacebookLogo.png', red: 0, green: 0, blue: 255, actions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer'], reactions: []),
-    Service(titre: 'google', IconPath: 'assets/images/GoogleLogo.png', red: 160, green: 239, blue: 236, actions: [], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-    Service(titre: 'youtube', IconPath: 'assets/images/YoutubeLogo.png', red: 255, green: 0, blue: 0, actions: ['Allumer', 'Éteindre', 'Modifier'], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-    Service(titre: 'discord', IconPath: 'assets/images/DiscordLogo.png', red: 89, green: 78, blue: 229, actions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer'], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-    Service(titre: 'facebook', IconPath: 'assets/images/FacebookLogo.png', red: 0, green: 0, blue: 255, actions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer'], reactions: []),
-    Service(titre: 'google', IconPath: 'assets/images/GoogleLogo.png', red: 160, green: 239, blue: 236, actions: [], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-    Service(titre: 'youtube', IconPath: 'assets/images/YoutubeLogo.png', red: 255, green: 0, blue: 0, actions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer'], reactions: ['Allumer', 'Éteindre', 'Modifier', 'Supprimer']),
-  ];
-
-  final List<CreatedArea> createdAreas = [
-    CreatedArea(name:"area1", isActive: true, areaIdOne: 1, areaIdTwo: 1, areaOneActionId: 4, areaTwoActionId: 2, createdBy: 'Moi'),
-    CreatedArea(name:"area2", isActive: true, areaIdOne: 4, areaIdTwo: 4, areaOneActionId: 2, areaTwoActionId: 3, createdBy: 'Moi'),
-    CreatedArea(name:"area3", isActive: false, areaIdOne: 1, areaIdTwo: 4, areaOneActionId: 1, areaTwoActionId: 4, createdBy: 'Moi'),
-    CreatedArea(name:"area4", isActive: true, areaIdOne: 2, areaIdTwo: 3, areaOneActionId: 3, areaTwoActionId: 1, createdBy: 'Moi'),
-  ];
+  
 
   @override
   Widget build(BuildContext context) {
@@ -670,18 +805,18 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
-                                  Positioned(
-                                    top: 10.0,
-                                    right: 10.0,
-                                    child: GestureDetector(
-                                      onTap: onElementTap,
-                                      child: Image.asset(
-                                        'assets/images/parameter.png',
-                                        width: 24.0,
-                                        height: 24.0,
-                                      ),
-                                    ),
-                                  ),
+                                  // Positioned(
+                                  //   top: 10.0,
+                                  //   right: 10.0,
+                                  //   child: GestureDetector(
+                                  //     onTap: onElementTap,
+                                  //     child: Image.asset(
+                                  //       'assets/images/parameter.png',
+                                  //       width: 24.0,
+                                  //       height: 24.0,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   Positioned(
                                     top: screenHeight * 0.07,
                                     left: !showElement2 ? screenWidth * 0.25 : screenWidth * 0.05,
@@ -713,18 +848,18 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
-                                  Positioned(
-                                    top: 10.0,
-                                    right: 10.0,
-                                    child: GestureDetector(
-                                      onTap: onElementTap,
-                                      child: Image.asset(
-                                        'assets/images/parameter.png',
-                                        width: 24.0,
-                                        height: 24.0,
-                                      ),
-                                    ),
-                                  ),
+                                  // Positioned(
+                                  //   top: 10.0,
+                                  //   right: 10.0,
+                                  //   child: GestureDetector(
+                                  //     onTap: onElementTap,
+                                  //     child: Image.asset(
+                                  //       'assets/images/parameter.png',
+                                  //       width: 24.0,
+                                  //       height: 24.0,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   Positioned(
                                     top: screenHeight * 0.07,
                                     left: !showElement1 ? screenWidth * 0.25 : screenWidth * 0.05,
@@ -879,20 +1014,20 @@ class _HomePageState extends State<HomePage> {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                Positioned(
-                                  top: 10.0,
-                                  right: 10.0,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                        onActionList(startIndex);
-                                      },
-                                    child: Image.asset(
-                                      'assets/images/parameter.png',
-                                      width: 24.0,
-                                      height: 24.0,
-                                    ),
-                                  ),
-                                ),
+                                // Positioned(
+                                //   top: 10.0,
+                                //   right: 10.0,
+                                //   child: GestureDetector(
+                                //     onTap: () {
+                                //         onActionList(startIndex);
+                                //       },
+                                //     child: Image.asset(
+                                //       'assets/images/parameter.png',
+                                //       width: 24.0,
+                                //       height: 24.0,
+                                //     ),
+                                //   ),
+                                // ),
                                 Positioned(
                                   top: screenHeight * 0.07,
                                   left: !showElement2 ? screenWidth * 0.25 : screenWidth * 0.05,
@@ -924,18 +1059,18 @@ class _HomePageState extends State<HomePage> {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                Positioned(
-                                  top: 10.0,
-                                  right: 10.0,
-                                  child: GestureDetector(
-                                    onTap: onElementTap,
-                                    child: Image.asset(
-                                      'assets/images/parameter.png',
-                                      width: 24.0,
-                                      height: 24.0,
-                                    ),
-                                  ),
-                                ),
+                                // Positioned(
+                                //   top: 10.0,
+                                //   right: 10.0,
+                                //   child: GestureDetector(
+                                //     onTap: onElementTap,
+                                //     child: Image.asset(
+                                //       'assets/images/parameter.png',
+                                //       width: 24.0,
+                                //       height: 24.0,
+                                //     ),
+                                //   ),
+                                // ),
                                 Positioned(
                                   top: screenHeight * 0.07,
                                   left: !showElement1 ? screenWidth * 0.25 : screenWidth * 0.05,
@@ -1209,6 +1344,12 @@ class _HomePageState extends State<HomePage> {
   Widget buildHomePageContent() {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    // firstLoad();
+    if (loadData) {
+      createServiceList(servicesList);
+      createAreaList(areaList);
+      loadData = false;
+    }
 
     return Scaffold(
       body: Center(
@@ -1338,18 +1479,18 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
-                          Positioned(
-                            top: 10.0,
-                            right: 10.0,
-                            child: GestureDetector(
-                              onTap: onElementTap,
-                              child: Image.asset(
-                                'assets/images/parameter.png',
-                                width: 24.0,
-                                height: 24.0,
-                              ),
-                            ),
-                          ),
+                          // Positioned(
+                          //   top: 10.0,
+                          //   right: 10.0,
+                          //   child: GestureDetector(
+                          //     onTap: onElementTap,
+                          //     child: Image.asset(
+                          //       'assets/images/parameter.png',
+                          //       width: 24.0,
+                          //       height: 24.0,
+                          //     ),
+                          //   ),
+                          // ),
                           Positioned(
                             top: 0,
                             left: 10.0,
