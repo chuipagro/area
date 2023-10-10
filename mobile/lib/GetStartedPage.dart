@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
 import 'package:mobile/GetStartedEditorPage.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 
 class GetStartedPage extends StatefulWidget {
     final String title;
@@ -15,6 +16,29 @@ class GetStartedPage extends StatefulWidget {
 
 class _GetStartedPageState extends State<GetStartedPage> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final clientIdGithub = 'ecd75a418bce2c16c3f5';
+  final redirectUriGithub = 'http://127.0.0.1:9101';
+
+  Future<void> _authenticateWithGitHub() async {
+    final callbackUrlScheme = 'https';
+
+    final authUrl = 'https://github.com/login/oauth/authorize?'
+        'client_id=$clientIdGithub&'
+        'redirect_uri=$redirectUriGithub&'
+        'scope=user';
+
+    try {
+      final result = await FlutterWebAuth.authenticate(
+        url: authUrl,
+        callbackUrlScheme: callbackUrlScheme,
+      );
+
+      print('Authentification réussie : $result');
+    } catch (e) {
+      print('Erreur d\'authentification : $e');
+    }
+  }
 
     @override
     Widget build(BuildContext context) {
@@ -49,46 +73,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                 ),
                             ),
                             const SizedBox(height: 80.0),
-    
-                            Container(
-                                height: 70,
-                                width: 360,
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 15, 67, 136),
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    border: Border.all(color: Colors.black),
-                                ),
-                                child: TextButton(
-                                    onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => GetStartedEditorPage(title: 'GetStartedEditorPage')),
-                                        );
-                                    },
-                                    style: TextButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                    ),
-                                    child: Row(
-                                        children: <Widget>[
-                                            const SizedBox(width: 20.0),
-                                            Image.asset(
-                                                'assets/images/FacebookLogo.png',
-                                                width: 35.0,
-                                                height: 35.0,
-                                            ),
-                                            const SizedBox(width: 20.0),
-                                            const Text(
-                                                'Continue avec Facebook',
-                                                style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    color: Colors.white,
-                                                ),
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                            ),
-                            const SizedBox(height: 30.0),
 
                             Container(
                                 height: 65,
@@ -140,10 +124,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                 ),
                                 child: TextButton(
                                     onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => GetStartedEditorPage(title: 'GetStartedEditorPage')),
-                                        );
+                                        _authenticateWithGitHub();
                                     },
                                     style: TextButton.styleFrom(
                                         padding: EdgeInsets.zero,
@@ -158,7 +139,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                             ),
                                             const SizedBox(width: 20.0),
                                             const Text(
-                                                'Continue avec Discord',
+                                                'Continue avec Github',
                                                 style: TextStyle(
                                                     fontSize: 20.0,
                                                     color: Colors.white,
