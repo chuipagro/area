@@ -14,7 +14,7 @@ export function Taskbar() {
                     </Link>
                 </Button>
 
-                <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} left={700} >
+                {/* <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} left={700} >
                     <Link color='white' href='/partnership'>
                         Partnership
                     </Link>
@@ -36,7 +36,7 @@ export function Taskbar() {
                     <Link color='black' href='/login-with-service'>
                         Get started
                     </Link>
-                </Button>
+                </Button> */}
             </HStack>
         </Box>
     )

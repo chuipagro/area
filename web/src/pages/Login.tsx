@@ -9,17 +9,18 @@ import axios from 'axios';
 
 export const Login = (): JSX.Element => {
     const navigate = useNavigate()
-    const [mail, setMail] = React.useState("");
+    const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('')
     const [isError, setIsError] = React.useState(false)
 
 
     const callApi = async (mail: String, password: String) => {
+        console.log(mail, password)
         try {
+            console.log(mail, password)
             const mailSend = mail.toString();
             localStorage.setItem('userMail', mailSend);
-            // console.log(mailSend);
-            const response = await axios.post('http://localhost:3000/auth/signup', {
+            const response = await axios.post('http://localhost:3000/auth/signin', {
                 mail,
                 password,
             });
@@ -54,19 +55,18 @@ export const Login = (): JSX.Element => {
                         </Button >
                     </VStack>
                 </Center>)
+        } else {
+            rows.push(
+                <Center mt="160px">
+                    <VStack spacing="32px">
+                        <Button onClick={() => handleSignup(mail, password)} colorScheme='red' variant='outline' >
+                            Sign in
+                        </Button >
+                        <Text color={'red'} > can't login</Text>
+                    </VStack>
+                </Center>)
+
         }
-        rows = [];
-        rows.push(
-            <Center mt="160px">
-                <VStack spacing="32px">
-                    <Button onClick={() => handleSignup(mail, password)} colorScheme='red' variant='outline' >
-                        Sign in
-                    </Button >
-                    <Text color={'red'} > can't login</Text>
-                </VStack>
-            </Center>)
-
-
 
         return (
             <VStack>
@@ -106,9 +106,9 @@ export const Login = (): JSX.Element => {
                 </Link>
             </Button >
 
-            <Link color='black' href='/login-with-service'>
+            {/* <Link color='black' href='/login-with-service'>
                 Continue with Google, Facebook or apple
-            </Link>
+            </Link> */}
         </VStack>
     </div>
 }
