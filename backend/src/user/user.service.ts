@@ -33,7 +33,6 @@ export class UserService {
     }
   }
 
-
   async changePassword(accessToken: String, password: String, newPassword: String): Promise<void> {
     const user = await UserModel.findOne({ token:accessToken }).exec();
     if (!user) {
