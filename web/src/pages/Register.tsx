@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios";
 
 
+/**
+ * this page display a title and a button to register
+ */
 export const Register = (): JSX.Element => {
     const navigate = useNavigate()
     const [name, setName] = React.useState('');
@@ -14,6 +17,13 @@ export const Register = (): JSX.Element => {
     const [password, setPassword] = React.useState('')
     const [isError, setIsError] = React.useState(false)
 
+    /**
+     * this function call the api to register
+     * @param mail
+     * @param username
+     * @param password
+     * @returns
+     */
     const callApi = async (mail: String, username: String, password: String) => {
         try {
             const mailSend = mail.toString();
@@ -34,6 +44,13 @@ export const Register = (): JSX.Element => {
         }
     }
 
+    /**
+     * this function call the api to register
+     * @param mail
+     * @param username
+     * @param password
+     * @returns
+     */
     const handleSignup = (mail: String, username: String, password: String) => {
         callApi(username, mail, password).then(response => {
         }).catch(error => {
@@ -41,10 +58,14 @@ export const Register = (): JSX.Element => {
         });
     }
 
+    /**
+     * this function display a button to register, if the request failed, it display the buttun in red with a message
+     * @param name
+     * @param mail
+     * @param password
+     * @returns
+     */
     function Display({ name, mail, password }: { name: string, mail: string, password: string; }): JSX.Element {
-
-
-
         let rows = [];
         if (!isError) {
             rows.push(

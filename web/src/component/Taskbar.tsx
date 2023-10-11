@@ -3,7 +3,15 @@ import '../app/App.css';
 import { Button, Box, HStack, Link } from '@chakra-ui/react';
 
 
-
+/**
+ * This  component display an horizontal taskbar with button to navigate to :
+ *  - login
+ *  - register
+ *  - partnership
+ *  - explore
+ *  - developers
+ *  - get started
+ */
 export function Taskbar() {
     return (
         <Box bg='black' w='100%' p={10} color='white'>
