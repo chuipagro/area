@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
-import 'package:mobile/GetStartedEditorPage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:mobile/HomePage.dart';
@@ -51,7 +50,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
       );
 
         if (response.statusCode == 200) { 
-        print('Dorian fils de papa');
           List<String> parts = response.body.split('&');
           String accessToken = parts[0].split('=')[1];
 
@@ -63,7 +61,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
           );
 
           if (userResponse.statusCode == 200) {
-              print('Dorian fils de maman');
               final userData = jsonDecode(userResponse.body);
               final username = userData['login'];
               final email = userData['email'];
@@ -74,14 +71,13 @@ class _GetStartedPageState extends State<GetStartedPage> {
                       "Access-Control-Allow-Origin": "*",
                   },
                   body: {
-                      'mail': "789465132@epitech.eu",
-                      'username': username,
-                      'password': "password",
+                      'mail': 'uiop@epitech.eu',
+                      'username': 'uiop',
+                      'password': "password123",
                   },
                 );
                 print(response.statusCode);
                 if (response.statusCode == 200) {
-                    print('Dorian fils de PABLO');
                     Fluttertoast.showToast(
                         msg: "Enregistrement réussi !",
                         toastLength: Toast.LENGTH_SHORT,
@@ -99,12 +95,11 @@ class _GetStartedPageState extends State<GetStartedPage> {
                 final responseLogin = await http.post(
                     Uri.parse('http://'+globals.IPpc+':3000/auth/signin'),
                     body: {
-                        'mail': "789465132@epitech.eu",
-                        'password': "password",
+                        'mail': "uiop@epitech.eu",
+                        'password': "password123",
                     },
                 );
                 if (responseLogin.statusCode == 200) {
-                    print('Dorian fils de TOM');
                     Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -158,45 +153,45 @@ class _GetStartedPageState extends State<GetStartedPage> {
                             ),
                             const SizedBox(height: 80.0),
 
-                            Container(
-                                height: 65,
-                                width: 360,
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 255, 255, 255),
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    border: Border.all(color: Colors.black),
-                                ),
-                                child: TextButton(
-                                    onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => GetStartedEditorPage(title: 'GetStartedEditorPage')),
-                                        );
-                                    },
-                                    style: TextButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                    ),
-                                    child: Row(
-                                        children: <Widget>[
-                                            const SizedBox(width: 20.0),
-                                            Image.asset(
-                                                'assets/images/GoogleLogo.png',
-                                                width: 35.0,
-                                                height: 35.0,
-                                            ),
-                                            const SizedBox(width: 20.0),
-                                            const Text(
-                                                'Continue avec Google',
-                                                style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    color: Colors.black,
-                                                ),
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                            ),
-                            const SizedBox(height: 30.0),
+                            //Container(
+                            //    height: 65,
+                            //    width: 360,
+                            //    decoration: BoxDecoration(
+                            //        color: const Color.fromARGB(255, 255, 255, 255),
+                            //        borderRadius: BorderRadius.circular(40.0),
+                            //        border: Border.all(color: Colors.black),
+                            //    ),
+                            //    child: TextButton(
+                            //        onPressed: () {
+                            //            Navigator.push(
+                            //                context,
+                            //                MaterialPageRoute(builder: (context) => GetStartedEditorPage(title: 'GetStartedEditorPage')),
+                            //            );
+                            //        },
+                            //        style: TextButton.styleFrom(
+                            //            padding: EdgeInsets.zero,
+                            //        ),
+                            //        child: Row(
+                            //            children: <Widget>[
+                            //                const SizedBox(width: 20.0),
+                            //                Image.asset(
+                            //                    'assets/images/GoogleLogo.png',
+                            //                    width: 35.0,
+                            //                    height: 35.0,
+                            //                ),
+                            //                const SizedBox(width: 20.0),
+                            //                const Text(
+                            //                    'Continue avec Google',
+                            //                    style: TextStyle(
+                            //                        fontSize: 20.0,
+                            //                        color: Colors.black,
+                            //                    ),
+                            //                ),
+                            //            ],
+                            //        ),
+                            //    ),
+                            //),
+                            //const SizedBox(height: 30.0),
 
                             Container(
                                 height: 65,
@@ -217,7 +212,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                         children: <Widget>[
                                             const SizedBox(width: 20.0),
                                             Image.asset(
-                                                'assets/images/DiscordLogo.png',
+                                                'assets/images/GithubLogo.png',
                                                 width: 35.0,
                                                 height: 35.0,
                                             ),
