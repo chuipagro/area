@@ -11,7 +11,9 @@ import { GetStarted } from "../pages/GetStarted"
 import { CreateArea } from "../pages/CreateArea";
 
 
-
+/**
+ * This function display the app
+ */
 const App = ()
   : JSX.Element => (
   <Router>
