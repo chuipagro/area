@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -13,20 +14,38 @@ import { AuthModule } from './authentication/auth.module';
 import { AreaController } from './area/area.controller';
 import { AreaService } from './area/area.service';
 import { AreaModule } from './area/area.module';
-
-const uri = 'mongodb+srv://Pablo:gaxSCEoBEYAgTn3x@atlascluster.nidn1nj.mongodb.net/?retryWrites=true&w=majority';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RiotModule } from './services/riot/riot.module';
+import { SpotifyModule } from './services/spotify/spotify.module';
+import { CronjobsModule } from './cronjobs/cronjobs.module';
+import { ServicesModule } from './services/services.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(uri),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: 'WeReallyNeedToChangeThisSecretKey',
-      signOptions: { expiresIn: '60m' },
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    ScheduleModule.forRoot(),
+    MongooseModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_KEY'),
+        signOptions: { expiresIn: '60m' },
+      }),
+      inject: [ConfigService], // injectez ConfigService
     }),
     UserModule,
     AuthModule,
     AreaModule,
+    RiotModule,
+    SpotifyModule,
+    CronjobsModule,
+    ServicesModule,
   ],
   controllers: [AppController, AreaController],
   providers: [AppService, AreaService],

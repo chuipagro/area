@@ -1,12 +1,19 @@
-import { Controller, Get, Module } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import mongoose from 'mongoose';
+import { ConfigService } from '@nestjs/config';
+import { exit } from '@nestjs/cli/actions';
+
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {
+  constructor(
+    private readonly appService: AppService,
+    private readonly configService: ConfigService,
+  ) {
     this.connectToDatabase().then(r => console.log('Connected to MongoDB'));
   }
+
 
   @Get()
   getHello(): string {
@@ -14,11 +21,15 @@ export class AppController {
   }
   private async connectToDatabase() {
     try {
-      await mongoose.connect('mongodb+srv://Pablo:gaxSCEoBEYAgTn3x@atlascluster.nidn1nj.mongodb.net/?retryWrites=true&w=majority', {
+      const mongoUri = this.configService.get<string>('MONGO_URI');
+      if (mongoUri === undefined) {
+        throw new Error('MONGO_URI is undefined');
+      }
+      await mongoose.connect(mongoUri, {
       });
     } catch (error) {
       console.error('Error connecting to MongoDB', error);
-      process.exit(1);
+      exit();
     }
   }
 }
