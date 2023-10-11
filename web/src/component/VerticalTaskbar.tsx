@@ -4,6 +4,14 @@ import { Button, Box, HStack, Link } from '@chakra-ui/react';
 
 import { useNavigate } from "react-router-dom"
 
+
+/**
+ * This  component display a vertical taskbar with button to navigate to :
+ *  - home
+ *  - create area
+ *  - profile
+ *  - disconnect
+ */
 export function Taskbar() {
     const navigate = useNavigate()
     return (
@@ -16,6 +24,16 @@ export function Taskbar() {
             left="0"
             boxShadow="md"
         >
+            {/* <Box
+                backgroundColor="blue"
+                boxSize={10}
+                position="fixed"
+                top="400"
+                left="30"
+                boxShadow="md"
+                onClick={() => navigate('/home')}>
+
+            </Box> */}
             <Box
                 backgroundColor="blue"
                 boxSize={10}
@@ -24,16 +42,6 @@ export function Taskbar() {
                 left="30"
                 boxShadow="md"
                 onClick={() => navigate('/create')}>
-
-            </Box>
-            <Box
-                backgroundColor="blue"
-                boxSize={10}
-                position="fixed"
-                top="400"
-                left="30"
-                boxShadow="md"
-                onClick={() => navigate('/home')}>
 
             </Box>
             {/* for the profile */}

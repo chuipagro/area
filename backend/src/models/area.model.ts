@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-export interface IArea {
+export interface IAction {
   title: string;
   active: boolean;
   createdBy: string;
@@ -14,7 +14,7 @@ export interface IArea {
   }
 }
 
-export const AreaSchema = new Schema<IArea>({
+export const ActionSchema = new Schema<IAction>({
   title: { type: String, required: true},
   active: { type: Boolean},
   createdBy: { type: String, required: true},
@@ -28,4 +28,4 @@ export const AreaSchema = new Schema<IArea>({
   }
 });
 
-export const AreaModel = model<IArea>('Area', AreaSchema);
+export const ActionModel = model<IAction>('Action', ActionSchema);

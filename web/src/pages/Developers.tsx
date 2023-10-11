@@ -3,9 +3,10 @@ import '../app/App.css';
 import { Text, VStack } from '@chakra-ui/react';
 import { Taskbar } from '../component/Taskbar';
 
-
+/**
+ * This function display a title
+ */
 function Title() {
-    // faut trouver comment ajuster vrm la position le mettre ds un VStack c guez en plus jpe pas baisser le text
     return (
         <VStack spacing="0px">
             <Text color="black" fontSize={{ base: '50px' }} >page developers to make</Text>
@@ -13,9 +14,11 @@ function Title() {
     )
 }
 
+/**
+ * This function display a page with the title and the taskbar
+ * the function is to be completed
+ */
 export const Developers = (): JSX.Element => {
-
-
 
     return <div style={{
         backgroundColor: "white", backgroundRepeat: "no-repeat", backgroundSize: "cover",
