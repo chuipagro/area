@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { AreaSchema, ActionSchema } from '../models/area.model';
+import { AreaSchema, ActionSchema, IArea } from '../models/area.model';
 import { allServices } from '../models/servicesModel';
 import { ServicesService } from '../services/services.service';
 import { RiotService } from '../services/riot/riot.service';
@@ -10,55 +10,19 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CronjobsService {
+  constructor(private servicesService: ServicesService) {}
   private readonly logger = new Logger(CronjobsService.name);
-  private readonly AreaSchema = [
-    {
-        title: "First Area",
-        active: true,
-        createdBy: "SteciFatiguant",
-        action: {
-          type: 1,
-          service: 1,
-        },
-        reaction: {
-          type: 1,
-          service: 3,
-        }
-    },
-    {
-        title: "string",
-        active: false,
-        createdBy: "string",
-        action: {
-          type: 0,
-          service: 0,
-        },
-        reaction: {
-          type: 0,
-          service: 0,
-        }
-    },
-    {
-        title: "string",
-        active: false,
-        createdBy: "string",
-        action: {
-          type: 0,
-          service: 0,
-        },
-        reaction: {
-          type: 0,
-          service: 0,
-        }
-    },
-  ];
 
   @Cron(CronExpression.EVERY_30_SECONDS)
   async handleCron() {
-    for (var area of this.AreaSchema) {
-        if (area["active"]) {
-            await launchArea(area);
-        }
+   const AreaSchema = await this.servicesService.getAllAreas();
+   if (!AreaSchema) {
+      throw new Error('Area not found');
+   }
+    for (const area of AreaSchema) {
+      if (area.active) {
+        await launchArea(area);
+      }
     }
   }
 }
@@ -101,6 +65,5 @@ async function launchArea(area: any) {
       break;
     default:
       console.log("service not found");
-
   }
 }
