@@ -19,6 +19,9 @@ import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
 import { CronjobsModule } from './cronjobs/cronjobs.module';
 import { ServicesModule } from './services/services.module';
+import { MailController } from './services/mail/mail.controller';
+import { MailService } from './services/mail/mail.service';
+import { MailModule } from './services/mail/mail.module';
 
 @Module({
   imports: [
@@ -37,7 +40,7 @@ import { ServicesModule } from './services/services.module';
         secret: configService.get<string>('JWT_KEY'),
         signOptions: { expiresIn: '60m' },
       }),
-      inject: [ConfigService], // injectez ConfigService
+      inject: [ConfigService],
     }),
     UserModule,
     AuthModule,
@@ -46,9 +49,10 @@ import { ServicesModule } from './services/services.module';
     SpotifyModule,
     CronjobsModule,
     ServicesModule,
+    MailModule,
   ],
-  controllers: [AppController, AreaController],
-  providers: [AppService, AreaService],
+  controllers: [AppController, AreaController, MailController],
+  providers: [AppService, AreaService, MailService],
 })
 export class AppModule {
 }

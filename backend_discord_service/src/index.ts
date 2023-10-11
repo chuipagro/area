@@ -27,7 +27,6 @@ app.post('/', (req, res) => {
   client.channels.fetch(CHANNEL_ID).then((x) => {
     res.send("Area Discord Bot Is Alive !");
   });
-
 })
 
 app.post('/spotify', (req, res) => {
