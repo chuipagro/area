@@ -9,6 +9,7 @@ export class ServicesService
 {
 
     constructor(@InjectModel('Area') private areaModel: Model<typeof AreaModel>) {}
+
     async createArea(title: string, active: boolean, createdBy: string, action: object, reaction: object): Promise<void> {
         const createdArea = new AreaModel({ title, active, createdBy, action, reaction });
         await createdArea.save();

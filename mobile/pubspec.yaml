@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   http: ^0.13.3
   fluttertoast: ^8.0.7
+  simple_animations: ^5.0.0+2
+  flutter_web_auth_2: ^2.2.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -48,22 +50,25 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
   assets:
+    - assets/images/LeftArrow.png
+    - assets/images/SearchBarrePage1.png
+    - assets/images/SearchBarrePage2.png
+    - assets/images/SearchBarrePage3.png
     - assets/images/FacebookLogo.png
     - assets/images/GoogleLogo.png
     - assets/images/DiscordLogo.png
     - assets/images/YoutubeLogo.png
-    - assets/images/homePage/addArea.png
-    - assets/images/homePage/homeButton.png
-    - assets/images/homePage/profilButton.png
-    - assets/images/homePage/barreHorizontale.png
-    - assets/images/homePage/TimeLogo.png
-    - assets/images/homePage/parameter.png
+    - assets/images/addArea.png
+    - assets/images/homeButton.png
+    - assets/images/profilButton.png
+    - assets/images/barreHorizontale.png
+    - assets/images/TimeLogo.png
+    - assets/images/parameter.png
+    - assets/images/fuckGoBack.png
+    - assets/images/resherchBarre.png
+    - assets/images/GithubLogo.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -96,7 +101,7 @@ flutter:
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  #         weight: 700k,i!
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

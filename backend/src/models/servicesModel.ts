@@ -114,7 +114,7 @@ export const ServicesSchema = new Schema<allServices>({
       getSummonerByPuuid: {
         type: String,
         required: true,
-        default: "get summoner by puuid"
+        default: "get player info by puuid"
       },
       getSummonerBySummonerId: {
         type: String,
@@ -211,5 +211,3 @@ export const ServicesSchema = new Schema<allServices>({
 });
 
 export const ServicesModel = model<allServices>('services', ServicesSchema);
-
-

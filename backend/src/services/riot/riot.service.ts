@@ -13,7 +13,6 @@ export class RiotService {
     }
   }
 
-
   async getSummonerByName(name: string): Promise<any> {
     const url = `https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}?api_key=${this.apiKey}`;
     return await axios.get(url).then((response: any) => {

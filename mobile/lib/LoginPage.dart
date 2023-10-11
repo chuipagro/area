@@ -4,6 +4,7 @@ import 'package:mobile/HomePage.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/GetStartedPage.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/Globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
     final String title;
@@ -23,12 +24,10 @@ class _LoginPageState extends State<LoginPage> {
     bool isEmailForgotten = false;
 
     Future<void> loginUser() async {
-        final urlLogin = Uri.parse('http://localhost:3000');
-
         final response = await http.post(
-            urlLogin,
+            Uri.parse('http://'+globals.IPpc+':3000/auth/signin'),
             body: {
-                'email': emailController.text,
+                'mail': emailController.text,
                 'password': passwordController.text,
             },
         );
@@ -208,7 +207,36 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                 ),
                             ),
-                            SizedBox(height: 30.0),
+                            //SizedBox(height: 30.0),
+
+                            Container(
+                                width: 350,
+                                height: 50,
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.black54,
+                                        width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                child: TextFormField(
+                                decoration: InputDecoration(
+                                    hintText: 'IP',
+                                    border: InputBorder.none,
+                                    labelStyle: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 10.0),
+                                ),
+                                onChanged: (value) {
+                                    setState(() {
+                                        globals.IPpc = value;
+                                    });
+                                },
+                            ),
+                            ),
+                            SizedBox(height: 20.0),
     
                             ElevatedButton(
                                 onPressed: () {

@@ -70,6 +70,7 @@ export class AuthController {
     @Body('username') username: string,
     @Body('password') password: string)
     : Promise<any> {
+    console.log("dorain");
     if (!username || !password || !mail) {
       throw new Error('no empty field allowed');
     }
