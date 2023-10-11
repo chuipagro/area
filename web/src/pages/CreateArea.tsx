@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Center, Text, HStack, VStack, Link, Button, Divider, Box, Img, Heading } from '@chakra-ui/react';
+import { Center, Text, HStack, VStack, Link, Button, Divider, Box, Img, Heading, list } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import leftArrow from '../app/leftArrow.png'
@@ -8,6 +8,10 @@ import { Taskbar } from '../component/VerticalTaskbar';
 
 export const CreateArea = (): JSX.Element => {
     const navigate = useNavigate()
+
+    const [areaReceived, setAreaReceived] = React.useState(false);
+    const [isErrorReceived, setIsErrorReceived] = React.useState(false)
+
     const [isError, setIsError] = React.useState(false)
     const [action, setAction] = React.useState(false)
     const [reaction, setReaction] = React.useState(false);
@@ -24,11 +28,13 @@ export const CreateArea = (): JSX.Element => {
 
     const [jsonAREA, setJsonAREA] = React.useState({});
     const storedUsername = localStorage.getItem("userMail");
+    const token = localStorage.getItem("token");
 
     const updateJsonAREA = () => {
         setJsonAREA({
-            reaction_service: serviceReactionJson,
-            action_service: serviceActionJson,
+            title: token,
+            active: "true",
+            createdBy: storedUsername,
             reaction_type: reactionJson,
             action_type: actionJson,
         });
@@ -38,8 +44,6 @@ export const CreateArea = (): JSX.Element => {
         console.log(jsonAREA);
         console.log(storedUsername);
     }, [jsonAREA]);
-
-
 
 
     //for the colors
@@ -59,7 +63,6 @@ export const CreateArea = (): JSX.Element => {
     const [ReactionTitle, setReactionTitle] = React.useState("");
 
 
-
     type Data = {
         [key: string]: {
             logo: string;
@@ -71,7 +74,7 @@ export const CreateArea = (): JSX.Element => {
             actions: {
                 [actionKey: string]: string;
             };
-            reaction: {
+            reactions: {
                 [reactionKey: string]: string;
             };
         };
@@ -81,10 +84,14 @@ export const CreateArea = (): JSX.Element => {
 
     const fetchJsonData = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/AREA');
+            console.log('Fetching JSON data...');
+            const response = await axios.get('http://localhost:3000/services/getAllServices');
             if (response.status === 200) {
-                setJsonData(response.data);
+                console.log(response.data.services)
+                setJsonData(response.data.services);
+                setAreaReceived(true);
             } else {
+                setIsErrorReceived(true);
                 console.error('Failed to fetch JSON data');
                 // navigate('/home');
                 navigate('/create');
@@ -144,7 +151,7 @@ export const CreateArea = (): JSX.Element => {
                 jsonAREA: jsonAREA,
             };
 
-            const response = await axios.post('http://localhost:3000/create', requestBody, { headers });
+            const response = await axios.post('http://localhost:3000/services/createArea', requestBody, { headers });
 
             console.log('Response:', response.data);
             if (response.status === 200) {
@@ -210,22 +217,22 @@ export const CreateArea = (): JSX.Element => {
 
     //-----------------[REACTION]-------------------------
 
-    function CallEndReactions({ reactionKey }: { reactionKey: string; }) {
+    function CallEndReactions({ reactionDescription }: { reactionDescription: string; }) {
 
-        setReactionJson(reactionKey);
-        console.log(`title in call action = ${reactionKey}`)
+        setReactionJson(reactionDescription);
+        console.log(`title in call action = ${reactionDescription}`)
         handleReactionsVisibility();
         handleReaction();
         setDefaultReactionColor(ReactionColor);
 
-        setDefaultReactionDesc(reactionKey);
+        setDefaultReactionDesc(reactionDescription);
         setDefaultReactionTitle(ReactionTitle);
     }
 
-    function DisplayReactions({ title, reaction, color }: { title: string; reaction: { [reactionKey: string]: string }; color: string }) {
+    function DisplayReactions({ title, reactions, color }: { title: string; reactions: { [reactionKey: string]: string }; color: string }) {
         const reactionBoxes: JSX.Element[] = [];
-        Object.keys(reaction).forEach((reactionKey) => {
-            const reactionDescription = reaction[reactionKey];
+        Object.keys(reactions).forEach((reactionKey) => {
+            const reactionDescription = reactions[reactionKey];
             const reactionBox = (
                 <Box
                     key={reactionKey}
@@ -236,10 +243,11 @@ export const CreateArea = (): JSX.Element => {
                     inlineSize={300}
                     color={"#CCCCCC"}
                     backgroundColor={color}
-                    onClick={() => CallEndReactions({ reactionKey })}
+                    onClick={() => CallEndReactions({ reactionDescription })}
                 >
-                    <Heading fontSize="xl">{reactionKey}</Heading>
-                    <Text mt={4}>{reactionDescription}</Text>
+                    <Heading fontSize="xl">{reactionDescription}</Heading>
+                    {/* <Heading fontSize="xl">{reactionKey}</Heading>
+                    <Text mt={4}>{reactionDescription}</Text> */}
                 </Box>
             );
             reactionBoxes.push(reactionBox);
@@ -262,13 +270,21 @@ export const CreateArea = (): JSX.Element => {
     }
 
 
-    function DisplayServiceReaction({ title, desc, color, size, data, key }: { title: string, desc: string, color: string, size: number, data: any, key: number }) {
+    function DisplayServiceReaction({ title, desc, size, data, key }: { title: string, desc: string, size: number, data: any, key: number }) {
         const rows = [];
+        let color = `blue`;
+
+        if (title === '_id')
+            return (<VStack></VStack>)
+
+        if (data.reactions === undefined) {
+            return (<VStack> <Text> no reaction for service {title} </Text> </VStack>)
+        }
 
         if (serviceReactionJson === title && reactionJson.length === 0) {
             console.log({ serviceReactionJson });
             rows.push(
-                <DisplayReactions title={title} reaction={data.reaction} color={color} />
+                <DisplayReactions title={title} reactions={data.reactions} color={color} />
             )
         } else if (reactionVisibility) {
             rows.push(
@@ -308,9 +324,9 @@ export const CreateArea = (): JSX.Element => {
                 dataArray.push({
                     service: service,
                     logo: serviceData.logo,
-                    color: serviceData.color,
+                    // color: serviceData.color,
                     actions: serviceData.actions,
-                    reaction: serviceData.reaction,
+                    reactions: serviceData.reactions,
                 });
             }
             y++;
@@ -324,7 +340,7 @@ export const CreateArea = (): JSX.Element => {
                     <DisplayServiceReaction
                         title={`${serviceObject.service}`}
                         desc=""
-                        color={`rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`}
+                        // color={`rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`}
                         size={nb1}
                         data={serviceObject}
                         key={i}
@@ -341,9 +357,9 @@ export const CreateArea = (): JSX.Element => {
 
     //-----------------[ACTION]-------------------------
 
-    function CallEndActions({ actionKey }: { actionKey: string; }) {
+    function CallEndActions({ actionDescription }: { actionDescription: string; }) {
 
-        setActionJson(actionKey);
+        setActionJson(actionDescription);
 
         handleActionsVisibility();
         handleAction();
@@ -351,9 +367,9 @@ export const CreateArea = (): JSX.Element => {
         setDefaultActionColor(ActionColor);
 
         setDefaultActionTitle(ActionTitle);
-        setDefaultActionDesc(actionKey);
+        setDefaultActionDesc(actionDescription);
 
-        console.log(`title in call action = ${actionKey}`)
+        console.log(`title in call action = ${actionDescription}`)
     }
 
     function DisplayActions({ title, actions, color }: { title: string; actions: { [actionKey: string]: string }; color: string }) {
@@ -370,10 +386,11 @@ export const CreateArea = (): JSX.Element => {
                     inlineSize={300}
                     color={"#CCCCCC"}
                     backgroundColor={color}
-                    onClick={() => CallEndActions({ actionKey })}
+                    onClick={() => CallEndActions({ actionDescription })}
                 >
-                    <Heading fontSize="xl">{actionKey}</Heading>
-                    <Text mt={4}>{actionDescription}</Text>
+                    <Heading fontSize="xl">{actionDescription}</Heading>
+                    {/* <Heading fontSize="xl">{actionDescription}</Heading> */}
+                    {/* <Text mt={4}>{actionDescription}</Text> */}
                 </Box>
             );
             actionBoxes.push(actionBox);
@@ -396,12 +413,22 @@ export const CreateArea = (): JSX.Element => {
     }
 
 
-    function DisplayService({ title, desc, color, size, data, key }: { title: string, desc: string, color: string, size: number, data: any, key: number }) {
+    function DisplayService({ title, desc, size, data, key }: { title: string, desc: string, size: number, data: any, key: number }) {
         const rows = [];
+        let color = `red`;
+
+
+
+        if (title === '_id')
+            return (<VStack></VStack>)
+
+        if (data.actions === undefined) {
+            return (<VStack> <Text> no actions for service {title} </Text> </VStack>)
+        }
 
         if (serviceActionJson === title && actionJson.length === 0) {
             rows.push(
-                <DisplayActions title={title} actions={data.actions} color={color} />
+                <DisplayActions title={title} actions={data.actions} color={'red'} />
             )
         } else if (actionVisibility) {
             rows.push(
@@ -441,9 +468,9 @@ export const CreateArea = (): JSX.Element => {
                 dataArray.push({
                     service: service,
                     logo: serviceData.logo,
-                    color: serviceData.color,
+                    //color: serviceData.color,
                     actions: serviceData.actions,
-                    reaction: serviceData.reaction,
+                    reactions: serviceData.reactions,
                 });
             }
             y++;
@@ -457,7 +484,7 @@ export const CreateArea = (): JSX.Element => {
                     <DisplayService
                         title={`${serviceObject.service}`}
                         desc=""
-                        color={`rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`}
+                        // color={`rgb(${serviceObject.color.red} ${serviceObject.color.green} ${serviceObject.color.blue})`}
                         size={nb1}
                         data={serviceObject}
                         key={i}
@@ -494,7 +521,7 @@ export const CreateArea = (): JSX.Element => {
         if (action) (
             rows.push(
                 <div>
-                    <img src={leftArrow} onClick={handleAction} width={30} style={{ marginRight: '1800px' }} ></img>
+                    <img src={leftArrow} onClick={handleAction} width={30} style={{ marginRight: '1500px' }} ></img>
                     <Services />
                 </div>
             )
@@ -502,7 +529,7 @@ export const CreateArea = (): JSX.Element => {
         if (reaction) (
             rows.push(
                 <div>
-                    <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginRight: '1800px' }} ></img>
+                    <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginRight: '1500px' }} ></img>
                     <ServicesReaction />
                 </div>
             )
@@ -524,12 +551,21 @@ export const CreateArea = (): JSX.Element => {
         );
     }
 
-    return <div style={{
-        backgroundColor: "white", backgroundRepeat: "no-repeat", backgroundSize: "cover",
-        height: 930, width: 1905
-    }}>
-        <Taskbar></Taskbar>
-        <Title />
-        <Display></Display>
-    </div>
+    if (!areaReceived) {
+        return <div>
+            <Taskbar></Taskbar>
+            <Title />
+            <Text marginLeft={150}> waiting for api response...</Text>
+
+        </div>
+    } else {
+        return <div style={{
+            backgroundColor: "white", backgroundRepeat: "no-repeat", backgroundSize: "cover",
+            height: 930, width: 1905
+        }}>
+            <Taskbar></Taskbar>
+            <Title />
+            <Display></Display>
+        </div>
+    }
 }

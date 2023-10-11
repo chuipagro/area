@@ -25,7 +25,8 @@ export const Login = (): JSX.Element => {
                 password,
             });
             if (response.data) {
-                navigate('/home');
+                localStorage.setItem('token', response.data.token);
+                navigate('/create');
             }
             return response.data;
         } catch (error) {
