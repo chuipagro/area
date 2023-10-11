@@ -1,10 +1,11 @@
 import React from 'react';
 import '../app/App.css';
-import { Center, Text, HStack, VStack, Link, Button, Divider, Box, Img, Heading, list } from '@chakra-ui/react';
+import { Center, Text, HStack, VStack, Link, Button, Divider, Box, Img, Heading, list, Alert } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import leftArrow from '../app/leftArrow.png'
 import { Taskbar } from '../component/VerticalTaskbar';
+import { InputText } from '../component/TexInput';
 
 
 /**
@@ -12,6 +13,8 @@ import { Taskbar } from '../component/VerticalTaskbar';
  */
 export const CreateArea = (): JSX.Element => {
     const navigate = useNavigate()
+
+    const [areaName, setAreaName] = React.useState('');
 
     const [areaReceived, setAreaReceived] = React.useState(false);
     const [isErrorReceived, setIsErrorReceived] = React.useState(false)
@@ -47,10 +50,7 @@ export const CreateArea = (): JSX.Element => {
         });
     };
 
-    React.useEffect(() => {
-        console.log(jsonAREA);
-        console.log(storedUsername);
-    }, [jsonAREA]);
+
 
 
     //for the colors
@@ -164,7 +164,21 @@ export const CreateArea = (): JSX.Element => {
                 jsonAREA: jsonAREA,
             };
 
-            const response = await axios.post('http://localhost:3000/services/createArea', requestBody, { headers });
+            const response = await axios.post('http://localhost:3000/services/createArea',
+                {
+                    title: token,
+                    active: true,
+                    createdBy: storedUsername,
+                    reaction_type: {
+                        type: 0,
+                        service: 0
+                    },
+                    action_type: {
+                        type: 0,
+                        service: 0
+                    },
+                }
+            );
 
             console.log('Response:', response.data);
             if (response.status === 200) {
@@ -181,6 +195,24 @@ export const CreateArea = (): JSX.Element => {
             throw error;
         }
     };
+
+    React.useEffect(() => {
+        console.log(jsonAREA);
+        console.log(storedUsername);
+    }, [jsonAREA]);
+
+    const handleApiCall = () => {
+        // updateJsonAREA();
+        // callApi().then(response => {
+        // }).catch(error => {
+        //     console.log(error);
+        // });
+        return (
+            <div>
+                <Alert>Vous avez créé votre AREA</Alert>
+            </div>
+        )
+    }
 
     /**
      * This function handle the what to display when the user click on the action button
@@ -603,7 +635,7 @@ export const CreateArea = (): JSX.Element => {
         if (serviceActionJson.length != 0 && serviceReactionJson.length != 0 && actionJson.length != 0 && reactionJson.length != 0 && !action && !reaction) (
             rows.push(
                 <div>
-                    <Button onClick={updateJsonAREA} marginTop={100} marginLeft={200} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
+                    <Button onClick={() => navigate("/create")} marginTop={100} marginLeft={200} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
                         <Heading fontSize='xl'>Create your AREA</Heading>
                     </Button>
                 </div>

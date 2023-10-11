@@ -34,7 +34,7 @@ export const Register = (): JSX.Element => {
                 password,
             });
             if (response.data) {
-                navigate('/home');
+                navigate('/login');
             }
             return response.data;
         } catch (error) {
