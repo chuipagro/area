@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AreaModel } from '../models/area.model';
+import { AreaModel, IArea } from '../models/area.model';
 import { allServices, ServicesModel } from '../models/servicesModel';
 
 @Injectable()
@@ -36,5 +36,10 @@ export class ServicesService
     async getAllServices(): Promise< allServices | null> {
         const services = new ServicesModel();
         return services ? services.toObject() as allServices : null;
+    }
+
+    async getAllAreas(): Promise<IArea[] | null> {
+        const areas = await AreaModel.find().exec();
+        return areas ? areas.map((area) => area.toObject() as IArea) : null;
     }
 }
