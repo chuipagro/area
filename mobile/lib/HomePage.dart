@@ -140,28 +140,31 @@ class _HomePageState extends State<HomePage> {
   TextEditingController searchControllerReaction = TextEditingController();
 
   Future<Map<String, dynamic>> callForAllServices() async {
-    final response = await http.post(
-      Uri.parse('http://' + globals.IPpc + ':3000/user/services'),
+    final reponse = await http.get(
+      Uri.parse('http://' + globals.IPpc + ':3000/services/getAllServices'),
     );
+    print('status chibre: ${reponse}');
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      return jsonResponse;
+    if (reponse.statusCode == 200) {
+      final Map<String, dynamic> jsonReponse = json.decode(reponse.body);
+      return jsonReponse;
     } else {
-      throw Exception('Échec de la requête pour les zones : ${response.statusCode}');
+      throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
     }
   }
 
   Future<Map<String, dynamic>> callForAllAreas() async {
-    final response = await http.post(
-      Uri.parse('http://' + globals.IPpc + ':3000/user/areas'),
+    final reponse = await http.get(
+      Uri.parse('http://' + globals.IPpc + ':3000/services/getAllAreas'),
     );
+    String? codeParam = Uri.parse(reponse.body).queryParameters['areas'];
+    print('status la : ${codeParam}');
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+    if (reponse.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
       return jsonResponse;
     } else {
-      throw Exception('Échec de la requête pour les zones : ${response.statusCode}');
+      throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
     }
   }
 
@@ -169,13 +172,13 @@ class _HomePageState extends State<HomePage> {
   void createServiceList(Map<String, dynamic> json) 
   {
     json.forEach((serviceName, serviceData) {
-      final String titre = serviceName;
-      final String iconPath = serviceData["logo"];
-      final int red = serviceData["color"]["red"];
-      final int green = serviceData["color"]["green"];
-      final int blue = serviceData["color"]["blue"];
-      final List<String> actions = List<String>.from(serviceData["actions"].values);
-      final List<String> reactions = List<String>.from(serviceData["reaction"].values);
+      final String titre = serviceData["data"]["services"]["name"];
+      final String iconPath = serviceData["data"]["services"]["logo"];
+      final int red = serviceData["data"]["services"]["color"]["red"];
+      final int green = serviceData["data"]["services"]["color"]["green"];
+      final int blue = serviceData["data"]["services"]["color"]["blue"];
+      final List<String> actions = List<String>.from(serviceData["data"]["services"]["actions"].values);
+      final List<String> reactions = List<String>.from(serviceData["data"]["services"]["reaction"].values);
 
       Service service = Service(
         titre: titre,
@@ -194,13 +197,13 @@ class _HomePageState extends State<HomePage> {
   void createAreaList(Map<String, dynamic> json)
   {
     json.forEach((serviceName, serviceData) {
-      final String titre = serviceData["title"];
-      final bool isActive = serviceData["active"];
-      final String createdBy = serviceData["createdBy"];
-      final int serviceIndexOne = serviceData["action"]["service"];
-      final int serviceIndexTwo = serviceData["reaction"]["service"];
-      final int actionIndexServiceOne = serviceData["action"]["type"];
-      final int actionIndexServiceTwo = serviceData["reaction"]["type"];
+      final String titre = serviceData["data"]["areas"]["title"];
+      final bool isActive = serviceData["data"]["areas"]["active"];
+      final String createdBy = serviceData["data"]["areas"]["createdBy"];
+      final int serviceIndexOne = int.parse(serviceData["data"]["areas"]["action"]["service"]);
+      final int serviceIndexTwo = int.parse(serviceData["data"]["areas"]["reaction"]["service"]);
+      final int actionIndexServiceOne = int.parse(serviceData["data"]["areas"]["action"]["type"]);
+      final int actionIndexServiceTwo = int.parse(serviceData["data"]["areas"]["reaction"]["type"]);
 
       CreatedArea area = CreatedArea(
         name: titre,
