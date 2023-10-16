@@ -19,49 +19,8 @@ export class CronjobsService {
    }
     for (const area of AreaSchema) {
       if (area.active && area.launchType === "cron") {
-        await launchArea(area);
+        console.log("cron");
       }
     }
-  }
-}
-
-async function launchArea(area: any) {
-  const configService = new ConfigService()
-  const riotService = new RiotService(configService);
-  const mailService = new MailService();
-  let actionData: any;
-
-  console.log(area.action)
-  console.log(area.reaction)
-
-  switch (area.action.service) {
-    case 1:
-      switch (area.action.type) {
-        case 1:
-          actionData = await riotService.getSummonerByName("pablo0675");
-          break;
-        default:
-          console.log("action not found");
-          break;
-      }
-      break;
-    default:
-      console.log("service not found");
-      break
-  }
-
-  switch (area.reaction.service) {
-    case 3:
-      switch (area.reaction.type) {
-        case 1:
-          await mailService.sendMail("laetitia.bousch@epitech.eu", actionData.toString(), "riot");
-          break;
-        default:
-          console.log("action not found");
-          break;
-      }
-      break;
-    default:
-      console.log("service not found");
   }
 }

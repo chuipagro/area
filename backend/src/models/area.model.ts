@@ -14,6 +14,8 @@ export interface IArea {
   }
   launchType: string;
   data: object;
+  timeAtCreation: string;
+  dateAtCreation: string;
 }
 
 export const AreaSchema = new Schema<IArea>({
@@ -30,6 +32,8 @@ export const AreaSchema = new Schema<IArea>({
   },
   launchType: { type: String, required: true},
   data: { type: Object, required: true},
+  timeAtCreation: { type: String, required: true},
+  dateAtCreation: { type: String, required: true},
 });
 
 export const AreaModel = model<IArea>('Area', AreaSchema);
