@@ -52,8 +52,8 @@ import { AreaModel } from './models/area.model';
     CronjobsModule,
     MailModule,
   ],
-  controllers: [AppController, AreaController, MailController],
-  providers: [AppService, AreaService, MailService],
+  controllers: [AppController, MailController],
+  providers: [AppService, MailService],
 })
 export class AppModule {
 }
