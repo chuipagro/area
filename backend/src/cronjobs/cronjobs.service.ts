@@ -18,7 +18,7 @@ export class CronjobsService {
       throw new Error('Area not found');
    }
     for (const area of AreaSchema) {
-      if (area.active && area.launchType === "cron") {
+      if (area.active && area.data.cron) {
         console.log("cron");
       }
     }

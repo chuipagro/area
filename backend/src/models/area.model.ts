@@ -1,5 +1,37 @@
 import { Schema, model } from 'mongoose';
 
+export interface IData {
+  riot: {
+    summonerName: string | null;
+    puuid: string | null;
+    summonerId: string | null;
+    matchId: string | null;
+  } | null;
+
+  spotify: {
+    playlistId: string | null;
+    playlistName: string | null;
+    playlistDescription: string | null;
+    playlistPublic: boolean | null;
+    playlistCollaborative: boolean | null;
+    playlistTracks: string[] | null;
+    playlistTracksPosition: number | null;
+    playlistTracksUris: string[] | null;
+    playlistTracksUrisPosition: number | null;
+  } | null;
+
+  mail: {
+    to: string | null;
+    from: string | null;
+    subject: string | null;
+    text: string | null;
+  } | null;
+
+  cron: {
+    time: string | "s50";
+  } | null;
+}
+
 export interface IArea {
   title: string;
   active: boolean;
@@ -12,8 +44,7 @@ export interface IArea {
     type: number;
     service: number;
   }
-  launchType: string;
-  data: object;
+  data: IData;
   timeAtCreation: string;
   dateAtCreation: string;
 }
@@ -30,8 +61,31 @@ export const AreaSchema = new Schema<IArea>({
     type: { type: Number, required: true},
     service: { type: Number, required: true},
   },
-  launchType: { type: String, required: true},
-  data: { type: Object, required: true},
+  data: {
+    riot: {
+      summonerName: { type: String},
+      puuid: { type: String},
+      summonerId: { type: String},
+      matchId: { type: String},
+    },
+    spotify: {
+      playlistId: { type: String},
+      playlistName: { type: String},
+      playlistDescription: { type: String},
+      playlistPublic: { type: Boolean},
+      playlistCollaborative: { type: Boolean},
+      playlistTracks: { type: Array},
+      playlistTracksPosition: { type: Number},
+      playlistTracksUris: { type: Array},
+      playlistTracksUrisPosition: { type: Number},
+    },
+    mail: {
+      to: { type: String},
+      from: { type: String},
+      subject: { type: String},
+      text: { type: String},
+    },
+  },
   timeAtCreation: { type: String, required: true},
   dateAtCreation: { type: String, required: true},
 });

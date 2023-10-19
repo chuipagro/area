@@ -9,8 +9,23 @@ export class AreaController {
   constructor(private readonly areaService: AreaService) {}
 
   @ApiOkResponse ({
-    description: 'success',
-    type: String,
+    description: "return a list of IArea" +
+      "IArea {\n" +
+      "  title: string;\n" +
+      "  active: boolean;\n" +
+      "  createdBy: string;\n" +
+      "  action: {\n" +
+      "    type: number;\n" +
+      "    service: number;\n" +
+      "  }\n" +
+      "  reaction: {\n" +
+      "    type: number;\n" +
+      "    service: number;\n" +
+      "  }\n" +
+      "  data: IData;\n" +
+      "  timeAtCreation: string;\n" +
+      "  dateAtCreation: string;\n" +
+      "}",
     status: 200,
   })
 
@@ -25,7 +40,7 @@ export class AreaController {
   @ApiBody(
     {
       schema: {
-        type: 'area',
+        type: 'object',
         properties: {
           title: { type: 'string' },
           active: { type: 'boolean' },
@@ -44,8 +59,43 @@ export class AreaController {
               service: { type: "integer"},
             }
           },
-          launchType: { type: 'string' },
-          data: { type: 'object' },
+          data: {
+            type: 'object',
+            properties: {
+              riot: {
+                type: 'object',
+                properties: {
+                  summonerName: { type: "string"},
+                  puuid: { type: "string"},
+                  summonerId: { type: "string"},
+                  matchId: { type: "string"},
+                },
+              },
+              spotify: {
+                type: 'object',
+                properties: {
+                  playlistId: { type: "string"},
+                  playlistName: { type: "string"},
+                  playlistDescription: { type: "string"},
+                  playlistPublic: { type: "boolean"},
+                  playlistCollaborative: { type: "boolean"},
+                  playlistTracks: { type: "array"},
+                  playlistTracksPosition: { type: "integer"},
+                  playlistTracksUris: { type: "array"},
+                  playlistTracksUrisPosition: { type: "integer"},
+                },
+              },
+              mail: {
+                type: 'object',
+                properties: {
+                  to: { type: "string"},
+                  from: { type: "string"},
+                  subject: { type: "string"},
+                  text: { type: "string"},
+                }
+              }
+            }
+          }
         }
       },
     })
@@ -124,5 +174,4 @@ export class AreaController {
     await this.areaService.getUserAreas(token);
     return res.status(200).send({ message: 'success' });
   }
-
 }
