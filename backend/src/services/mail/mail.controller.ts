@@ -16,6 +16,10 @@ export class MailController {
             type: 'string',
             format: 'email',
           },
+          from: {
+            type: 'string',
+            format: 'email',
+          },
           name: {
             type: 'string',
           },
@@ -32,10 +36,11 @@ export class MailController {
   async sendMail(
     @Res() res: Response,
     @Body('email') email: string,
+    @Body('from') from: string,
     @Body('name') name: string,
     @Body('message') message: string,
   ): Promise<Response> {
-    const result = await sendEmail(email, name, message);
+    const result = await sendEmail(email, from, name, message);
     return res.status(200).send(result);
   }
 }

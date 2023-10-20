@@ -3,7 +3,15 @@ import '../app/App.css';
 import { Button, Box, HStack, Link } from '@chakra-ui/react';
 
 
-
+/**
+ * This  component display an horizontal taskbar with button to navigate to :
+ *  - login
+ *  - register
+ *  - partnership
+ *  - explore
+ *  - developers
+ *  - get started
+ */
 export function Taskbar() {
     return (
         <Box bg='black' w='100%' p={10} color='white'>
@@ -14,7 +22,7 @@ export function Taskbar() {
                     </Link>
                 </Button>
 
-                <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} left={700} >
+                {/* <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} left={700} >
                     <Link color='white' href='/partnership'>
                         Partnership
                     </Link>
@@ -36,7 +44,7 @@ export function Taskbar() {
                     <Link color='black' href='/login-with-service'>
                         Get started
                     </Link>
-                </Button>
+                </Button> */}
             </HStack>
         </Box>
     )

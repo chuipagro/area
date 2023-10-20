@@ -22,6 +22,7 @@ import { ServicesModule } from './services/services.module';
 import { MailController } from './services/mail/mail.controller';
 import { MailService } from './services/mail/mail.service';
 import { MailModule } from './services/mail/mail.module';
+import { AreaModel } from './models/area.model';
 
 @Module({
   imports: [
@@ -45,14 +46,14 @@ import { MailModule } from './services/mail/mail.module';
     UserModule,
     AuthModule,
     AreaModule,
+    ServicesModule,
     RiotModule,
     SpotifyModule,
     CronjobsModule,
-    ServicesModule,
     MailModule,
   ],
-  controllers: [AppController, AreaController, MailController],
-  providers: [AppService, AreaService, MailService],
+  controllers: [AppController, MailController],
+  providers: [AppService, MailService],
 })
 export class AppModule {
 }

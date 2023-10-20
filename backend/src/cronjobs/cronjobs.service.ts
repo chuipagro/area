@@ -1,58 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { AreaSchema, ActionSchema } from '../models/area.model';
+import { RiotService } from '../services/riot/riot.service';
+import { MailService } from '../services/mail/mail.service';
+import { SpotifyService } from '../services/spotify/spotify.service';
+import { ConfigService } from '@nestjs/config';
+import { AreaService } from '../area/area.service';
 
 @Injectable()
 export class CronjobsService {
+  constructor(private areaService: AreaService) {}
   private readonly logger = new Logger(CronjobsService.name);
-  private readonly AreaSchema = [
-    {
-        title: "First Area",
-        active: true,
-        createdBy: "SteciFatiguant",
-        action: {
-          type: 0,
-          service: 0,
-        },
-        reaction: {
-          type: 0,
-          service: 0,
-        }
-    },
-    {
-        title: "string",
-        active: false,
-        createdBy: "string",
-        action: {
-          type: 0,
-          service: 0,
-        },
-        reaction: {
-          type: 0,
-          service: 0,
-        }
-    },
-    {
-        title: "string",
-        active: false,
-        createdBy: "string",
-        action: {
-          type: 0,
-          service: 0,
-        },
-        reaction: {
-          type: 0,
-          service: 0,
-        }
-    },
-  ];
 
   @Cron(CronExpression.EVERY_30_SECONDS)
-  handleCron() {
-    for (var area of this.AreaSchema) {
-        if (area["active"])
-            console.log(area); // prints values: 10, 20, 30, 40
+  async handleCron() {
+   const AreaSchema = await this.areaService.getAllAreas();
+   if (!AreaSchema) {
+      throw new Error('Area not found');
+   }
+    for (const area of AreaSchema) {
+      if (area.active && area.data.cron) {
+        console.log("cron");
+      }
     }
-    console.log('Called every minute');
   }
 }

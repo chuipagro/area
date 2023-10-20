@@ -4,7 +4,9 @@ import { Text, VStack, Link, Stack, Button } from '@chakra-ui/react';
 
 // import backgroundImage from '../component/backgroudImage';
 
-
+/**
+ * This function isn't called anywhere and can be deleted, not sure when or why we would use it
+ */
 export const Head = (): JSX.Element => (
     <div style={{
         backgroundImage: `url(https://upload.wikimedia.org/wikipedia/commons/4/45/White_box_55x90.png)`, backgroundRepeat: "no-repeat", backgroundSize: "cover",
