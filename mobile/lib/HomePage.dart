@@ -4,69 +4,60 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/Globals.dart' as globals;
 import 'dart:convert';
 
-final servicesList = {
-  "discord": {
-      "logo": "assets/images/DiscordLogo.png",
-      "color": {
-          "red": 114,
-          "green": 137,
-          "blue": 218
-      },
-      "actions": {
-          "action1": "se faire ping",
-          "action2": "recevoir un message"
-      },
-      "reaction": {
-          "reaction1": "ping qq",
-          "reaction2": "envoyer un message"
-      }
-  },
-  "youtube": {
-      "logo": "assets/images/YoutubeLogo.png",
-      "color": {
-          "red": 255,
-          "green": 0,
-          "blue": 0
-      },
-      "actions": {
-          "action1": "qq poste une video",
-          "action2": "en gros y a une 2eme action"
-      },
-      "reaction": {
-          "reaction1": "poster une video",
-          "reaction2": "poster un commentaire qui dis first"
-      }
-  }
-};
-
-final areaList = {
-  "area1": {
-    "title": "area1",
-    "active": true,
-    "createdBy": "alexandre",
-    "action": {
-      "service": 2,
-      "type": 1,
-    },
-    "reaction": {
-      "service": 1,
-      "type": 2,
-    },
-  },
-  "area2": {
-    "title": "area2",
-    "active": true,
-    "createdBy": "pier",
-    "action": {
-      "service": 1,
-      "type": 2,
-    },
-    "reaction": {
-      "service": 2,
-      "type": 1,
-    },
-  }
-};
+// {
+//   "message":"success",
+//   "services":
+//   {
+//     "riot":
+//     {
+//       "color":
+//       { "red":255,
+//         "green":66,
+//         "blue":0
+//       },
+//       "actions":
+//       {
+//         "getSummonerByName": "get player info by name",
+//         "getSummonerByPuuid": "get player info by puuid",
+//         "getSummonerBySummonerId": "get player info by summoner id",
+//         "getMatchListByPuuid":"get match list by puuid",
+//         "getMatchByMatchId":"get match by match id"
+//       },
+//       "logo":"assets/images/riotLogo.png"
+//     },
+//     "spotify":
+//     {
+//       "color":
+//       {
+//         "red":136,
+//         "green":238,
+//         "blue":81
+//       },
+//       "actions":
+//       {
+//         "postToken":"post token",
+//         "getAudioFeaturesTrack":"get audio features track",
+//         "getNewReleases":"get new releases"
+//       },
+//       "logo":"assets/images/spotifyLogo.png"
+//     },
+//     "mail":
+//     {
+//       "color":
+//       {
+//         "red":255,
+//         "green":255,
+//         "blue":255
+//       },
+//       "reactions":
+//       {
+//         "sendMail":"send mail"
+//       },
+//       "logo":"assets/images/mailLogo.png"
+//     },
+//     "_id":"652d2ea12615dd74e5942b85"
+//   }
+// }
 
 enum PageState {
   Areas,
@@ -143,7 +134,6 @@ class _HomePageState extends State<HomePage> {
     final reponse = await http.get(
       Uri.parse('http://' + globals.IPpc + ':3000/services/getAllServices'),
     );
-    print('status chibre: ${reponse}');
 
     if (reponse.statusCode == 200) {
       final Map<String, dynamic> jsonReponse = json.decode(reponse.body);
@@ -157,8 +147,6 @@ class _HomePageState extends State<HomePage> {
     final reponse = await http.get(
       Uri.parse('http://' + globals.IPpc + ':3000/services/getAllAreas'),
     );
-    String? codeParam = Uri.parse(reponse.body).queryParameters['areas'];
-    print('status la : ${codeParam}');
 
     if (reponse.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
@@ -171,26 +159,29 @@ class _HomePageState extends State<HomePage> {
 
   void createServiceList(Map<String, dynamic> json) 
   {
-    json.forEach((serviceName, serviceData) {
-      final String titre = serviceData["data"]["services"]["name"];
-      final String iconPath = serviceData["data"]["services"]["logo"];
-      final int red = serviceData["data"]["services"]["color"]["red"];
-      final int green = serviceData["data"]["services"]["color"]["green"];
-      final int blue = serviceData["data"]["services"]["color"]["blue"];
-      final List<String> actions = List<String>.from(serviceData["data"]["services"]["actions"].values);
-      final List<String> reactions = List<String>.from(serviceData["data"]["services"]["reaction"].values);
+    final Map<String, dynamic> servicesData = json["services"];
+    servicesData.forEach((serviceName, serviceData) {
+      if (serviceName != "_id") {
+        final String titre = serviceName;
+        final String iconPath = serviceData["logo"];
+        final int red = serviceData["color"]["red"];
+        final int green = serviceData["color"]["green"];
+        final int blue = serviceData["color"]["blue"];
+        final List<String> actions = (serviceData["actions"] != null) ? List<String>.from(serviceData["actions"].values) : [];
+        final List<String> reactions = (serviceData["reactions"] != null) ? List<String>.from(serviceData["reactions"].values) : [];
 
-      Service service = Service(
-        titre: titre,
-        iconPath: iconPath,
-        red: red,
-        green: green,
-        blue: blue,
-        actions: actions,
-        reactions: reactions,
-      );
+        Service service = Service(
+          titre: titre,
+          iconPath: iconPath,
+          red: red,
+          green: green,
+          blue: blue,
+          actions: actions,
+          reactions: reactions,
+        );
 
-      elements.add(service);
+        elements.add(service);
+      }
     });
   }
 
@@ -223,7 +214,7 @@ class _HomePageState extends State<HomePage> {
   {
     createdAreas.clear();
     elements.clear();
-    final Map<String, dynamic> jsonResultServices = await callForAllAreas();
+    final Map<String, dynamic> jsonResultServices = await callForAllServices();
     createServiceList(jsonResultServices);
     final Map<String, dynamic> jsonResultArea = await callForAllAreas();
     createAreaList(jsonResultArea);
@@ -316,16 +307,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> addArea(String name) async {
+
     final reponse = await http.post(
-      Uri.parse('http://${globals.IPpc}:3000/user/areas'),
+      Uri.parse('http://' + globals.IPpc + ':3000//services/createArea'),      
       body: {
-        'name': name,
-        'isActive': true,
-        'serviceOneName': elements[indexForCreationPage[0]].titre,
-        'serviceTwoName': elements[indexForCreationPage[2]].titre,
-        'serviceOneActionDescription': elements[indexForCreationPage[0]].actions[indexForCreationPage[1]],
-        'serviceTwoActionDescription': elements[indexForCreationPage[2]].actions[indexForCreationPage[3]],
+        'title': name,
+        'isActive': "true",
         'createdBy': "Moi",
+        "action": "ici",
+        "reaction": "la",
+        "launchType": "cron",
+        "data": "hahahaha",
       },
     );
 
@@ -1383,8 +1375,6 @@ class _HomePageState extends State<HomePage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     loadAll();
-    // createServiceList(servicesList);
-    // createAreaList(areaList);
 
     return Scaffold(
       body: Center(
@@ -1398,13 +1388,13 @@ class _HomePageState extends State<HomePage> {
                   onDeconectionTap();
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.transparent, // Fond transparent
+                  backgroundColor: Colors.transparent,
                 ),
                 child: Text(
                   'Déconnexion',
                   style: TextStyle(
-                    color: Color.fromARGB(255, 110, 110, 110), // Texte en blanc
-                    decoration: TextDecoration.underline, // Souligner le texte (optionnel)
+                    color: Color.fromARGB(255, 110, 110, 110),
+                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
@@ -1445,24 +1435,24 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // Positioned(
-            //   left: screenWidth * 0.85,
-            //   top: screenHeight * 0.9,
-            //   child: GestureDetector(
-            //     onTap: profilButtonPress,
-            //     child: Container(
-            //       width: 40,
-            //       height: 40,
-            //       decoration: BoxDecoration(
-            //         image: DecorationImage(
-            //           image: AssetImage('assets/images/profilButton.png'),
-            //           fit: BoxFit.cover,
-            //         ),
-            //         borderRadius: BorderRadius.circular(10.0),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Positioned(
+              left: screenWidth * 0.85,
+              top: screenHeight * 0.9,
+              child: GestureDetector(
+                onTap: profilButtonPress,
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/profilButton.png'),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+            ),
             Positioned(
               left: screenWidth * 0.07,
               top: screenHeight * 0.07,
