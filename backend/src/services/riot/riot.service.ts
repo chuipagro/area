@@ -47,4 +47,25 @@ export class RiotService {
       return response.data;
     });
   }
+
+  async getChampionsRotation(): Promise<any> {
+    const url = `https://euw1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=${this.apiKey}`;
+    return await axios.get(url).then((response: any) => {
+      return response.data;
+    });
+  }
+
+  async getSummonerMatches(puuid: string): Promise<any> {
+    const url = `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10&api_key=${this.apiKey}`;
+    return await axios.get(url).then((response: any) => {
+      return response.data;
+    });
+  }
+
+  async getTopChampionsMasteries(summonerId: string): Promise<any> {
+    const url = `https://euw1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${summonerId}?api_key=${this.apiKey}`;
+    return await axios.get(url).then((response: any) => {
+      return response.data;
+    });
+  }
 }

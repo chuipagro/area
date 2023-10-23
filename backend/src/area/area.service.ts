@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import cron = require('node-cron');
 import { ConfigService } from '@nestjs/config';
 import { RiotService } from '../services/riot/riot.service';
-import { MailService } from '../services/mail/mail.service';
+import { MicrosoftService } from '../services/microsoft/microsoft.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -76,7 +76,7 @@ export class AreaService {
   async launchArea(area: any) {
     const configService = new ConfigService()
     const riotService = new RiotService(configService);
-    const mailService = new MailService();
+    const mailService = new MicrosoftService();
     let actionData: any;
 
     console.log(area.data);

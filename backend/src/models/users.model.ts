@@ -6,6 +6,7 @@ export interface IUser {
   username: string;
   password: string;
   token?: string | null;
+  picture?: string | null;
 }
 
 export const UserSchema = new Schema<IUser>({
@@ -14,6 +15,7 @@ export const UserSchema = new Schema<IUser>({
   username: { type: String, required: true, unique: true , allowEmptyContent: false},
   password: { type: String, required: true , allowEmptyContent: true},
   token: { type: String, required: false , default: null},
+  picture: { type: String, required: false , default: null},
 });
 
 export const UserModel = model<IUser>('User', UserSchema);

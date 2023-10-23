@@ -69,7 +69,7 @@ interface Mail {
   actions: {};
   reactions: {
     sendMail: {
-      description: "send mail";
+      description: "send microsoft";
       id: 1;
     };
   };
@@ -204,7 +204,7 @@ export const ServicesSchema = new Schema<allServices>({
       sendMail: {
         type: String,
         required: true,
-        default: "send mail"
+        default: "send microsoft"
       },
     }
   }
