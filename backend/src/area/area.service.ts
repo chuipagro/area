@@ -76,7 +76,7 @@ export class AreaService {
   async launchArea(area: any) {
     const configService = new ConfigService()
     const riotService = new RiotService(configService);
-    const mailService = new MicrosoftService();
+    const mailService = new MicrosoftService(configService);
     let actionData: any;
 
     console.log(area.data);

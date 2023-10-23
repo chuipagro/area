@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class RiotService {
   private apiKey: string | undefined;
-
   constructor(private configService: ConfigService) {
     this.apiKey = this.configService.get<string>('RIOT_API_KEY');
     if (!this.apiKey) {
