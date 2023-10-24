@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Center, Text, HStack, VStack, Link, Button, Divider, Box, Img, Heading, list, Alert, Grid } from '@chakra-ui/react';
+import { Input, Text, HStack, VStack, Button, Box, Heading, Alert, Grid } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import leftArrow from '../app/leftArrow.png'
@@ -38,6 +38,7 @@ export const CreateArea = (): JSX.Element => {
     const [jsonAREA, setJsonAREA] = React.useState({});
     const storedUsername = localStorage.getItem("userMail");
     const token = localStorage.getItem("token");
+    let readyToCreate: boolean = false;
 
     /**
      * This function update the jsonAREA with the services and the actions/reactions
@@ -482,7 +483,7 @@ export const CreateArea = (): JSX.Element => {
         return (
             <VStack>
                 {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
-                <Grid marginTop="90px" marginLeft="340px" templateColumns="repeat(4, 1fr)" gap={4}>
+                <Grid marginTop="90px" marginLeft={300} templateColumns="repeat(4, 1fr)" gap={4}>
                     {actionBoxes}
                 </Grid>
             </VStack>
@@ -530,7 +531,15 @@ export const CreateArea = (): JSX.Element => {
             )
         } else if (actionVisibility) {
             rows.push(
-                <Box onClick={() => CallActions({ title, color })} p={5} shadow='md' borderRadius={30} borderWidth='1px' boxSize={300} marginLeft={200} inlineSize={size} color={'#CCCCCC'} backgroundColor={color}>
+                <Box onClick={() => CallActions({ title, color })} p={5}
+                    shadow='md'
+                    borderRadius={30}
+                    borderWidth='1px'
+                    boxSize={300}
+                    marginLeft={150}
+                    inlineSize={size}
+                    color={'#CCCCCC'}
+                    backgroundColor={color}>
                     <Heading fontSize='xl'>{title}</Heading>
 
 
@@ -584,20 +593,17 @@ export const CreateArea = (): JSX.Element => {
 
         return (
             <div>
-                {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
-                <Grid marginTop="90px" templateColumns="repeat(2, 1fr)">
-                    {dataArray.map((serviceObject, i) => (
-                        <VStack key={i} display="inline-block">
-                            <DisplayService
-                                title={`${serviceObject.service}`}
-                                desc=""
-                                size={nb1}
-                                data={serviceObject}
-                                key={i}
-                            />
-                        </VStack>
-                    ))}
-                </Grid>
+                {dataArray.map((serviceObject, i) => (
+                    <VStack key={i} display="inline-block">
+                        <DisplayService
+                            title={`${serviceObject.service}`}
+                            desc=""
+                            size={nb1}
+                            data={serviceObject}
+                            key={i}
+                        />
+                    </VStack>
+                ))}
             </div>
         );
     }
@@ -649,8 +655,19 @@ export const CreateArea = (): JSX.Element => {
             )
         )
         if (serviceActionJson.length != 0 && serviceReactionJson.length != 0 && actionJson.length != 0 && reactionJson.length != 0 && !action && !reaction) (
+            readyToCreate = true
+        )
+        if (readyToCreate) (
             rows.push(
                 <div>
+                    <Input
+                        pr='4.5rem'
+                        type="text"
+                        color="black"
+                        placeholder="test"
+                        onChange={e => setAreaName(e.target.value)}
+                    />
+                    <Input  ></Input>
                     <Button onClick={() => navigate("/create")} marginTop={100} marginLeft={0} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
                         <Heading fontSize='xl'>Create your AREA</Heading>
                     </Button>
@@ -665,12 +682,46 @@ export const CreateArea = (): JSX.Element => {
         );
     }
 
+    //-----------------[Create]-------------------------
+
+    /**
+     * This function is used to create the AREA
+     */
+    function Create() {
+        return (
+            <div>
+                <Input
+                    pr='4.5rem'
+                    type="text"
+                    color="black"
+                    placeholder="test"
+                    onChange={e => setAreaName(e.target.value)}
+                />
+                <Button onClick={() => navigate("/create")} marginTop={100} marginLeft={0} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
+                    <Heading fontSize='xl'>Create your AREA</Heading>
+                </Button>
+            </div>
+        )
+    }
+
+
+
+
     if (!areaReceived) {
         return <div>
             <Taskbar></Taskbar>
             <Title />
             <Text marginLeft={150}> waiting for api response...</Text>
 
+        </div>
+    } else if (!readyToCreate) {
+        return <div style={{
+            backgroundColor: "white", backgroundRepeat: "no-repeat", backgroundSize: "cover",
+            height: 930, width: 1905
+        }}>
+            <Taskbar></Taskbar>
+            <DisconnectButtun />
+            <Display></Display>
         </div>
     } else {
         return <div style={{
@@ -679,7 +730,7 @@ export const CreateArea = (): JSX.Element => {
         }}>
             <Taskbar></Taskbar>
             <DisconnectButtun />
-            <Display></Display>
+            <Create></Create>
         </div>
     }
 }
