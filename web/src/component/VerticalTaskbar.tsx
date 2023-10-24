@@ -2,7 +2,8 @@ import React from 'react';
 import '../app/App.css';
 import { Button, Box, HStack, Link } from '@chakra-ui/react';
 
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
+import logo from '../app/logo.png'
 
 
 /**
@@ -14,58 +15,46 @@ import { useNavigate } from "react-router-dom"
  */
 export function Taskbar() {
     const navigate = useNavigate()
+    const location = useLocation();
+    const isHomePage = location.pathname === "/home";
+    const isCreatePage = location.pathname === "/create";
+
+
     return (
         <Box
             backgroundColor="black"
-            width="100px"
+            width="140px"
             height="100%"
             position="fixed"
+            borderRadius={50}
             top="0"
-            left="0"
+            left="-10"
             boxShadow="md"
         >
-            {/* <Box
-                backgroundColor="blue"
-                boxSize={10}
+            <img src={logo} width={80} style={{ marginTop: '30px', marginLeft: '50px' }} ></img>
+            <Box
+                backgroundColor={isHomePage ? "blue" : "white"}
+                px={6}
+                py={6}
                 position="fixed"
+                borderRadius={50}
                 top="400"
-                left="30"
+                left="26"
                 boxShadow="md"
                 onClick={() => navigate('/home')}>
 
-            </Box> */}
+            </Box>
             <Box
-                backgroundColor="blue"
-                boxSize={10}
+                backgroundColor={isCreatePage ? "blue" : "white"}
+                px={6}
+                py={6}
                 position="fixed"
+                borderRadius={50}
                 top="500"
-                left="30"
+                left="26"
                 boxShadow="md"
                 onClick={() => navigate('/create')}>
 
             </Box>
-            {/* for the profile */}
-            {/* <Box
-                backgroundColor="blue"
-                boxSize={10}
-                position="fixed"
-                top="600"
-                left="30"
-                boxShadow="md" >
-
-            </Box> */}
-            <Box
-                backgroundColor="red"
-                boxSize={10}
-                position="fixed"
-                top="600"
-                left="30"
-                boxShadow="md"
-                onClick={() => navigate('/login')}>
-
-            </Box>
-
-
         </Box>)
-
 }
