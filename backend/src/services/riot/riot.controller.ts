@@ -5,7 +5,8 @@ import { RiotService } from './riot.service';
 
 @Controller('riot')
 export class RiotController {
-  constructor(private readonly RiotService: RiotService) {}
+  constructor(private readonly RiotService: RiotService) {
+  }
 
   @ApiBody({
     schema: {
