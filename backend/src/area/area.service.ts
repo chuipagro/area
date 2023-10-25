@@ -17,16 +17,29 @@ export class AreaService {
     });
   }
   async launchArea(area: any) {
-    const configService = new ConfigService()
+    const configService = new ConfigService();
     const riotService = new RiotService(configService);
-    const mailService = new MicrosoftService(configService);
+    const microsoftService = new MicrosoftService(configService);
     let actionData: any;
+    const puuid = await riotService.getSummonerByName(area.data.riot.summonerName)
 
     switch (area.action.service) {
       case 1:
         switch (area.action.type) {
           case 1:
-            actionData = await riotService.getSummonerByName("pablo0675");
+            actionData = await riotService.waitForNewWin(puuid)
+            break;
+          case 2:
+            actionData = await riotService.waitForNewLose(puuid)
+            break;
+          case 3:
+            actionData = await riotService.checkPlayerLevel(puuid)
+            break;
+          case 4:
+            actionData = await riotService.getBasicMatchsInfo(puuid)
+            break;
+          case 5:
+            actionData = await riotService.waitForNewMatch(puuid)
             break;
           default:
             console.log("action not found");
@@ -42,7 +55,7 @@ export class AreaService {
       case 3:
         switch (area.reaction.type) {
           case 1:
-            await mailService.sendMail(area.data.mail.to, area.data.mail.from, area.data.mail.subject, area.data.mail.text);
+            await microsoftService.sendMail(area.data.mail.to, area.data.mail.from, area.data.mail.subject, area.data.mail.text);
             break;
           default:
             console.log("action not found");

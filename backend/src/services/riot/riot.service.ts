@@ -2,7 +2,15 @@ import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CronGestion } from '../../utils/cronGestion';
+import * as fs from 'fs';
+import * as path from 'path';
+
 import cron = require('node-cron');
+const filepath = './src/services/riot/champion.json';
+const champions = JSON.parse(fs.readFileSync(path.resolve(filepath), 'utf8'));
+
+
+const basePictureUrl = 'http://ddragon.leagueoflegends.com/cdn/13.20.1/data/en_US/champion/';
 
 @Injectable()
 export class RiotService {
@@ -166,5 +174,33 @@ export class RiotService {
       matchsInfo.push(matchInfo);
     }
     return matchsInfo;
+  }
+
+  async checkPlayerLevel(puuid: string) : Promise<String | null>
+  {
+    return new Promise<String | null>(async (resolve, reject) => {
+      const cronGestion = new CronGestion();
+      const timezone = "Europe/Paris";
+      const lvl = this.getSummonerByPuuid(puuid).then((response: any) => {
+        return response.summonerLevel;
+      });
+      const getnewPlayerLevel = () => {
+        const dateAtCreation = new Date().toLocaleDateString();
+        const timeAtCreation = new Date().toLocaleTimeString();
+        const cronTimer = cronGestion.timerToCron("s10", timeAtCreation, dateAtCreation);
+
+        const job = cron.schedule(cronTimer, async () => {
+          const newLevel = this.getSummonerByPuuid(puuid).then((response: any) => {
+            return response.summonerLevel;
+          });
+          if (newLevel != lvl)
+            resolve("congrat!! you reached the " + newLevel + "level")
+        }, {
+          scheduled: true,
+          timezone,
+        });
+        job.start();
+      }
+    })
   }
 }

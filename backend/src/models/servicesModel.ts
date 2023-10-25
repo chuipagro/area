@@ -9,26 +9,26 @@ interface riot {
     blue: 0;
   };
   actions: {
-    getSummonerByName: {
-      description: "get player info by name";
+    getNewWin: {
+      description: "check if a player won";
       id: 1;
     };
-    getSummonerByPuuid: {
-      description: "get player info by puuid";
-      id: 2
+    getNewLose: {
+      description: "check if a player lost";
+      id: 2;
     };
-    getSummonerBySummonerId: {
-      description: "get player info by summoner id";
+    getLevelUp: {
+      description: "check if a player leveled up";
       id: 3;
     };
-    getMatchListByPuuid: {
-      description: "get match list by puuid";
+    get10LastGames: {
+      description: "get 10 last games";
       id: 4;
     };
-    getMatchByMatchId: {
-      description: "get match by match id";
+    getNewGame: {
+      description: "check if there is a new game"
       id: 5;
-    };
+    }
   };
   reactions: {};
 }
