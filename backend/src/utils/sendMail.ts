@@ -3,7 +3,7 @@ import { AuthorizationCode } from 'simple-oauth2';
 
 export async function sendEmail(to: string, subject: string, text: string, from: string) {
   let transporter = nodemailer.createTransport({
-    service: 'hotmail',
+    service: 'gmail',
     auth: {
       user: 'pablo06082000@gmail.com',
       pass: 'swhc qeeb cwni xqls',

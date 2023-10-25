@@ -16,35 +16,89 @@ export class AreaService {
       console.log(err);
     });
   }
-  async launchArea(area: any) {
+
+  async launchRiotArea(area: IArea) : Promise<any>
+  {
     const configService = new ConfigService();
     const riotService = new RiotService(configService);
-    const microsoftService = new MicrosoftService(configService);
-    let actionData: any;
-    const puuid = await riotService.getSummonerByName(area.data.riot.summonerName)
+    let puuid = null;
+    let actionData;
 
+    if ( area.data.riot && area.data.riot.summonerName != null)
+      puuid = await riotService.getSummonerByName(area.data.riot.summonerName);
+
+    switch (area.action.type) {
+      case 1:
+        actionData = await riotService.waitForNewWin(puuid)
+        break;
+      case 2:
+        actionData = await riotService.waitForNewLose(puuid)
+        break;
+      case 3:
+        actionData = await riotService.checkPlayerLevel(puuid)
+        break;
+      case 4:
+        actionData = await riotService.getBasicMatchsInfo(puuid)
+        break;
+      case 5:
+        actionData = await riotService.waitForNewMatch(puuid)
+        break;
+      default:
+        console.log("action not found");
+        break;
+    }
+    return actionData;
+  }
+
+  async launchMicrosoftAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const microsoftService = new MicrosoftService(configService);
+    let actionData
+    if (area.data.mail == null)
+      area.data.mail = {
+        from: "",
+        to: "",
+        subject: "",
+        text: ""
+      };
+
+    switch (area.action.type) {
+      case 1:
+        break;
+      default:
+        console.log("action not found");
+        break;
+    }
+    return actionData;
+  }
+
+  async launchMicrosoftReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const microsoftService = new MicrosoftService(configService);
+    if (area.data.mail == null)
+      area.data.mail = {
+        from: "self",
+        to: "pablo.levy@epitech.eu",
+        subject: "no mail",
+        text: "no mail"
+      };
+    switch (area.reaction.type) {
+      case 1:
+        if (area.data.mail.to != null && area.data.mail.subject != null && area.data.mail.text != null && area.data.mail.from != null)
+          await microsoftService.sendMail(area.data.mail.to, area.data.mail.subject, area.data.mail.text, area.data.mail.from);
+        break;
+      default:
+        console.log("action not found");
+    }
+  }
+
+  async launchArea(area: IArea) {
+    let actionData = null;
     switch (area.action.service) {
       case 1:
-        switch (area.action.type) {
-          case 1:
-            actionData = await riotService.waitForNewWin(puuid)
-            break;
-          case 2:
-            actionData = await riotService.waitForNewLose(puuid)
-            break;
-          case 3:
-            actionData = await riotService.checkPlayerLevel(puuid)
-            break;
-          case 4:
-            actionData = await riotService.getBasicMatchsInfo(puuid)
-            break;
-          case 5:
-            actionData = await riotService.waitForNewMatch(puuid)
-            break;
-          default:
-            console.log("action not found");
-            break;
-        }
+        actionData = await this.launchRiotArea(area)
         break;
       default:
         console.log("service not found");
@@ -55,7 +109,7 @@ export class AreaService {
       case 3:
         switch (area.reaction.type) {
           case 1:
-            await microsoftService.sendMail(area.data.mail.to, area.data.mail.from, area.data.mail.subject, area.data.mail.text);
+            await this.launchMicrosoftReaction(area, actionData)
             break;
           default:
             console.log("action not found");
