@@ -1,30 +1,27 @@
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from "react-router-dom";
-
-import './App.css';
-
-// import { Center, VStack, Link, Box } from '@chakra-ui/react';
 import { Head } from "../pages/Home"
+import { BrowserRouter as Router, Route, Routes, } from "react-router-dom";
+import './App.css';
 import { Register } from "../pages/Register"
 import { Login } from "../pages/Login"
-import { Home2 } from "../pages/dashboard"
+import { Dashboard } from "../pages/Dashboard"
 import { LoginWithService } from "../pages/LoginWithService"
 import { Developers } from "../pages/Developers"
 import { Explore } from "../pages/Explore"
 import { Partnership } from "../pages/Partnership"
 import { GetStarted } from "../pages/GetStarted"
+import { CreateArea } from "../pages/CreateArea";
 import { GithubAuthRedirect } from "../pages/GithubAuthRedirect"
 
+/**
+ * This function display the app
+*/
 const App = (): JSX.Element => (
   <Router>
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/home" element={<Home2 />} />
+      <Route path="/home" element={<Dashboard />} />
       <Route path="/login-with-service" element={<LoginWithService />} />
       <Route path="/partnership" element={<Partnership />} />
       <Route path="/get-started" element={<GetStarted />} />
@@ -32,6 +29,7 @@ const App = (): JSX.Element => (
       <Route path="/homePage" element={<Head />} />
       <Route path="/explore" element={<Explore />} />
       <Route path="/oauthgithub" element={<GithubAuthRedirect />} />
+      <Route path="/create" element={<CreateArea />} />
     </Routes>
   </Router >
 );

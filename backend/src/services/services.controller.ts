@@ -123,4 +123,18 @@ export class ServicesController {
     const services = await this.ServicesService.getAllServices();
     return res.status(200).send({ message: 'success', services: services});
   }
+
+  @ApiOkResponse ({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Get('getAllAreas')
+  async getAllAreas(
+    @Res() res: Response,
+  ): Promise<Response> {
+    const areas = await this.ServicesService.getAllAreas();
+    return res.status(200).send({ message: 'success', areas: areas});
+  }
 }

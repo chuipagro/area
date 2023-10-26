@@ -6,6 +6,9 @@ import App from './app/App';
 import theme from './theme';
 import './theme/index.css';
 
+/**
+ * This function display the app
+ */
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>

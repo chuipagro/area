@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
-import 'package:mobile/GetStartedEditorPage.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:mobile/HomePage.dart';
 import 'package:http/http.dart' as http;
@@ -84,7 +83,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
       url: authUrl,
       callbackUrlScheme: 'area',
     );
-
 
     String? codeParam = Uri.parse(result).queryParameters['code'];
 
@@ -217,7 +215,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                         children: <Widget>[
                                             const SizedBox(width: 20.0),
                                             Image.asset(
-                                                'assets/images/DiscordLogo.png',
+                                                'assets/images/GithubLogo.png',
                                                 width: 35.0,
                                                 height: 35.0,
                                             ),
