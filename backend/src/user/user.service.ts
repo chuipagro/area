@@ -1,6 +1,8 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import * as jwt from 'jsonwebtoken';
+import { JwtPayload } from '../authentication/jwt-payload.interface';
 import { IUser, UserModel } from '../models/users.model';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -28,6 +30,21 @@ export class UserService {
     } catch (error) {
       if (error.code === 11000) {
         throw new ConflictException('Ce mail ou ce nom d\'utilisateur est déjà utilisé');
+      }
+      throw error;
+    }
+  }
+
+  async createOAuthGithub(mail: string, username: string, password: string): Promise<typeof UserModel> {
+    const uid = uuidv4();
+    console.log("uid:", uid, "mail:", mail, "username:", username, "password:", password)
+    const createdUser = new this.userModel({ uid, mail, username, password, token: null });
+
+    try {
+      return await createdUser.save();
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new ConflictException('Ce compte existe déjà');
       }
       throw error;
     }

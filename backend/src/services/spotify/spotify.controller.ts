@@ -21,11 +21,11 @@ export class SpotifyController {
     status: 200,
   })
 
-  @Post('postToken')
-  async postToken(
+  @Post('postTokenSpotify')
+  async postTokenSpotify(
     @Res() res: Response,
     ): Promise<Response> {
-    const result = await this.SpotifyService.postToken();
+    const result = await this.SpotifyService.postTokenSpotify();
     return res.status(200).send(result);
   }
 
