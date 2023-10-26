@@ -22,14 +22,14 @@ export class UserService {
 
   async create(mail: string, username: string, password: string): Promise<typeof UserModel> {
     const uid = uuidv4();
-    console.log("uid:", uid, "mail:", mail, "username:", username, "password:", password)
+    console.log("uid:", uid, "microsoft:", mail, "username:", username, "password:", password)
     const createdUser = new this.userModel({ uid, mail, username, password, token: null });
 
     try {
       return await createdUser.save();
     } catch (error) {
       if (error.code === 11000) {
-        throw new ConflictException('Ce mail ou ce nom d\'utilisateur est déjà utilisé');
+        throw new ConflictException('Ce microsoft ou ce nom d\'utilisateur est déjà utilisé');
       }
       throw error;
     }
