@@ -11,6 +11,7 @@ import { Partnership } from "../pages/Partnership"
 import { GetStarted } from "../pages/GetStarted"
 import { CreateArea } from "../pages/CreateArea";
 import { GithubAuthRedirect } from "../pages/GithubAuthRedirect"
+import { GoogleAuthRedirect } from "../pages/GoogleAuthRedirect";
 
 /**
  * This function display the app
@@ -29,6 +30,7 @@ const App = (): JSX.Element => (
       <Route path="/homePage" element={<Head />} />
       <Route path="/explore" element={<Explore />} />
       <Route path="/oauthgithub" element={<GithubAuthRedirect />} />
+      <Route path="/oauthgoogle" element={<GoogleAuthRedirect />} />
       <Route path="/create" element={<CreateArea />} />
     </Routes>
   </Router >
