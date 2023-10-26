@@ -1,4 +1,3 @@
-
 import {
   BrowserRouter as Router,
   Route,
@@ -8,17 +7,16 @@ import {
 import './App.css';
 
 // import { Center, VStack, Link, Box } from '@chakra-ui/react';
-// import { Head } from "../pages/Home"
+import { Head } from "../pages/Home"
 import { Register } from "../pages/Register"
 import { Login } from "../pages/Login"
 import { Home2 } from "../pages/dashboard"
 import { LoginWithService } from "../pages/LoginWithService"
 import { Developers } from "../pages/Developers"
 import { Explore } from "../pages/Explore"
-import { Partnership } from "../pages/Partnership";
+import { Partnership } from "../pages/Partnership"
 import { GetStarted } from "../pages/GetStarted"
-
-
+import { GithubAuthRedirect } from "../pages/GithubAuthRedirect"
 
 const App = (): JSX.Element => (
   <Router>
@@ -31,7 +29,9 @@ const App = (): JSX.Element => (
       <Route path="/partnership" element={<Partnership />} />
       <Route path="/get-started" element={<GetStarted />} />
       <Route path="/developers" element={<Developers />} />
+      <Route path="/homePage" element={<Head />} />
       <Route path="/explore" element={<Explore />} />
+      <Route path="/oauthgithub" element={<GithubAuthRedirect />} />
     </Routes>
   </Router >
 );

@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Res, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
+import queryString from 'query-string';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('auth')
@@ -201,31 +202,46 @@ export class AuthController {
   })
 
   @ApiOkResponse({
-    description: 'refresh token',
+    description: 'Token',
     type: String,
     status: 200,
   })
 
-  @Get('getToken')
-  async GetToken(
+  @Post('postToken')
+  async PostToken(
     @Res() res: Response,
     @Body('code') code: string,
   ): Promise<any> {
     const clientIdGithub = '46d5db5635abf205e5fb';
     const clientSecretGithub = 'c7e2fffd378ec39098fbbce38a3b6adcd4756fc0';
 
-    const params = "?client_id=" + clientIdGithub + "&client_secret=" + clientSecretGithub + "&code=" + code;
+    try {
+      const response = await fetch("https://github.com/login/oauth/access_token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          'client_id': clientIdGithub,
+          'client_secret': clientSecretGithub,
+          'code': code,
+        }),
+      });
+  
+      if (response.ok) {
+        const textData = await response.text();
+        const params = new URLSearchParams(textData);
 
-    await fetch("https://github.com/login/oauth/access_token" + params, {
-      method: "POST",
-      headers: {
-        "Accept": "application/json"
+        const accessToken = params.get('access_token');
+        const token = String(accessToken);
+        const oauth = "Github";
+        await this.OAuth2(res, token, oauth);
+      } else {
+        res.status(response.status).send('Erreur lors de la demande à GitHub');
       }
-    }).then((response) => {
-      return response.json();
-    }).then((data) => {
-      console.log(data);
-      res.json(data)
-    })
+    } catch (error) {
+      console.error('Erreur lors de la demande à GitHub:', error);
+      res.status(500).send('Erreur interne du serveur');
+    }
   }
 }
