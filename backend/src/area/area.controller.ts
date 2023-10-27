@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Res } from '@nestjs/common';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AreaService } from './area.service';
@@ -172,6 +172,33 @@ export class AreaController {
     @Body('token') token: string,
   ): Promise<Response> {
     await this.areaService.getUserAreas(token);
+    return res.status(200).send({ message: 'success' });
+  }
+
+  @ApiBody(
+    {
+      schema: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          token: { type: 'string' },
+        },
+      }
+    })
+
+  @ApiOkResponse ({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Delete('deleteArea')
+  async deleteArea(
+    @Res() res: Response,
+    @Body('title') title: string,
+    @Body('token') token: string,
+  ): Promise<Response> {
+    await this.areaService.deleteArea(title, token);
     return res.status(200).send({ message: 'success' });
   }
 }

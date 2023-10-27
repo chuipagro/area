@@ -43,6 +43,13 @@ interface riot {
       need: {
         summonerName: string;
       }
+    },
+    getPlayerStartNewGame: {
+      description: "check if a player start a new game"
+      id: 6;
+      need: {
+        summonerName: string;
+      }
     }
   };
   reactions: {};
@@ -73,9 +80,9 @@ interface spotify {
   reactions: {};
 }
 
-interface Mail {
+interface Microsoft {
   id: 3;
-  logo: "assets/images/mailLogo.png";
+  logo: "assets/images/microsoftLogo.png";
   color: {
     red: 255;
     green: 255;
@@ -84,8 +91,14 @@ interface Mail {
   actions: {};
   reactions: {
     sendMail: {
-      description: "send microsoft";
+      description: "send mail";
       id: 1;
+      need: {
+        to: string | null | string[];
+        from: string | null;
+        subject: string | null;
+        text: string | null;
+      }
     };
   };
 }
@@ -93,7 +106,7 @@ interface Mail {
 export interface allServices {
   riot: riot;
   spotify: spotify;
-  mail: Mail;
+  microsoft: Microsoft;
 }
 
 export const ServicesSchema = new Schema<allServices>({
@@ -210,6 +223,24 @@ export const ServicesSchema = new Schema<allServices>({
             required: true
           }
         }
+      },
+      getPlayerStartNewGame: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if a player start a new game"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 6
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+        }
       }
     },
     reactions: {}
@@ -256,11 +287,11 @@ export const ServicesSchema = new Schema<allServices>({
     },
     reactions: {}
   },
-  mail: {
+  microsoft: {
     logo: {
       type: String,
       required: true,
-      default: "assets/images/mailLogo.png"
+      default: "assets/images/microsoftLogo.png"
     },
     color: {
       red: {
@@ -282,10 +313,39 @@ export const ServicesSchema = new Schema<allServices>({
     actions: {},
     reactions: {
       sendMail: {
-        type: String,
-        required: true,
-        default: "send microsoft"
-      },
+        description: {
+          type: String,
+          required: true,
+          default: "send mail"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 1
+        },
+        need: {
+          to: {
+            type: String,
+            required: false,
+            default: null
+          },
+          from: {
+            type: String,
+            required: false,
+            default: null
+          },
+          subject: {
+            type: String,
+            required: false,
+            default: null
+          },
+          text: {
+            type: String,
+            required: false,
+            default: null
+          }
+        }
+      }
     }
   }
 });

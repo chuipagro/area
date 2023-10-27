@@ -165,4 +165,11 @@ export class AreaService {
     area.active = status;
     await area.save();
   }
+
+  async deleteArea(areaName: string, userToken: string): Promise<void> {
+    const area = await AreaModel.findOneAndDelete({ title: areaName, user: userToken }).exec();
+    if (!area) {
+       throw new Error('Area not found');
+    }
+  }
 }
