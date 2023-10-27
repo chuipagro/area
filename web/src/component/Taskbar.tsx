@@ -14,7 +14,10 @@ import { Button, Box, HStack, Link } from '@chakra-ui/react';
  */
 export function Taskbar() {
     return (
-        <Box bg='black' w='100%' p={10} color='white'>
+        <Box
+            bg='black'
+            width="100%"
+            height="13%" p={10} color='white'>
             <HStack>
                 <Button colorScheme='white' variant='ghost' fontSize={{ base: '35px' }} >
                     <Link color='white' href='/login'>
