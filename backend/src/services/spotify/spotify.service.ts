@@ -21,7 +21,7 @@ export class SpotifyService {
     this.authTOKEN = Buffer.from(`${this.clientID}:${this.clientSECRET}`, 'utf-8').toString('base64');
   }
 
-  async postToken(): Promise<any> {
+  async postTokenSpotify(): Promise<any> {
     const url = `https://accounts.spotify.com/api/token`;
 
     return await axios.post(url, {'grant_type':'client_credentials'}, {
@@ -35,7 +35,7 @@ export class SpotifyService {
   }
 
   async getAudioFeaturesTrack(track_id: string): Promise<any> {
-    const access_token = await this.postToken();
+    const access_token = await this.postTokenSpotify();
     const url = `https://api.spotify.com/v1/audio-features/${track_id}`;
 
     return await axios.get(url, {
@@ -50,7 +50,7 @@ export class SpotifyService {
   // https://api.spotify.com/v1/browse/new-releases
 
   async getNewReleases(country: string, limit: number, offset: number): Promise<any> {
-    const access_token = await this.postToken();
+    const access_token = await this.postTokenSpotify();
     const url = `https://api.spotify.com/v1/browse/new-releases?country=${country}&limit=${limit}&offset=${offset}`;
 
     return await axios.get(url, {

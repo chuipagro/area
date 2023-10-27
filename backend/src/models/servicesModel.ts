@@ -9,26 +9,41 @@ interface riot {
     blue: 0;
   };
   actions: {
-    getSummonerByName: {
-      description: "get player info by name";
+    getNewWin: {
+      description: "check if a player won";
       id: 1;
+      need: {
+        summonerName: string;
+      }
     };
-    getSummonerByPuuid: {
-      description: "get player info by puuid";
-      id: 2
+    getNewLose: {
+      description: "check if a player lost";
+      id: 2;
+      need: {
+        summonerName: string;
+      }
     };
-    getSummonerBySummonerId: {
-      description: "get player info by summoner id";
+    getLevelUp: {
+      description: "check if a player leveled up";
       id: 3;
+      need: {
+        summonerName: string;
+      }
     };
-    getMatchListByPuuid: {
-      description: "get match list by puuid";
+    get10LastGames: {
+      description: "get 10 last games";
       id: 4;
+      need: {
+        summonerName: string;
+      }
     };
-    getMatchByMatchId: {
-      description: "get match by match id";
+    getNewGame: {
+      description: "check if there is a new game"
       id: 5;
-    };
+      need: {
+        summonerName: string;
+      }
+    }
   };
   reactions: {};
 }
@@ -69,7 +84,7 @@ interface Mail {
   actions: {};
   reactions: {
     sendMail: {
-      description: "send mail";
+      description: "send microsoft";
       id: 1;
     };
   };
@@ -106,31 +121,96 @@ export const ServicesSchema = new Schema<allServices>({
       }
     },
     actions: {
-      getSummonerByName: {
-        type: String,
-        required: true,
-        default: "get summoner by name"
+      getNewWin: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if a player won"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 1
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+          }
       },
-      getSummonerByPuuid: {
-        type: String,
-        required: true,
-        default: "get player info by puuid"
+      getNewLose: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if a player lost"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 2
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+          }
       },
-      getSummonerBySummonerId: {
-        type: String,
-        required: true,
-        default: "get summoner by summoner id"
+      getLevelUp: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if a player leveled up"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 3
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+          }
       },
-      getMatchListByPuuid: {
-        type: String,
-        required: true,
-        default: "get match list by puuid"
+      get10LastGames: {
+        description: {
+          type: String,
+          required: true,
+          default: "get 10 last games"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 4
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+          }
       },
-      getMatchByMatchId: {
-        type: String,
-        required: true,
-        default: "get match by match id"
-      },
+      getNewGame: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if there is a new game"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 5
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+        }
+      }
     },
     reactions: {}
   },
@@ -204,7 +284,7 @@ export const ServicesSchema = new Schema<allServices>({
       sendMail: {
         type: String,
         required: true,
-        default: "send mail"
+        default: "send microsoft"
       },
     }
   }
