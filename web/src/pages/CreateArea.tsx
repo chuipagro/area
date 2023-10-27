@@ -16,7 +16,9 @@ import { InputText } from '../component/TexInput';
 export const CreateArea = (): JSX.Element => {
     const navigate = useNavigate()
 
-    const [areaName, setAreaName] = React.useState('');
+    // const [areaName, setAreaName] = React.useState('');
+    // const [areaName, setAreaName] =
+    const areaName = React.useRef(null);
 
     const [areaReceived, setAreaReceived] = React.useState(false);
     const [isErrorReceived, setIsErrorReceived] = React.useState(false)
@@ -38,7 +40,7 @@ export const CreateArea = (): JSX.Element => {
     const [jsonAREA, setJsonAREA] = React.useState({});
     const storedUsername = localStorage.getItem("userMail");
     const token = localStorage.getItem("token");
-    let readyToCreate: boolean = false;
+    const [readyToCreate, setReadyToCreate] = React.useState(false);
 
     /**
      * This function update the jsonAREA with the services and the actions/reactions
@@ -617,6 +619,7 @@ export const CreateArea = (): JSX.Element => {
     function Display() {
 
         let rows = [];
+
         if (!action && !reaction) (
             rows.push(
                 <HStack spacing="50px">
@@ -638,7 +641,7 @@ export const CreateArea = (): JSX.Element => {
                 </HStack>
             )
         )
-        if (action) (
+        else if (action) (
             rows.push(
                 <div>
                     <img src={leftArrow} onClick={handleAction} width={30} style={{ marginRight: '1500px' }} ></img>
@@ -646,7 +649,7 @@ export const CreateArea = (): JSX.Element => {
                 </div>
             )
         )
-        if (reaction) (
+        else if (reaction) (
             rows.push(
                 <div>
                     <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginRight: '1500px' }} ></img>
@@ -655,20 +658,21 @@ export const CreateArea = (): JSX.Element => {
             )
         )
         if (serviceActionJson.length != 0 && serviceReactionJson.length != 0 && actionJson.length != 0 && reactionJson.length != 0 && !action && !reaction) (
-            readyToCreate = true
+            setReadyToCreate(true)
         )
         if (readyToCreate) (
             rows.push(
                 <div>
                     <Input
-                        pr='4.5rem'
+                        key="unique-key"
                         type="text"
                         color="black"
-                        placeholder="test"
-                        onChange={e => setAreaName(e.target.value)}
+                        placeholder="Enter your AREA name"
+                        // value={areaName}
+                        // onChange={e => setAreaName(e.target.value)}
+                        ref={areaName}
                     />
-                    <Input  ></Input>
-                    <Button onClick={() => navigate("/create")} marginTop={100} marginLeft={0} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
+                    <Button onClick={() => navigate("/create")} marginTop={100} marginLeft={40} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
                         <Heading fontSize='xl'>Create your AREA</Heading>
                     </Button>
                 </div>
@@ -682,30 +686,6 @@ export const CreateArea = (): JSX.Element => {
         );
     }
 
-    //-----------------[Create]-------------------------
-
-    /**
-     * This function is used to create the AREA
-     */
-    function Create() {
-        return (
-            <div>
-                <Input
-                    pr='4.5rem'
-                    type="text"
-                    color="black"
-                    placeholder="test"
-                    onChange={e => setAreaName(e.target.value)}
-                />
-                <Button onClick={() => navigate("/create")} marginTop={100} marginLeft={0} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
-                    <Heading fontSize='xl'>Create your AREA</Heading>
-                </Button>
-            </div>
-        )
-    }
-
-
-
 
     if (!areaReceived) {
         return <div>
@@ -714,15 +694,6 @@ export const CreateArea = (): JSX.Element => {
             <Text marginLeft={150}> waiting for api response...</Text>
 
         </div>
-    } else if (!readyToCreate) {
-        return <div style={{
-            backgroundColor: "white", backgroundRepeat: "no-repeat", backgroundSize: "cover",
-            height: 930, width: 1905
-        }}>
-            <Taskbar></Taskbar>
-            <DisconnectButtun />
-            <Display></Display>
-        </div>
     } else {
         return <div style={{
             backgroundColor: "white", backgroundRepeat: "no-repeat", backgroundSize: "cover",
@@ -730,7 +701,7 @@ export const CreateArea = (): JSX.Element => {
         }}>
             <Taskbar></Taskbar>
             <DisconnectButtun />
-            <Create></Create>
+            <Display></Display>
         </div>
     }
 }
