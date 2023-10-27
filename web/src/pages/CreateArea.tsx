@@ -230,6 +230,9 @@ export const CreateArea = (): JSX.Element => {
             setAction(true);
         if (action)
             setAction(false)
+        if (defaultActionDesc === "") {
+            setServiceActionJson("")
+        }
     }
 
     /**
@@ -242,6 +245,9 @@ export const CreateArea = (): JSX.Element => {
             setReaction(true);
         if (reaction)
             setReaction(false)
+        if (defaultReactionDesc === "") {
+            setServiceReactionJson("")
+        }
     }
 
     /**
@@ -660,7 +666,7 @@ export const CreateArea = (): JSX.Element => {
         if (serviceActionJson.length != 0 && serviceReactionJson.length != 0 && actionJson.length != 0 && reactionJson.length != 0 && !action && !reaction) (
             setReadyToCreate(true)
         )
-        if (readyToCreate) (
+        if (readyToCreate && (!action && !reaction)) (
             rows.push(
                 <div>
                     <Input
