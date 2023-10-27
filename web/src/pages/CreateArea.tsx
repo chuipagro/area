@@ -424,23 +424,21 @@ export const CreateArea = (): JSX.Element => {
 
         return (
             <div>
-                {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
-                <Grid marginTop="90px" templateColumns="repeat(2, 1fr)">
-                    {dataArray.map((serviceObject, i) => (
-                        <VStack key={i} display="inline-block">
-                            <DisplayServiceReaction
-                                title={`${serviceObject.service}`}
-                                desc=""
-                                size={nb1}
-                                data={serviceObject}
-                                key={i}
-                            />
-                        </VStack>
-                    ))}
-                </Grid>
+                {dataArray.map((serviceObject, i) => (
+                    <VStack key={i} display="inline-block">
+                        <DisplayServiceReaction
+                            title={`${serviceObject.service}`}
+                            desc=""
+                            size={nb1}
+                            data={serviceObject}
+                            key={i}
+                        />
+                    </VStack>
+                ))}
             </div>
         );
     }
+
 
     //-----------------[ACTION]-------------------------
 
