@@ -9,24 +9,36 @@ export class AreaController {
   constructor(private readonly areaService: AreaService) {}
 
   @ApiOkResponse ({
-    description: "return a list of IArea" +
-      "IArea {\n" +
-      "  title: string;\n" +
-      "  active: boolean;\n" +
-      "  createdBy: string;\n" +
-      "  action: {\n" +
-      "    type: number;\n" +
-      "    service: number;\n" +
-      "  }\n" +
-      "  reaction: {\n" +
-      "    type: number;\n" +
-      "    service: number;\n" +
-      "  }\n" +
-      "  data: IData;\n" +
-      "  timeAtCreation: string;\n" +
-      "  dateAtCreation: string;\n" +
-      "}",
+    description: "return a list of IArea",
     status: 200,
+    schema: {
+      properties: {
+        title: { type: 'string' },
+        active: { type: 'boolean'},
+        createdBy: { type: 'string'},
+        action: {
+          type: "array",
+          items: {
+            properties: {
+              type: { type: 'integer' },
+              service: { type: 'integer' },
+            },
+          },
+        },
+        reaction: {
+          type: "array",
+          items: {
+            properties: {
+              type: { type: 'integer' },
+              service: { type: 'integer' },
+            },
+          },
+        },
+        data: { type: 'object' },
+        timeAtCreation: { type: 'string'},
+        dateAtCreation: { type: 'string'}
+      },
+    },
   })
 
   @Get('getAllAreas')
