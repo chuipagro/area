@@ -221,7 +221,7 @@ export const CreateArea = (): JSX.Element => {
     }
 
     /**
-     * This function handle the what to display when the user click on the action button
+     * This function handle what to display when the user click on the action button
      */
     const handleAction = () => {
         if (!actionVisibility)
@@ -236,7 +236,7 @@ export const CreateArea = (): JSX.Element => {
     }
 
     /**
-     * This function handle the what to display when the user click on the reaction button
+     * This function handle what to display when the user click on the reaction button
      */
     const handleReaction = () => {
         if (!reactionVisibility)
@@ -251,7 +251,7 @@ export const CreateArea = (): JSX.Element => {
     }
 
     /**
-     * This function handle the what to display when the user click on the action button
+     * This function handle what to display when the user click on the action button
      */
     const handleActionsVisibility = () => {
         if (!actionVisibility)
@@ -291,7 +291,10 @@ export const CreateArea = (): JSX.Element => {
         setReactionJson(reactionDescription);
         console.log(`title in call action = ${reactionDescription}`)
         handleReactionsVisibility();
-        handleReaction();
+        if (!reaction)
+            setReaction(true);
+        if (reaction)
+            setReaction(false)
         setDefaultReactionColor(ReactionColor);
 
         setDefaultReactionDesc(reactionDescription);
@@ -450,7 +453,10 @@ export const CreateArea = (): JSX.Element => {
         setActionJson(actionDescription);
 
         handleActionsVisibility();
-        handleAction();
+        if (!action)
+            setAction(true);
+        if (action)
+            setAction(false)
 
         setDefaultActionColor(ActionColor);
 
