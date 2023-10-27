@@ -172,4 +172,17 @@ export class AreaService {
        throw new Error('Area not found');
     }
   }
+
+  async updateArea(areaName: string, userToken: string, updateData: object): Promise<void> {
+    const area = await AreaModel.findOne({ title: areaName, user: userToken }).exec();
+    if (!area) {
+      throw new Error('Area not found');
+    }
+    const keys = Object.keys(updateData);
+    for (const key of keys) {
+      // @ts-ignore
+      area[key] = updateData[key];
+    }
+    await area.save();
+  }
 }

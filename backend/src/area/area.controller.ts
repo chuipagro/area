@@ -201,4 +201,33 @@ export class AreaController {
     await this.areaService.deleteArea(title, token);
     return res.status(200).send({ message: 'success' });
   }
+
+  @ApiBody(
+    {
+      schema: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          token: { type: 'string' },
+          updateData: { type: 'object' },
+        },
+      }
+    })
+
+  @ApiOkResponse ({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Post('updateArea')
+  async updateArea(
+    @Res() res: Response,
+    @Body('title') title: string,
+    @Body('token') token: string,
+    @Body('updateData') updateData: object,
+  ): Promise<Response> {
+    await this.areaService.updateArea(title, token, updateData);
+    return res.status(200).send({ message: 'success' });
+  }
 }
