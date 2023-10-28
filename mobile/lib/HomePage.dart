@@ -4,61 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/Globals.dart' as globals;
 import 'dart:convert';
 
-// {
-//   "message":"success",
-//   "services":
-//   {
-//     "riot":
-//     {
-//       "color":
-//       { "red":255,
-//         "green":66,
-//         "blue":0
-//       },
-//       "actions":
-//       {
-//         "getSummonerByName": "get player info by name",
-//         "getSummonerByPuuid": "get player info by puuid",
-//         "getSummonerBySummonerId": "get player info by summoner id",
-//         "getMatchListByPuuid":"get match list by puuid",
-//         "getMatchByMatchId":"get match by match id"
-//       },
-//       "logo":"assets/images/riotLogo.png"
-//     },
-//     "spotify":
-//     {
-//       "color":
-//       {
-//         "red":136,
-//         "green":238,
-//         "blue":81
-//       },
-//       "actions":
-//       {
-//         "postToken":"post token",
-//         "getAudioFeaturesTrack":"get audio features track",
-//         "getNewReleases":"get new releases"
-//       },
-//       "logo":"assets/images/spotifyLogo.png"
-//     },
-//     "mail":
-//     {
-//       "color":
-//       {
-//         "red":255,
-//         "green":255,
-//         "blue":255
-//       },
-//       "reactions":
-//       {
-//         "sendMail":"send mail"
-//       },
-//       "logo":"assets/images/mailLogo.png"
-//     },
-//     "_id":"652d2ea12615dd74e5942b85"
-//   }
-// }
-
 enum PageState {
   Areas,
   AddArea,
@@ -137,6 +82,11 @@ class _HomePageState extends State<HomePage> {
 
     if (reponse.statusCode == 200) {
       final Map<String, dynamic> jsonReponse = json.decode(reponse.body);
+      print("================================================================");
+      print("================================================================");
+      print(jsonReponse);
+      print("================================================================");
+      print("================================================================");
       return jsonReponse;
     } else {
       throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
@@ -145,11 +95,16 @@ class _HomePageState extends State<HomePage> {
 
   Future<Map<String, dynamic>> callForAllAreas() async {
     final reponse = await http.get(
-      Uri.parse('http://' + globals.IPpc + ':3000/services/getAllAreas'),
+      Uri.parse('http://' + globals.IPpc + ':3000/area/getAllAreas'),
     );
 
     if (reponse.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
+      print("================================================================");
+      print("================================================================");
+      print(jsonResponse);
+      print("================================================================");
+      print("================================================================");
       return jsonResponse;
     } else {
       throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
@@ -187,27 +142,30 @@ class _HomePageState extends State<HomePage> {
 
   void createAreaList(Map<String, dynamic> json)
   {
-    json.forEach((serviceName, serviceData) {
-      final String titre = serviceData["data"]["areas"]["title"];
-      final bool isActive = serviceData["data"]["areas"]["active"];
-      final String createdBy = serviceData["data"]["areas"]["createdBy"];
-      final int serviceIndexOne = int.parse(serviceData["data"]["areas"]["action"]["service"]);
-      final int serviceIndexTwo = int.parse(serviceData["data"]["areas"]["reaction"]["service"]);
-      final int actionIndexServiceOne = int.parse(serviceData["data"]["areas"]["action"]["type"]);
-      final int actionIndexServiceTwo = int.parse(serviceData["data"]["areas"]["reaction"]["type"]);
+    if (json.containsKey("areas")) {
+      final List<dynamic> areas = json["areas"];
+      for (var areaData in areas) {
+        final String titre = areaData["title"];
+        final bool isActive = areaData["active"];
+        final String createdBy = areaData["createdBy"];
+        final int serviceIndexOne = areaData["action"]["service"];
+        final int serviceIndexTwo = areaData["reaction"]["service"];
+        final int actionIndexServiceOne = areaData["action"]["type"];
+        final int actionIndexServiceTwo = areaData["reaction"]["type"];
 
-      CreatedArea area = CreatedArea(
-        name: titre,
-        isActive: isActive,
-        createdBy: createdBy,
-        areaIdOne: serviceIndexOne,
-        areaIdTwo: serviceIndexTwo,
-        areaOneActionId: actionIndexServiceOne,
-        areaTwoActionId: actionIndexServiceTwo,
-      );
+        CreatedArea area = CreatedArea(
+          name: titre,
+          isActive: isActive,
+          createdBy: createdBy,
+          areaIdOne: serviceIndexOne,
+          areaIdTwo: serviceIndexTwo,
+          areaOneActionId: actionIndexServiceOne,
+          areaTwoActionId: actionIndexServiceTwo,
+        );
 
-      createdAreas.add(area);
-    });
+        createdAreas.add(area);
+      }
+    }
   }
 
   Future<void> loadAll() async
@@ -309,15 +267,20 @@ class _HomePageState extends State<HomePage> {
   Future<void> addArea(String name) async {
 
     final reponse = await http.post(
-      Uri.parse('http://' + globals.IPpc + ':3000//services/createArea'),      
+      Uri.parse('http://' + globals.IPpc + ':3000//services/createArea'),
       body: {
         'title': name,
-        'isActive': "true",
+        'active': true,
         'createdBy': "Moi",
-        "action": "ici",
-        "reaction": "la",
-        "launchType": "cron",
-        "data": "hahahaha",
+        'action': {
+          'service': indexForCreationPage[0],
+          'type': indexForCreationPage[2],
+        },
+        'reaction': {
+          'service': indexForCreationPage[1],
+          'type': indexForCreationPage[3]
+        },
+        'data': {},
       },
     );
 
@@ -1435,24 +1398,24 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            Positioned(
-              left: screenWidth * 0.85,
-              top: screenHeight * 0.9,
-              child: GestureDetector(
-                onTap: profilButtonPress,
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/profilButton.png'),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-              ),
-            ),
+            // Positioned(
+            //   left: screenWidth * 0.85,
+            //   top: screenHeight * 0.9,
+            //   child: GestureDetector(
+            //     onTap: profilButtonPress,
+            //     child: Container(
+            //       width: 40,
+            //       height: 40,
+            //       decoration: BoxDecoration(
+            //         image: DecorationImage(
+            //           image: AssetImage('assets/images/profilButton.png'),
+            //           fit: BoxFit.cover,
+            //         ),
+            //         borderRadius: BorderRadius.circular(10.0),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Positioned(
               left: screenWidth * 0.07,
               top: screenHeight * 0.07,
