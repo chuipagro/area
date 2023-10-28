@@ -9,26 +9,48 @@ interface riot {
     blue: 0;
   };
   actions: {
-    getSummonerByName: {
-      description: "get player info by name";
+    getNewWin: {
+      description: "check if a player won";
       id: 1;
+      need: {
+        summonerName: string;
+      }
     };
-    getSummonerByPuuid: {
-      description: "get player info by puuid";
-      id: 2
+    getNewLose: {
+      description: "check if a player lost";
+      id: 2;
+      need: {
+        summonerName: string;
+      }
     };
-    getSummonerBySummonerId: {
-      description: "get player info by summoner id";
+    getLevelUp: {
+      description: "check if a player leveled up";
       id: 3;
+      need: {
+        summonerName: string;
+      }
     };
-    getMatchListByPuuid: {
-      description: "get match list by puuid";
+    get10LastGames: {
+      description: "get 10 last games";
       id: 4;
+      need: {
+        summonerName: string;
+      }
     };
-    getMatchByMatchId: {
-      description: "get match by match id";
+    getNewGame: {
+      description: "check if there is a new game"
       id: 5;
-    };
+      need: {
+        summonerName: string;
+      }
+    },
+    getPlayerStartNewGame: {
+      description: "check if a player start a new game"
+      id: 6;
+      need: {
+        summonerName: string;
+      }
+    }
   };
   reactions: {};
 }
@@ -58,9 +80,9 @@ interface spotify {
   reactions: {};
 }
 
-interface Mail {
+interface Microsoft {
   id: 3;
-  logo: "assets/images/mailLogo.png";
+  logo: "assets/images/microsoftLogo.png";
   color: {
     red: 255;
     green: 255;
@@ -71,6 +93,12 @@ interface Mail {
     sendMail: {
       description: "send mail";
       id: 1;
+      need: {
+        to: string | null | string[];
+        from: string | null;
+        subject: string | null;
+        text: string | null;
+      }
     };
   };
 }
@@ -78,7 +106,7 @@ interface Mail {
 export interface allServices {
   riot: riot;
   spotify: spotify;
-  mail: Mail;
+  microsoft: Microsoft;
 }
 
 export const ServicesSchema = new Schema<allServices>({
@@ -106,31 +134,114 @@ export const ServicesSchema = new Schema<allServices>({
       }
     },
     actions: {
-      getSummonerByName: {
-        type: String,
-        required: true,
-        default: "get summoner by name"
+      getNewWin: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if a player won"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 1
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+          }
       },
-      getSummonerByPuuid: {
-        type: String,
-        required: true,
-        default: "get player info by puuid"
+      getNewLose: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if a player lost"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 2
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+          }
       },
-      getSummonerBySummonerId: {
-        type: String,
-        required: true,
-        default: "get summoner by summoner id"
+      getLevelUp: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if a player leveled up"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 3
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+          }
       },
-      getMatchListByPuuid: {
-        type: String,
-        required: true,
-        default: "get match list by puuid"
+      get10LastGames: {
+        description: {
+          type: String,
+          required: true,
+          default: "get 10 last games"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 4
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+          }
       },
-      getMatchByMatchId: {
-        type: String,
-        required: true,
-        default: "get match by match id"
+      getNewGame: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if there is a new game"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 5
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+        }
       },
+      getPlayerStartNewGame: {
+        description: {
+          type: String,
+          required: true,
+          default: "check if a player start a new game"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 6
+        },
+        need: {
+          summonerName: {
+            type: String,
+            required: true
+          }
+        }
+      }
     },
     reactions: {}
   },
@@ -176,11 +287,11 @@ export const ServicesSchema = new Schema<allServices>({
     },
     reactions: {}
   },
-  mail: {
+  microsoft: {
     logo: {
       type: String,
       required: true,
-      default: "assets/images/mailLogo.png"
+      default: "assets/images/microsoftLogo.png"
     },
     color: {
       red: {
@@ -202,10 +313,39 @@ export const ServicesSchema = new Schema<allServices>({
     actions: {},
     reactions: {
       sendMail: {
-        type: String,
-        required: true,
-        default: "send mail"
-      },
+        description: {
+          type: String,
+          required: true,
+          default: "send mail"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 1
+        },
+        need: {
+          to: {
+            type: String,
+            required: false,
+            default: null
+          },
+          from: {
+            type: String,
+            required: false,
+            default: null
+          },
+          subject: {
+            type: String,
+            required: false,
+            default: null
+          },
+          text: {
+            type: String,
+            required: false,
+            default: null
+          }
+        }
+      }
     }
   }
 });

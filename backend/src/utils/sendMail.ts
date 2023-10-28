@@ -1,4 +1,5 @@
 import * as nodemailer from 'nodemailer';
+import { AuthorizationCode } from 'simple-oauth2';
 
 export async function sendEmail(to: string, subject: string, text: string, from: string) {
   let transporter = nodemailer.createTransport({

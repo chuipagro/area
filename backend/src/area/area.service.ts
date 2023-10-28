@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { AreaModel, IArea } from '../models/area.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import cron = require('node-cron');
 import { ConfigService } from '@nestjs/config';
 import { RiotService } from '../services/riot/riot.service';
-import { MailService } from '../services/mail/mail.service';
+import { MicrosoftService } from '../services/microsoft/microsoft.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -17,81 +16,89 @@ export class AreaService {
       console.log(err);
     });
   }
-  timerToCronM(time: String, timeAtCreation: string, dateAtCreation: string): String {
-    const intervalMinutes = parseInt(time.slice(1));
-    return '0/' + intervalMinutes + ' * * * *';
-  }
 
-  timerToCronH(time: String, timeAtCreation: string, dateAtCreation: string): String {
-    const intervalHours = parseInt(time.slice(1));
-    const startminute = parseInt(timeAtCreation.split(':')[1]) + 2;
-    return startminute + ' 0/' + intervalHours + ' * * *';
-  }
-
-  timerToCronW(time: String): String {
-    const intervalWeeks = parseInt(time.slice(1));
-    return '1 0 0 * ' + intervalWeeks;
-  }
-
-  tilerToCronD(time: String, timeAtCreation: string, dateAtCreation: string): String
+  async launchRiotArea(area: IArea) : Promise<any>
   {
-    const intervalDays = parseInt(time.slice(1));
-    const starthour = parseInt(timeAtCreation.split(':')[0]);
-    const startminute = parseInt(timeAtCreation.split(':')[1]) + 2;
-    console.log("intervalDays");
-    return startminute + " " + starthour + " */" + intervalDays + ' * *';
-  }
-
-  timerToCronMonth(time: String, timeAtCreation: string, dateAtCreation: string): String {
-    const intervalMonths = parseInt(time.slice(1));
-    const startDay = parseInt(dateAtCreation.split('-')[0]);
-    const starthour = parseInt(timeAtCreation.split(':')[0]);
-    const startminute = parseInt(timeAtCreation.split(':')[1]) + 1;
-    return startminute + " " + starthour + " " + startDay + ' */' + intervalMonths + ' *';
-  }
-
-  timerToCronS(time: String): String {
-    const intervalSeconds = parseInt(time.slice(1));
-    return '*/' + intervalSeconds + ' * * * * *';
-  }
-
-  timerToCron(time: String, timeAtCreation: string, dateAtCreation: string): string {
-    const conversionFunctions = [
-      this.timerToCronS,
-      this.timerToCronM,
-      this.timerToCronH,
-      this.timerToCronW,
-      this.tilerToCronD,
-      this.timerToCronMonth
-    ];
-
-    const calls = "SMHWDm";
-    const index = calls.indexOf(time[0]);
-    if (index === -1) {
-      throw new Error('Invalid timer');
-    }
-    return conversionFunctions[index](time, timeAtCreation, dateAtCreation).toString();
-  }
-
-  async launchArea(area: any) {
-    const configService = new ConfigService()
+    const configService = new ConfigService();
     const riotService = new RiotService(configService);
-    const mailService = new MailService();
-    let actionData: any;
+    let puuid = null;
+    let actionData;
 
-    console.log(area.data);
-    console.log(area.data.riot);
-    console.log(area.data.mail);
+    if ( area.data.riot && area.data.riot.summonerName != null)
+      puuid = await riotService.getSummonerByName(area.data.riot.summonerName);
+
+    switch (area.action.type) {
+      case 1:
+        actionData = await riotService.waitForNewWin(puuid)
+        break;
+      case 2:
+        actionData = await riotService.waitForNewLose(puuid)
+        break;
+      case 3:
+        actionData = await riotService.checkPlayerLevel(puuid)
+        break;
+      case 4:
+        actionData = await riotService.getBasicMatchsInfo(puuid)
+        break;
+      case 5:
+        actionData = await riotService.waitForNewMatch(puuid)
+        break;
+      default:
+        console.log("action not found");
+        break;
+    }
+    return actionData;
+  }
+
+  async launchMicrosoftAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const microsoftService = new MicrosoftService(configService);
+    let actionData
+    if (area.data.mail == null)
+      area.data.mail = {
+        from: "",
+        to: "",
+        subject: "",
+        text: ""
+      };
+
+    switch (area.action.type) {
+      case 1:
+        break;
+      default:
+        console.log("action not found");
+        break;
+    }
+    return actionData;
+  }
+
+  async launchMicrosoftReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const microsoftService = new MicrosoftService(configService);
+    if (area.data.mail == null)
+      area.data.mail = {
+        from: "self",
+        to: "pablo.levy@epitech.eu",
+        subject: "no mail",
+        text: "no mail"
+      };
+    switch (area.reaction.type) {
+      case 1:
+        if (area.data.mail.to != null && area.data.mail.subject != null && area.data.mail.text != null && area.data.mail.from != null)
+          await microsoftService.sendMail(area.data.mail.to, area.data.mail.subject, area.data.mail.text, area.data.mail.from);
+        break;
+      default:
+        console.log("action not found");
+    }
+  }
+
+  async launchArea(area: IArea) {
+    let actionData = null;
     switch (area.action.service) {
       case 1:
-        switch (area.action.type) {
-          case 1:
-            actionData = await riotService.getSummonerByName("pablo0675");
-            break;
-          default:
-            console.log("action not found");
-            break;
-        }
+        actionData = await this.launchRiotArea(area)
         break;
       default:
         console.log("service not found");
@@ -102,7 +109,7 @@ export class AreaService {
       case 3:
         switch (area.reaction.type) {
           case 1:
-            await mailService.sendMail(area.data.mail.to, area.data.mail.from, area.data.mail.subject, area.data.mail.text);
+            await this.launchMicrosoftReaction(area, actionData)
             break;
           default:
             console.log("action not found");
@@ -113,6 +120,7 @@ export class AreaService {
         console.log("service not found");
     }
   }
+
   async launchAreas(): Promise<void>
   {
     const allAreas = await this.getAllAreas();
@@ -121,19 +129,8 @@ export class AreaService {
     }
 
     for (const area of allAreas) {
-      if (area.active) {
-        if (area.data.cron) {
-          const cronTimer = this.timerToCron(area.data.cron.time, area.timeAtCreation, area.dateAtCreation);
-          cron.schedule(cronTimer, () => {
-            console.log('Area launched');
-            this.launchArea(area);
-          }, {
-            scheduled: true,
-            timezone: "Europe/Paris"
-          });
-        }
-        break;
-      }
+      if (area.active)
+        await this.launchArea(area);
     }
   }
 
@@ -166,6 +163,26 @@ export class AreaService {
       throw new Error('Area not found');
     }
     area.active = status;
+    await area.save();
+  }
+
+  async deleteArea(areaName: string, userToken: string): Promise<void> {
+    const area = await AreaModel.findOneAndDelete({ title: areaName, user: userToken }).exec();
+    if (!area) {
+       throw new Error('Area not found');
+    }
+  }
+
+  async updateArea(areaName: string, userToken: string, updateData: object): Promise<void> {
+    const area = await AreaModel.findOne({ title: areaName, user: userToken }).exec();
+    if (!area) {
+      throw new Error('Area not found');
+    }
+    const keys = Object.keys(updateData);
+    for (const key of keys) {
+      // @ts-ignore
+      area[key] = updateData[key];
+    }
     await area.save();
   }
 }

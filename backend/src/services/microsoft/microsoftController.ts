@@ -1,11 +1,11 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { Response } from 'express';
-import { MailService } from './mail.service';
+import { MicrosoftService } from './microsoft.service';
 import { sendEmail } from '../../utils/sendMail';
 
 @Controller('mail')
-export class MailController {
+export class MicrosoftController {
 
   @ApiBody(
     {

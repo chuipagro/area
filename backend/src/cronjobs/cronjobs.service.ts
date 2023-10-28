@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { RiotService } from '../services/riot/riot.service';
-import { MailService } from '../services/mail/mail.service';
+import { MicrosoftService } from '../services/microsoft/microsoft.service';
 import { SpotifyService } from '../services/spotify/spotify.service';
 import { ConfigService } from '@nestjs/config';
 import { AreaService } from '../area/area.service';

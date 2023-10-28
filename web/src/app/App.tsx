@@ -1,3 +1,4 @@
+import { Head } from "../pages/Home"
 import { BrowserRouter as Router, Route, Routes, } from "react-router-dom";
 import './App.css';
 import { Register } from "../pages/Register"
@@ -6,16 +7,16 @@ import { Dashboard } from "../pages/Dashboard"
 import { LoginWithService } from "../pages/LoginWithService"
 import { Developers } from "../pages/Developers"
 import { Explore } from "../pages/Explore"
-import { Partnership } from "../pages/Partnership";
+import { Partnership } from "../pages/Partnership"
 import { GetStarted } from "../pages/GetStarted"
 import { CreateArea } from "../pages/CreateArea";
-
+import { GithubAuthRedirect } from "../pages/GithubAuthRedirect"
+import { GoogleAuthRedirect } from "../pages/GoogleAuthRedirect";
 
 /**
  * This function display the app
- */
-const App = ()
-  : JSX.Element => (
+*/
+const App = (): JSX.Element => (
   <Router>
     <Routes>
       <Route path="/" element={<Login />} />
@@ -26,7 +27,10 @@ const App = ()
       <Route path="/partnership" element={<Partnership />} />
       <Route path="/get-started" element={<GetStarted />} />
       <Route path="/developers" element={<Developers />} />
+      <Route path="/homePage" element={<Head />} />
       <Route path="/explore" element={<Explore />} />
+      <Route path="/oauthgithub" element={<GithubAuthRedirect />} />
+      <Route path="/oauthgoogle" element={<GoogleAuthRedirect />} />
       <Route path="/create" element={<CreateArea />} />
     </Routes>
   </Router >

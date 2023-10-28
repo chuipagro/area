@@ -19,9 +19,9 @@ import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
 import { CronjobsModule } from './cronjobs/cronjobs.module';
 import { ServicesModule } from './services/services.module';
-import { MailController } from './services/mail/mail.controller';
-import { MailService } from './services/mail/mail.service';
-import { MailModule } from './services/mail/mail.module';
+import { MicrosoftController } from './services/microsoft/microsoftController';
+import { MicrosoftService } from './services/microsoft/microsoft.service';
+import { MicrosoftModule } from './services/microsoft/microsoftModule';
 import { AreaModel } from './models/area.model';
 
 @Module({
@@ -50,10 +50,10 @@ import { AreaModel } from './models/area.model';
     RiotModule,
     SpotifyModule,
     CronjobsModule,
-    MailModule,
+    MicrosoftModule,
   ],
-  controllers: [AppController, MailController],
-  providers: [AppService, MailService],
+  controllers: [AppController, MicrosoftController],
+  providers: [AppService, MicrosoftService],
 })
 export class AppModule {
 }

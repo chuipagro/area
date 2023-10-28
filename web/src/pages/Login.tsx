@@ -129,9 +129,9 @@ export const Login = (): JSX.Element => {
                 </Link>
             </Button >
 
-            {/* <Link color='black' href='/login-with-service'>
+            <Link color='black' href='/login-with-service'>
                 Continue with Google, Facebook or apple
-            </Link> */}
+            </Link>
         </VStack>
     </div>
 }
