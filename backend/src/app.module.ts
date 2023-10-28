@@ -23,6 +23,9 @@ import { MicrosoftController } from './services/microsoft/microsoftController';
 import { MicrosoftService } from './services/microsoft/microsoft.service';
 import { MicrosoftModule } from './services/microsoft/microsoftModule';
 import { AreaModel } from './models/area.model';
+import { AboutController } from './about/about.controller';
+import { AboutService } from './about/about.service';
+import { AboutModule } from './about/about.module';
 
 @Module({
   imports: [
@@ -51,9 +54,10 @@ import { AreaModel } from './models/area.model';
     SpotifyModule,
     CronjobsModule,
     MicrosoftModule,
+    AboutModule,
   ],
-  controllers: [AppController, MicrosoftController],
-  providers: [AppService, MicrosoftService],
+  controllers: [AppController, MicrosoftController, AboutController],
+  providers: [AppService, MicrosoftService, AboutService],
 })
 export class AppModule {
 }
