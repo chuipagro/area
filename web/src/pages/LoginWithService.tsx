@@ -24,19 +24,25 @@ function Title() {
  */
 export const LoginWithService = (): JSX.Element => {
   const clientIdGithub = '46d5db5635abf205e5fb';
-  const clientSecretGithub = 'c7e2fffd378ec39098fbbce38a3b6adcd4756fc0';
-  const redirectUri = encodeURIComponent('http://localhost:3001/login-with-service');
-  const location = useLocation();
+  const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
 
-  const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}`;
+  const RedirectGoodle = 'http://localhost:3001/oauthgoogle';
+
+  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}`;
+  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=profile email&access_type=online`;
 
   const handleGitHubLogin = () => {
-    window.location.assign(authUrl);
+    window.location.assign(authUrlGithub);
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.assign(authUrlGoogle);
   };
 
   return (
     <div>
       <Button onClick={handleGitHubLogin}>Se connecter avec GitHub</Button>
+      <Button onClick={handleGoogleLogin}>Se connecter avec Google</Button>
     </div>
   );
 };

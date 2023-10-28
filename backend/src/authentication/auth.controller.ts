@@ -244,4 +244,51 @@ export class AuthController {
       res.status(500).send('Erreur interne du serveur');
     }
   }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'Token',
+    type: String,
+    status: 200,
+  })
+
+  @Post('postGoogle')
+  async postTokenGoogle(
+    @Res() res: Response,
+    @Body('token') token: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const textData = await response.text();
+        const params = JSON.parse(textData);
+        const Smail = params.email;
+        const Susername = params.name;
+        const mail = String(Smail);
+        const username = String(Susername);
+        const oauth = "Google";
+        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth) });
+      } else {
+        res.status(response.status).send('Erreur lors de la demande à Google');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la demande à Google:', error);
+      res.status(500).send('Erreur interne du serveur');
+    }
+  }
 }
