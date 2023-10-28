@@ -1,115 +1,115 @@
 import { model, Schema } from 'mongoose';
 
-interface riot {
-  id: 1;
-  logo: "assets/images/riotLogo.png";
+const riot = {
+  id: 1,
+  logo: "assets/images/riotLogo.png",
   color: {
-    red: 255;
-    green: 66;
-    blue: 0;
-  };
+    red: 255,
+    green: 66,
+    blue: 0,
+  },
   actions: {
     getNewWin: {
-      description: "check if a player won";
-      id: 1;
+      description: "check if a player won",
+      id: 1,
       need: {
-        summonerName: string;
+        summonerName: "summonerName",
       }
-    };
+    },
     getNewLose: {
-      description: "check if a player lost";
-      id: 2;
+      description: "check if a player lost",
+      id: 2,
       need: {
-        summonerName: string;
+        summonerName: "summonerName",
       }
-    };
+    },
     getLevelUp: {
-      description: "check if a player leveled up";
-      id: 3;
+      description: "check if a player leveled up",
+      id: 3,
       need: {
-        summonerName: string;
+        summonerName: "summonerName",
       }
-    };
+    },
     get10LastGames: {
-      description: "get 10 last games";
-      id: 4;
+      description: "get 10 last games",
+      id: 4,
       need: {
-        summonerName: string;
+        summonerName: "summonerName",
       }
-    };
+    },
     getNewGame: {
-      description: "check if there is a new game"
-      id: 5;
+      description: "check if there is a new game",
+      id: 5,
       need: {
-        summonerName: string;
+        summonerName: "summonerName",
       }
     },
     getPlayerStartNewGame: {
-      description: "check if a player start a new game"
-      id: 6;
+      description: "check if a player start a new game",
+      id: 6,
       need: {
-        summonerName: string;
+        summonerName: "summonerName",
       }
     }
-  };
-  reactions: {};
+  },
+  reactions: {},
 }
 
-interface spotify {
-  id: 2;
-  logo: "assets/images/spotifyLogo.png";
+const spotify ={
+  id: 2,
+  logo: "assets/images/spotifyLogo.png",
   color: {
-    red: 136;
-    green: 238;
-    blue: 81;
-  };
+    red: 136,
+    green: 238,
+    blue: 81,
+  },
   actions: {
     postToken: {
-      description: "post token";
-      id: 1;
-    };
+      description: "post token",
+      id: 1,
+    },
     getAudioFeaturesTrack: {
-      description: "get audio features track";
-      id: 2;
-    };
+      description: "get audio features track",
+      id: 2,
+    },
     getNewReleases: {
-      description: "get new releases";
-      id: 3;
-    };
-  };
-  reactions: {};
+      description: "get new releases",
+      id: 3,
+    },
+  },
+  reactions: {},
 }
 
-interface Microsoft {
-  id: 3;
-  logo: "assets/images/microsoftLogo.png";
+const Microsoft = {
+  id: 3,
+  logo: "assets/images/microsoftLogo.png",
   color: {
-    red: 255;
-    green: 255;
-    blue: 255;
-  };
-  actions: {};
+    red: 255,
+    green: 255,
+    blue: 255,
+  },
+  actions: {},
   reactions: {
     sendMail: {
-      description: "send mail";
-      id: 1;
+      description: "send mail",
+      id: 1,
       need: {
-        to: string | null | string[];
-        from: string | null;
-        subject: string | null;
-        text: string | null;
+        to: "dest if null send to user mail",
+        from: "from if null send from user mail",
+        subject: "subject if null send default subject",
+        text: "text if null send actionData text",
       }
-    };
-  };
+    },
+  },
 }
 
-export interface allServices {
-  riot: riot;
-  spotify: spotify;
-  microsoft: Microsoft;
+export const allServices = {
+  riot: riot,
+  spotify: spotify,
+  microsoft: Microsoft,
 }
 
-export const ServicesSchema = new Schema<allServices>({
+export const ServicesSchema = new Schema<typeof allServices>({
   riot: {
     logo: {
       type: String,
@@ -150,7 +150,7 @@ export const ServicesSchema = new Schema<allServices>({
             type: String,
             required: true
           }
-          }
+        }
       },
       getNewLose: {
         description: {
@@ -270,20 +270,41 @@ export const ServicesSchema = new Schema<allServices>({
     },
     actions: {
       postToken: {
-        type: String,
-        required: true,
-        default: "post token"
+        description: {
+          type: String,
+          required: true,
+          default: "post token"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 1
+        }
       },
       getAudioFeaturesTrack: {
-        type: String,
-        required: true,
-        default: "get audio features track"
+        description: {
+          type: String,
+          required: true,
+          default: "get audio features track"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 2
+        }
       },
       getNewReleases: {
-        type: String,
-        required: true,
-        default: "get new releases"
-      },
+        description: {
+          type: String,
+          required: true,
+          default: "get new releases"
+        },
+        id: {
+          type: Number,
+          required: true,
+          default: 3
+        }
+      }
     },
     reactions: {}
   },
@@ -350,4 +371,4 @@ export const ServicesSchema = new Schema<allServices>({
   }
 });
 
-export const ServicesModel = model<allServices>('services', ServicesSchema);
+export const ServicesModel = model<typeof allServices>('services', ServicesSchema);
