@@ -18,7 +18,7 @@ export const CreateArea = (): JSX.Element => {
 
     // const [areaName, setAreaName] = React.useState('');
     // const [areaName, setAreaName] =
-    const areaName = React.useRef(null);
+    const areaName = React.useRef<HTMLInputElement | null>(null);
 
     const [areaReceived, setAreaReceived] = React.useState(false);
     const [isErrorReceived, setIsErrorReceived] = React.useState(false)
@@ -32,6 +32,8 @@ export const CreateArea = (): JSX.Element => {
 
 
     //for the json
+    const [name, setName] = React.useState("");
+
     const [serviceActionJson, setServiceActionJson] = React.useState("");
     const [serviceReactionJson, setServiceReactionJson] = React.useState("");
     const [actionJson, setActionJson] = React.useState("");
@@ -75,6 +77,11 @@ export const CreateArea = (): JSX.Element => {
     const [ReactionTitle, setReactionTitle] = React.useState("");
 
 
+    React.useEffect(() => {
+        console.log(`name = ${name}`)
+    }, [name]);
+
+
     type Data = {
         [key: string]: {
             logo: string;
@@ -84,10 +91,35 @@ export const CreateArea = (): JSX.Element => {
                 blue: string;
             };
             actions: {
-                [actionKey: string]: string;
+                [actionKey: string]: ActionData;
             };
             reactions: {
-                [reactionKey: string]: string;
+                [reactionKey: string]: ReactionData;
+            };
+        };
+    };
+
+    type ActionData = string | ActionObject;
+    type ReactionData = string | ReactionObject;
+
+    type ActionObject = {
+        description: string;
+        id: number;
+        need: {
+            [key: string]: {
+                type: string;
+                required: boolean;
+            };
+        };
+    };
+
+    type ReactionObject = {
+        description: string;
+        id: number;
+        need: {
+            [key: string]: {
+                type: string;
+                required: boolean;
             };
         };
     };
@@ -310,25 +342,47 @@ export const CreateArea = (): JSX.Element => {
         const reactionBoxes: JSX.Element[] = [];
         Object.keys(reactions).forEach((reactionKey) => {
             const reactionDescription = reactions[reactionKey];
-            const reactionBox = (
-                <Box
-                    key={reactionKey}
-                    p={5}
-                    shadow="md"
-                    borderWidth="1px"
-                    borderRadius={30}
-                    boxSize={300}
-                    inlineSize={300}
-                    color={"#CCCCCC"}
-                    backgroundColor={color}
-                    onClick={() => CallEndReactions({ reactionDescription })}
-                >
-                    <Heading fontSize="xl">{reactionDescription}</Heading>
-                    {/* <Heading fontSize="xl">{reactionKey}</Heading>
-                    <Text mt={4}>{reactionDescription}</Text> */}
-                </Box>
-            );
-            reactionBoxes.push(reactionBox);
+            let reactionBox: JSX.Element | null = null;
+            if (typeof reactionDescription === 'object') {
+                const reactionObject = reactionDescription as ReactionObject;
+                const desc = reactionObject.description;
+                reactionBox = (
+                    <Box
+                        key={reactionKey}
+                        p={5}
+                        shadow="md"
+                        borderWidth="1px"
+                        borderRadius={30}
+                        boxSize={300}
+                        inlineSize={300}
+                        color={"#CCCCCC"}
+                        backgroundColor={color}
+                        onClick={() => CallEndReactions({ reactionDescription: desc })}
+                    >
+                        <Heading fontSize="xl">{desc}</Heading>
+                    </Box>
+                );
+            }
+            if (typeof reactionDescription === 'string') {
+                reactionBox = (
+                    <Box
+                        key={reactionKey}
+                        p={5}
+                        shadow="md"
+                        borderWidth="1px"
+                        borderRadius={30}
+                        boxSize={300}
+                        inlineSize={300}
+                        color={"#CCCCCC"}
+                        backgroundColor={color}
+                        onClick={() => CallEndReactions({ reactionDescription })}
+                    >
+                        <Heading fontSize="xl">{reactionDescription}</Heading>
+                    </Box>
+                );
+            }
+            if (reactionBox !== null)
+                reactionBoxes.push(reactionBox);
         });
         return (
             <Grid marginTop="90px" marginLeft="340px" templateColumns="repeat(4, 1fr)" gap={4}>
@@ -472,24 +526,54 @@ export const CreateArea = (): JSX.Element => {
         const actionBoxes: JSX.Element[] = [];
 
         Object.keys(actions).forEach((actionKey) => {
+            let actionBox: JSX.Element | null = null;
+            console.log("la");
             const actionDescription = actions[actionKey];
-            const actionBox = (
-                <Box
-                    key={actionKey}
-                    p={5}
-                    shadow="md"
-                    borderWidth="1px"
-                    boxSize={300}
-                    inlineSize={300}
-                    borderRadius={30}
-                    color={"#CCCCCC"}
-                    backgroundColor={color}
-                    onClick={() => CallEndActions({ actionDescription })}
-                >
-                    <Heading fontSize="xl">{actionDescription}</Heading>
-                </Box>
-            );
-            actionBoxes.push(actionBox);
+            console.log("type = ")
+            console.log(typeof actionDescription);
+            if (typeof actionDescription === 'object') {
+                const actionObject = actionDescription as ActionObject;
+                console.log(actionObject.description);
+                const desc = actionObject.description;
+                actionBox = (
+                    <Box
+                        key={actionKey}
+                        p={5}
+                        shadow="md"
+                        borderWidth="1px"
+                        boxSize={300}
+                        inlineSize={300}
+                        borderRadius={30}
+                        color={"#CCCCCC"}
+                        backgroundColor={color}
+                        onClick={() => CallEndActions({ actionDescription: desc })}
+                    >
+                        <Heading fontSize="xl">{desc}</Heading>
+                    </Box>
+                );
+            }
+            if (typeof actionDescription === 'string') {
+                actionBox = (
+                    <Box
+                        key={actionKey}
+                        p={5}
+                        shadow="md"
+                        borderWidth="1px"
+                        boxSize={300}
+                        inlineSize={300}
+                        borderRadius={30}
+                        color={"#CCCCCC"}
+                        backgroundColor={color}
+                        onClick={() => CallEndActions({ actionDescription })}
+                    >
+                        <Heading fontSize="xl">{actionDescription}</Heading>
+                    </Box>
+                );
+            }
+
+            if (actionBox !== null) {
+                actionBoxes.push(actionBox);
+            }
         });
 
         return (
@@ -682,12 +766,15 @@ export const CreateArea = (): JSX.Element => {
                         // onChange={e => setAreaName(e.target.value)}
                         ref={areaName}
                     />
-                    <Button onClick={() => navigate("/create")} marginTop={100} marginLeft={40} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
+                    <Button onClick={() => setName(getInputValue)} marginTop={100} marginLeft={40} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
                         <Heading fontSize='xl'>Create your AREA</Heading>
                     </Button>
                 </div>
             )
         )
+        function getInputValue() {
+            return areaName.current?.value || '';
+        }
 
         return (
             <VStack>
