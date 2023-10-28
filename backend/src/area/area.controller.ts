@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Res } from '@nestjs/common';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AreaService } from './area.service';
@@ -9,24 +9,36 @@ export class AreaController {
   constructor(private readonly areaService: AreaService) {}
 
   @ApiOkResponse ({
-    description: "return a list of IArea" +
-      "IArea {\n" +
-      "  title: string;\n" +
-      "  active: boolean;\n" +
-      "  createdBy: string;\n" +
-      "  action: {\n" +
-      "    type: number;\n" +
-      "    service: number;\n" +
-      "  }\n" +
-      "  reaction: {\n" +
-      "    type: number;\n" +
-      "    service: number;\n" +
-      "  }\n" +
-      "  data: IData;\n" +
-      "  timeAtCreation: string;\n" +
-      "  dateAtCreation: string;\n" +
-      "}",
+    description: "return a list of IArea",
     status: 200,
+    schema: {
+      properties: {
+        title: { type: 'string' },
+        active: { type: 'boolean'},
+        createdBy: { type: 'string'},
+        action: {
+          type: "array",
+          items: {
+            properties: {
+              type: { type: 'integer' },
+              service: { type: 'integer' },
+            },
+          },
+        },
+        reaction: {
+          type: "array",
+          items: {
+            properties: {
+              type: { type: 'integer' },
+              service: { type: 'integer' },
+            },
+          },
+        },
+        data: { type: 'object' },
+        timeAtCreation: { type: 'string'},
+        dateAtCreation: { type: 'string'}
+      },
+    },
   })
 
   @Get('getAllAreas')
@@ -172,6 +184,62 @@ export class AreaController {
     @Body('token') token: string,
   ): Promise<Response> {
     await this.areaService.getUserAreas(token);
+    return res.status(200).send({ message: 'success' });
+  }
+
+  @ApiBody(
+    {
+      schema: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          token: { type: 'string' },
+        },
+      }
+    })
+
+  @ApiOkResponse ({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Delete('deleteArea')
+  async deleteArea(
+    @Res() res: Response,
+    @Body('title') title: string,
+    @Body('token') token: string,
+  ): Promise<Response> {
+    await this.areaService.deleteArea(title, token);
+    return res.status(200).send({ message: 'success' });
+  }
+
+  @ApiBody(
+    {
+      schema: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          token: { type: 'string' },
+          updateData: { type: 'object' },
+        },
+      }
+    })
+
+  @ApiOkResponse ({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Post('updateArea')
+  async updateArea(
+    @Res() res: Response,
+    @Body('title') title: string,
+    @Body('token') token: string,
+    @Body('updateData') updateData: object,
+  ): Promise<Response> {
+    await this.areaService.updateArea(title, token, updateData);
     return res.status(200).send({ message: 'success' });
   }
 }

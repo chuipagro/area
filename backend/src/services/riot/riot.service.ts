@@ -203,4 +203,35 @@ export class RiotService {
       }
     })
   }
+
+  async getActiveGameBySummonerName(summonerName: string): Promise<any> {
+    const summoner = await this.getSummonerByName(summonerName);
+    const url = `https://euw1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${summoner.id}?api_key=${this.apiKey}`;
+    return await axios.get(url).then((response: any) => {
+      return response.data;
+    });
+  }
+
+  async getPlayerStartANewGame(summonerName: string) : Promise<Object | null>
+  {
+    return new Promise<Object | null>(async (resolve, reject) => {
+      const cronGestion = new CronGestion();
+      const timezone = "Europe/Paris";
+
+      const checkForNewMatch = () => {
+        const dateAtCreation = new Date().toLocaleDateString();
+        const timeAtCreation = new Date().toLocaleTimeString();
+        const cronTimer = cronGestion.timerToCron("s10", timeAtCreation, dateAtCreation);
+
+        const job = cron.schedule(cronTimer, async () => {
+          const match = await this.getActiveGameBySummonerName(summonerName);
+          if (match) {
+            resolve(match);
+          }
+        });
+        job.start();
+      }
+      checkForNewMatch();
+    });
+  }
 }
