@@ -74,55 +74,12 @@ class _GetStartedPageState extends State<GetStartedPage> {
     }
   }
 
-  Future<void> _authenticateWithDiscord() async {
-    final authUrl = 'https://github.com/login/oauth/authorize?'
-        'client_id=$clientIdGithub&'
-        'scope=user';
+  Future<void> _authenticateWithGoogle() async {
+      print('Erreur lors de l\'obtention du jeton d\'accès : Google');
+  }
 
-    final result = await FlutterWebAuth2.authenticate(
-      url: authUrl,
-      callbackUrlScheme: 'area',
-    );
-
-    String? codeParam = Uri.parse(result).queryParameters['code'];
-
-    final response = await http.post(
-        Uri.parse('https://github.com/login/oauth/access_token'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'client_id': clientIdGithub,
-          'client_secret': 'c25bb753d702882f8634068356cabf8ce4c4ef8a',
-          'code': codeParam,
-        }),
-    );
-
-    if (response.statusCode == 200) { 
-      List<String> parts = response.body.split('&');
-      String accessToken = parts[0].split('=')[1];
-      final res = await http.post(
-        Uri.parse('http://'+globals.IPpc+':3000/auth/signOAuthGithub'),
-        body: {
-            'token': accessToken,
-            'oauth': 'Github',
-        },
-      );
-      if (res.statusCode == 200) {
-       Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text('Echec'),
-            ),
-        );
-      }
-    } else {
-      print('Erreur lors de l\'obtention du jeton d\'accès : ${response.reasonPhrase}');
-    }
+  Future<void> _authenticateWithMicrosoft() async {
+      print('Erreur lors de l\'obtention du jeton d\'accès : Microsoft');
   }
 
     @override
@@ -157,7 +114,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                     ),
                                 ),
                             ),
-                            const SizedBox(height: 80.0),
+                            const SizedBox(height: 50.0),
 
                             Container(
                                 height: 65,
@@ -169,7 +126,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                 ),
                                 child: TextButton(
                                     onPressed: () {
-                                        _authenticateWithDiscord();
+                                        _authenticateWithGoogle();
                                     },
                                     style: TextButton.styleFrom(
                                         padding: EdgeInsets.zero,
@@ -194,13 +151,13 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                     ),
                                 ),
                             ),
-                            const SizedBox(height: 30.0),
+                            const SizedBox(height: 25.0),
 
                             Container(
                                 height: 65,
                                 width: 360,
                                 decoration: BoxDecoration(
-                                    color: Color.fromARGB(255, 77, 92, 146),
+                                    color: const Color.fromARGB(255, 255, 255, 255),
                                     borderRadius: BorderRadius.circular(40.0),
                                     border: Border.all(color: Colors.black),
                                 ),
@@ -224,14 +181,51 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                                 'Continue avec Github',
                                                 style: TextStyle(
                                                     fontSize: 20.0,
-                                                    color: Colors.white,
+                                                    color: Colors.black,
                                                 ),
                                             ),
                                         ],
                                     ),
                                 ),
                             ),
-                            const SizedBox(height: 60.0),
+                            const SizedBox(height: 25.0),
+
+                            Container(
+                                height: 65,
+                                width: 360,
+                                decoration: BoxDecoration(
+                                    color: const Color.fromARGB(255, 255, 255, 255),
+                                    borderRadius: BorderRadius.circular(40.0),
+                                    border: Border.all(color: Colors.black),
+                                ),
+                                child: TextButton(
+                                    onPressed: () {
+                                        _authenticateWithMicrosoft();
+                                    },
+                                    style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                    ),
+                                    child: Row(
+                                        children: <Widget>[
+                                            const SizedBox(width: 20.0),
+                                            Image.asset(
+                                                'assets/images/MicrosoftLogo.png',
+                                                width: 35.0,
+                                                height: 35.0,
+                                            ),
+                                            const SizedBox(width: 20.0),
+                                            const Text(
+                                                'Continue avec Microsoft',
+                                                style: TextStyle(
+                                                    fontSize: 20.0,
+                                                    color: Colors.black,
+                                                ),
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            ),
+                            const SizedBox(height: 50.0),
     
                             RichText(
                                 text: TextSpan(
