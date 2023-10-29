@@ -7,8 +7,19 @@ import { allServices, ServicesModel } from '../models/servicesModel';
 @Injectable()
 export class ServicesService
 {
-    async getAllServices(): Promise< allServices | null> {
-        const services = new ServicesModel();
-        return services ? services.toObject() as allServices : null;
+    constructor() {
+    }
+
+    async saveService(): Promise<void> {
+        const services = new ServicesModel(allServices);
+        await services.save();
+    }
+    async getAllServices(): Promise<typeof allServices> {
+        const services = await ServicesModel.findOne();
+        if (!services) {
+            await this.saveService();
+            return allServices;
+        }
+        return (services.toObject());
     }
 }
