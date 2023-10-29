@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Center, Text, HStack, VStack, Link, Button, Divider, Box, Img, Heading, list, Alert, Grid } from '@chakra-ui/react';
+import { Input, Text, HStack, VStack, Button, Box, Heading, Alert, Grid } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import leftArrow from '../app/leftArrow.png'
@@ -16,7 +16,9 @@ import { InputText } from '../component/TexInput';
 export const CreateArea = (): JSX.Element => {
     const navigate = useNavigate()
 
-    const [areaName, setAreaName] = React.useState('');
+    // const [areaName, setAreaName] = React.useState('');
+    // const [areaName, setAreaName] =
+    const areaName = React.useRef<HTMLInputElement | null>(null);
 
     const [areaReceived, setAreaReceived] = React.useState(false);
     const [isErrorReceived, setIsErrorReceived] = React.useState(false)
@@ -30,6 +32,8 @@ export const CreateArea = (): JSX.Element => {
 
 
     //for the json
+    const [name, setName] = React.useState("");
+
     const [serviceActionJson, setServiceActionJson] = React.useState("");
     const [serviceReactionJson, setServiceReactionJson] = React.useState("");
     const [actionJson, setActionJson] = React.useState("");
@@ -38,6 +42,7 @@ export const CreateArea = (): JSX.Element => {
     const [jsonAREA, setJsonAREA] = React.useState({});
     const storedUsername = localStorage.getItem("userMail");
     const token = localStorage.getItem("token");
+    const [readyToCreate, setReadyToCreate] = React.useState(false);
 
     /**
      * This function update the jsonAREA with the services and the actions/reactions
@@ -72,6 +77,11 @@ export const CreateArea = (): JSX.Element => {
     const [ReactionTitle, setReactionTitle] = React.useState("");
 
 
+    React.useEffect(() => {
+        console.log(`name = ${name}`)
+    }, [name]);
+
+
     type Data = {
         [key: string]: {
             logo: string;
@@ -81,10 +91,35 @@ export const CreateArea = (): JSX.Element => {
                 blue: string;
             };
             actions: {
-                [actionKey: string]: string;
+                [actionKey: string]: ActionData;
             };
             reactions: {
-                [reactionKey: string]: string;
+                [reactionKey: string]: ReactionData;
+            };
+        };
+    };
+
+    type ActionData = string | ActionObject;
+    type ReactionData = string | ReactionObject;
+
+    type ActionObject = {
+        description: string;
+        id: number;
+        need: {
+            [key: string]: {
+                type: string;
+                required: boolean;
+            };
+        };
+    };
+
+    type ReactionObject = {
+        description: string;
+        id: number;
+        need: {
+            [key: string]: {
+                type: string;
+                required: boolean;
             };
         };
     };
@@ -218,7 +253,7 @@ export const CreateArea = (): JSX.Element => {
     }
 
     /**
-     * This function handle the what to display when the user click on the action button
+     * This function handle what to display when the user click on the action button
      */
     const handleAction = () => {
         if (!actionVisibility)
@@ -227,10 +262,13 @@ export const CreateArea = (): JSX.Element => {
             setAction(true);
         if (action)
             setAction(false)
+        if (defaultActionDesc === "") {
+            setServiceActionJson("")
+        }
     }
 
     /**
-     * This function handle the what to display when the user click on the reaction button
+     * This function handle what to display when the user click on the reaction button
      */
     const handleReaction = () => {
         if (!reactionVisibility)
@@ -239,10 +277,13 @@ export const CreateArea = (): JSX.Element => {
             setReaction(true);
         if (reaction)
             setReaction(false)
+        if (defaultReactionDesc === "") {
+            setServiceReactionJson("")
+        }
     }
 
     /**
-     * This function handle the what to display when the user click on the action button
+     * This function handle what to display when the user click on the action button
      */
     const handleActionsVisibility = () => {
         if (!actionVisibility)
@@ -282,7 +323,10 @@ export const CreateArea = (): JSX.Element => {
         setReactionJson(reactionDescription);
         console.log(`title in call action = ${reactionDescription}`)
         handleReactionsVisibility();
-        handleReaction();
+        if (!reaction)
+            setReaction(true);
+        if (reaction)
+            setReaction(false)
         setDefaultReactionColor(ReactionColor);
 
         setDefaultReactionDesc(reactionDescription);
@@ -298,25 +342,47 @@ export const CreateArea = (): JSX.Element => {
         const reactionBoxes: JSX.Element[] = [];
         Object.keys(reactions).forEach((reactionKey) => {
             const reactionDescription = reactions[reactionKey];
-            const reactionBox = (
-                <Box
-                    key={reactionKey}
-                    p={5}
-                    shadow="md"
-                    borderWidth="1px"
-                    borderRadius={30}
-                    boxSize={300}
-                    inlineSize={300}
-                    color={"#CCCCCC"}
-                    backgroundColor={color}
-                    onClick={() => CallEndReactions({ reactionDescription })}
-                >
-                    <Heading fontSize="xl">{reactionDescription}</Heading>
-                    {/* <Heading fontSize="xl">{reactionKey}</Heading>
-                    <Text mt={4}>{reactionDescription}</Text> */}
-                </Box>
-            );
-            reactionBoxes.push(reactionBox);
+            let reactionBox: JSX.Element | null = null;
+            if (typeof reactionDescription === 'object') {
+                const reactionObject = reactionDescription as ReactionObject;
+                const desc = reactionObject.description;
+                reactionBox = (
+                    <Box
+                        key={reactionKey}
+                        p={5}
+                        shadow="md"
+                        borderWidth="1px"
+                        borderRadius={30}
+                        boxSize={300}
+                        inlineSize={300}
+                        color={"#CCCCCC"}
+                        backgroundColor={color}
+                        onClick={() => CallEndReactions({ reactionDescription: desc })}
+                    >
+                        <Heading fontSize="xl">{desc}</Heading>
+                    </Box>
+                );
+            }
+            if (typeof reactionDescription === 'string') {
+                reactionBox = (
+                    <Box
+                        key={reactionKey}
+                        p={5}
+                        shadow="md"
+                        borderWidth="1px"
+                        borderRadius={30}
+                        boxSize={300}
+                        inlineSize={300}
+                        color={"#CCCCCC"}
+                        backgroundColor={color}
+                        onClick={() => CallEndReactions({ reactionDescription })}
+                    >
+                        <Heading fontSize="xl">{reactionDescription}</Heading>
+                    </Box>
+                );
+            }
+            if (reactionBox !== null)
+                reactionBoxes.push(reactionBox);
         });
         return (
             <Grid marginTop="90px" marginLeft="340px" templateColumns="repeat(4, 1fr)" gap={4}>
@@ -412,23 +478,21 @@ export const CreateArea = (): JSX.Element => {
 
         return (
             <div>
-                {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
-                <Grid marginTop="90px" templateColumns="repeat(2, 1fr)">
-                    {dataArray.map((serviceObject, i) => (
-                        <VStack key={i} display="inline-block">
-                            <DisplayServiceReaction
-                                title={`${serviceObject.service}`}
-                                desc=""
-                                size={nb1}
-                                data={serviceObject}
-                                key={i}
-                            />
-                        </VStack>
-                    ))}
-                </Grid>
+                {dataArray.map((serviceObject, i) => (
+                    <VStack key={i} display="inline-block">
+                        <DisplayServiceReaction
+                            title={`${serviceObject.service}`}
+                            desc=""
+                            size={nb1}
+                            data={serviceObject}
+                            key={i}
+                        />
+                    </VStack>
+                ))}
             </div>
         );
     }
+
 
     //-----------------[ACTION]-------------------------
 
@@ -441,7 +505,10 @@ export const CreateArea = (): JSX.Element => {
         setActionJson(actionDescription);
 
         handleActionsVisibility();
-        handleAction();
+        if (!action)
+            setAction(true);
+        if (action)
+            setAction(false)
 
         setDefaultActionColor(ActionColor);
 
@@ -459,30 +526,60 @@ export const CreateArea = (): JSX.Element => {
         const actionBoxes: JSX.Element[] = [];
 
         Object.keys(actions).forEach((actionKey) => {
+            let actionBox: JSX.Element | null = null;
+            console.log("la");
             const actionDescription = actions[actionKey];
-            const actionBox = (
-                <Box
-                    key={actionKey}
-                    p={5}
-                    shadow="md"
-                    borderWidth="1px"
-                    boxSize={300}
-                    inlineSize={300}
-                    borderRadius={30}
-                    color={"#CCCCCC"}
-                    backgroundColor={color}
-                    onClick={() => CallEndActions({ actionDescription })}
-                >
-                    <Heading fontSize="xl">{actionDescription}</Heading>
-                </Box>
-            );
-            actionBoxes.push(actionBox);
+            console.log("type = ")
+            console.log(typeof actionDescription);
+            if (typeof actionDescription === 'object') {
+                const actionObject = actionDescription as ActionObject;
+                console.log(actionObject.description);
+                const desc = actionObject.description;
+                actionBox = (
+                    <Box
+                        key={actionKey}
+                        p={5}
+                        shadow="md"
+                        borderWidth="1px"
+                        boxSize={300}
+                        inlineSize={300}
+                        borderRadius={30}
+                        color={"#CCCCCC"}
+                        backgroundColor={color}
+                        onClick={() => CallEndActions({ actionDescription: desc })}
+                    >
+                        <Heading fontSize="xl">{desc}</Heading>
+                    </Box>
+                );
+            }
+            if (typeof actionDescription === 'string') {
+                actionBox = (
+                    <Box
+                        key={actionKey}
+                        p={5}
+                        shadow="md"
+                        borderWidth="1px"
+                        boxSize={300}
+                        inlineSize={300}
+                        borderRadius={30}
+                        color={"#CCCCCC"}
+                        backgroundColor={color}
+                        onClick={() => CallEndActions({ actionDescription })}
+                    >
+                        <Heading fontSize="xl">{actionDescription}</Heading>
+                    </Box>
+                );
+            }
+
+            if (actionBox !== null) {
+                actionBoxes.push(actionBox);
+            }
         });
 
         return (
             <VStack>
                 {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
-                <Grid marginTop="90px" marginLeft="340px" templateColumns="repeat(4, 1fr)" gap={4}>
+                <Grid marginTop="90px" marginLeft={300} templateColumns="repeat(4, 1fr)" gap={4}>
                     {actionBoxes}
                 </Grid>
             </VStack>
@@ -530,7 +627,15 @@ export const CreateArea = (): JSX.Element => {
             )
         } else if (actionVisibility) {
             rows.push(
-                <Box onClick={() => CallActions({ title, color })} p={5} shadow='md' borderRadius={30} borderWidth='1px' boxSize={300} marginLeft={200} inlineSize={size} color={'#CCCCCC'} backgroundColor={color}>
+                <Box onClick={() => CallActions({ title, color })} p={5}
+                    shadow='md'
+                    borderRadius={30}
+                    borderWidth='1px'
+                    boxSize={300}
+                    marginLeft={150}
+                    inlineSize={size}
+                    color={'#CCCCCC'}
+                    backgroundColor={color}>
                     <Heading fontSize='xl'>{title}</Heading>
 
 
@@ -584,20 +689,17 @@ export const CreateArea = (): JSX.Element => {
 
         return (
             <div>
-                {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
-                <Grid marginTop="90px" templateColumns="repeat(2, 1fr)">
-                    {dataArray.map((serviceObject, i) => (
-                        <VStack key={i} display="inline-block">
-                            <DisplayService
-                                title={`${serviceObject.service}`}
-                                desc=""
-                                size={nb1}
-                                data={serviceObject}
-                                key={i}
-                            />
-                        </VStack>
-                    ))}
-                </Grid>
+                {dataArray.map((serviceObject, i) => (
+                    <VStack key={i} display="inline-block">
+                        <DisplayService
+                            title={`${serviceObject.service}`}
+                            desc=""
+                            size={nb1}
+                            data={serviceObject}
+                            key={i}
+                        />
+                    </VStack>
+                ))}
             </div>
         );
     }
@@ -611,6 +713,7 @@ export const CreateArea = (): JSX.Element => {
     function Display() {
 
         let rows = [];
+
         if (!action && !reaction) (
             rows.push(
                 <HStack spacing="50px">
@@ -632,7 +735,7 @@ export const CreateArea = (): JSX.Element => {
                 </HStack>
             )
         )
-        if (action) (
+        else if (action) (
             rows.push(
                 <div>
                     <img src={leftArrow} onClick={handleAction} width={30} style={{ marginRight: '1500px' }} ></img>
@@ -640,7 +743,7 @@ export const CreateArea = (): JSX.Element => {
                 </div>
             )
         )
-        if (reaction) (
+        else if (reaction) (
             rows.push(
                 <div>
                     <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginRight: '1500px' }} ></img>
@@ -649,14 +752,29 @@ export const CreateArea = (): JSX.Element => {
             )
         )
         if (serviceActionJson.length != 0 && serviceReactionJson.length != 0 && actionJson.length != 0 && reactionJson.length != 0 && !action && !reaction) (
+            setReadyToCreate(true)
+        )
+        if (readyToCreate && (!action && !reaction)) (
             rows.push(
                 <div>
-                    <Button onClick={() => navigate("/create")} marginTop={100} marginLeft={0} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
+                    <Input
+                        key="unique-key"
+                        type="text"
+                        color="black"
+                        placeholder="Enter your AREA name"
+                        // value={areaName}
+                        // onChange={e => setAreaName(e.target.value)}
+                        ref={areaName}
+                    />
+                    <Button onClick={() => setName(getInputValue)} marginTop={100} marginLeft={40} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
                         <Heading fontSize='xl'>Create your AREA</Heading>
                     </Button>
                 </div>
             )
         )
+        function getInputValue() {
+            return areaName.current?.value || '';
+        }
 
         return (
             <VStack>
@@ -664,6 +782,7 @@ export const CreateArea = (): JSX.Element => {
             </VStack>
         );
     }
+
 
     if (!areaReceived) {
         return <div>
