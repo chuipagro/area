@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/HomePage.dart';
+import 'package:mobile/HomePage/HomePage.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/GetStartedPage.dart';
 import 'package:http/http.dart' as http;

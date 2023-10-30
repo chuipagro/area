@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
-import 'package:mobile/HomePage.dart';
+import 'package:mobile/HomePage/HomePage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/Globals.dart' as globals;
 import 'dart:convert';
