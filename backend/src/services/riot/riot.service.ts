@@ -87,7 +87,7 @@ export class RiotService {
       const checkForNewMatch = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
-        const cronTimer = cronGestion.timerToCron("s10", timeAtCreation, dateAtCreation);
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
           const checkNewMatchs = await this.getSummonerMatches(puuid);
@@ -117,7 +117,7 @@ export class RiotService {
       const checkForNewWin = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
-        const cronTimer = cronGestion.timerToCron("s10", timeAtCreation, dateAtCreation);
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
           const match = await this.getMatchById(puuid.toString());
@@ -147,7 +147,7 @@ export class RiotService {
       const checkForNewLose = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
-        const cronTimer = cronGestion.timerToCron("s10", timeAtCreation, dateAtCreation);
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
           const match = await this.getMatchById(puuid.toString());
@@ -187,7 +187,7 @@ export class RiotService {
       const getnewPlayerLevel = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
-        const cronTimer = cronGestion.timerToCron("s10", timeAtCreation, dateAtCreation);
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
           const newLevel = this.getSummonerByPuuid(puuid).then((response: any) => {
@@ -221,7 +221,7 @@ export class RiotService {
       const checkForNewMatch = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
-        const cronTimer = cronGestion.timerToCron("s10", timeAtCreation, dateAtCreation);
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
           const match = await this.getActiveGameBySummonerName(summonerName);

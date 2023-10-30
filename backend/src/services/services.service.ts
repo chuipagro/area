@@ -7,7 +7,8 @@ import { allServices, ServicesModel } from '../models/servicesModel';
 @Injectable()
 export class ServicesService
 {
-    constructor() {
+    constructor()
+    {
     }
 
     async saveService(): Promise<void> {
@@ -15,11 +16,26 @@ export class ServicesService
         await services.save();
     }
     async getAllServices(): Promise<typeof allServices> {
+        await this.createServices();
         const services = await ServicesModel.findOne();
         if (!services) {
             await this.saveService();
             return allServices;
         }
         return (services.toObject());
+    }
+
+    async deleteAllServices(): Promise<void> {
+        await ServicesModel.deleteMany({});
+    }
+
+    async createServices(): Promise<void> {
+        await this.deleteAllServices();
+        const services = []
+        for (let i = 0; i < allServices.length; i++) {
+            const serviceExist = new ServicesModel(allServices[i]);
+            services.push(serviceExist);
+        }
+        await ServicesModel.insertMany(services);
     }
 }

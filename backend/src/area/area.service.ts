@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { RiotService } from '../services/riot/riot.service';
 import { MicrosoftService } from '../services/microsoft/microsoft.service';
 import { v4 as uuidv4 } from 'uuid';
+import { allServices, ServicesModel } from '../models/servicesModel';
 
 @Injectable()
 export class AreaService {
@@ -107,17 +108,11 @@ export class AreaService {
 
     switch (area.reaction.service) {
       case 3:
-        switch (area.reaction.type) {
-          case 1:
-            await this.launchMicrosoftReaction(area, actionData)
-            break;
-          default:
-            console.log("action not found");
-            break;
-        }
+        await this.launchMicrosoftReaction(area, actionData)
         break;
-      default:
-        console.log("service not found");
+        default:
+            console.log("service not found");
+            break;
     }
   }
 
@@ -134,6 +129,15 @@ export class AreaService {
     }
   }
 
+  async launchAreaByName(areaName: string, userToken: string): Promise<void> {
+    const area = await AreaModel.findOne({ title: areaName, createdBy: userToken }).exec();
+    if (!area) {
+      throw new Error('Area not found');
+    }
+    if (area.active)
+      await this.launchArea(area);
+  }
+
 
   async getAllAreas(): Promise<IArea[] | null> {
     const areas = await AreaModel.find().exec();
@@ -145,10 +149,11 @@ export class AreaService {
     const timeAtCreation = new Date().toLocaleTimeString();
     const createdArea = new AreaModel({ title, active, createdBy, action, reaction, launchType, data, timeAtCreation, dateAtCreation });
     await createdArea.save();
+    await this.launchAreaByName(createdArea.title, createdArea.createdBy);
   }
 
   async getArea(areaName: string, userToken: string): Promise<any> {
-    const area = await AreaModel.findOne({ title: areaName, user: userToken }).exec();
+    const area = await AreaModel.findOne({ title: areaName, createdBy: userToken }).exec();
     return area;
   }
 
@@ -158,23 +163,24 @@ export class AreaService {
   }
 
   async changeAreaStatus(areaName: string, userToken: string, status: boolean): Promise<void> {
-    const area = await AreaModel.findOne({ title: areaName, user: userToken }).exec();
+    const area = await AreaModel.findOne({ title: areaName, createdBy: userToken }).exec();
     if (!area) {
       throw new Error('Area not found');
     }
     area.active = status;
     await area.save();
+    await this.launchAreaByName(area.title, area.createdBy);
   }
 
   async deleteArea(areaName: string, userToken: string): Promise<void> {
-    const area = await AreaModel.findOneAndDelete({ title: areaName, user: userToken }).exec();
+    const area = await AreaModel.findOneAndDelete({ title: areaName, createdBy: userToken }).exec();
     if (!area) {
-       throw new Error('Area not found');
+      throw new Error('Area not found');
     }
   }
 
   async updateArea(areaName: string, userToken: string, updateData: object): Promise<void> {
-    const area = await AreaModel.findOne({ title: areaName, user: userToken }).exec();
+    const area = await AreaModel.findOne({ title: areaName, createdBy: userToken }).exec();
     if (!area) {
       throw new Error('Area not found');
     }
@@ -184,5 +190,29 @@ export class AreaService {
       area[key] = updateData[key];
     }
     await area.save();
+  }
+
+  async getAreaNeeds(areaName: string, userToken: string): Promise<any> {
+    const area = await AreaModel.findOne({ title: areaName, createdBy: userToken}).exec();
+    const services = await ServicesModel.find();
+
+    if (!area) {
+      throw new Error('Area not found');
+    }
+
+    const actionService = services[area.action.service - 1];
+    const reactionService = services[area.reaction.service - 1];
+    if (!actionService || !reactionService) {
+      throw new Error('Service not found');
+    }
+
+    const action = actionService.actions[area.action.type - 1];
+    const reaction = reactionService.reactions[area.reaction.type - 1];
+
+    if (!action || !reaction) {
+      throw new Error('Action or reaction not found');
+    }
+
+    return { actionNeed: action.need, reactionNeed: reaction.need };
   }
 }
