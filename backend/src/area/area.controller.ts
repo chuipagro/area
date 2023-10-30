@@ -257,14 +257,20 @@ export class AreaController {
   @ApiOkResponse ({
     schema: {
       properties: {
-        actionNeed : {
+        areaNeeds: {
           type: 'object',
-          description: 'return what is needed for the action',
-        },
-        reactionNeed : {
-          type: 'object',
-          description: 'return what is needed for the reaction',
-        },
+          description: 'return what is needed for the area',
+          properties: {
+            actionNeed: {
+              type: 'object',
+              description: 'return what is needed for the action',
+            },
+            reactionNeed: {
+              type: 'object',
+              description: 'return what is needed for the reaction',
+            },
+          }
+        }
       }
     }
   })

@@ -13,8 +13,8 @@ export class ServicesController {
 
 
   @ApiOkResponse ({
-    description: 'success',
-    type: String,
+    description: 'get all services',
+    type: Object,
     status: 200,
   })
 
