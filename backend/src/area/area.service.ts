@@ -195,9 +195,6 @@ export class AreaService {
       throw new Error('Area not found');
     }
 
-    console.log(area);
-
-
     const actionService = services[area.action.service - 1];
     const reactionService = services[area.reaction.service - 1];
     if (!actionService || !reactionService) {
