@@ -129,6 +129,15 @@ export class AreaService {
     }
   }
 
+  async launchAreaByName(areaName: string, userToken: string): Promise<void> {
+    const area = await AreaModel.findOne({ title: areaName, createdBy: userToken }).exec();
+    if (!area) {
+      throw new Error('Area not found');
+    }
+    if (area.active)
+      await this.launchArea(area);
+  }
+
 
   async getAllAreas(): Promise<IArea[] | null> {
     const areas = await AreaModel.find().exec();
@@ -140,6 +149,7 @@ export class AreaService {
     const timeAtCreation = new Date().toLocaleTimeString();
     const createdArea = new AreaModel({ title, active, createdBy, action, reaction, launchType, data, timeAtCreation, dateAtCreation });
     await createdArea.save();
+    await this.launchAreaByName(createdArea.title, createdArea.createdBy);
   }
 
   async getArea(areaName: string, userToken: string): Promise<any> {
@@ -159,6 +169,7 @@ export class AreaService {
     }
     area.active = status;
     await area.save();
+    await this.launchAreaByName(area.title, area.createdBy);
   }
 
   async deleteArea(areaName: string, userToken: string): Promise<void> {
