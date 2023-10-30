@@ -198,9 +198,7 @@ export class AreaService {
     console.log(area);
 
 
-    // @ts-ignore
     const actionService = services[area.action.service - 1];
-    // @ts-ignore
     const reactionService = services[area.reaction.service - 1];
     if (!actionService || !reactionService) {
       throw new Error('Service not found');
