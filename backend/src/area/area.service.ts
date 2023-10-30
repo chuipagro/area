@@ -108,17 +108,11 @@ export class AreaService {
 
     switch (area.reaction.service) {
       case 3:
-        switch (area.reaction.type) {
-          case 1:
-            await this.launchMicrosoftReaction(area, actionData)
-            break;
-          default:
-            console.log("action not found");
-            break;
-        }
+        await this.launchMicrosoftReaction(area, actionData)
         break;
-      default:
-        console.log("service not found");
+        default:
+            console.log("service not found");
+            break;
     }
   }
 
