@@ -30,6 +30,9 @@ export const CreateArea = (): JSX.Element => {
     const [actionVisibility, setactionVisibility] = React.useState(true);
     const [reactionVisibility, setReactionVisibility] = React.useState(true);
 
+    const [actionNeedDisplay, setActionNeedDisplay] = React.useState(false);
+    const [reactionNeedDisplay, setReactionNeedDisplay] = React.useState(false);
+
 
     //for the json
     const [name, setName] = React.useState("");
@@ -43,6 +46,36 @@ export const CreateArea = (): JSX.Element => {
     const storedUsername = localStorage.getItem("userMail");
     const token = localStorage.getItem("token");
     const [readyToCreate, setReadyToCreate] = React.useState(false);
+
+    const [NeedActions, setNeedActions] = React.useState<{ [key: string]: string }>({});
+    const [NeedReactions, setNeedReactions] = React.useState<{ [key: string]: string }>({});
+
+
+    // for debug purpose
+    React.useEffect(() => {
+        console.log(`need actions = ${NeedActions}`)
+    }, [NeedActions]);
+    React.useEffect(() => {
+        console.log(`need actions = ${NeedReactions}`)
+    }, [NeedReactions]);
+    React.useEffect(() => {
+        for (const key in NeedActions) {
+            if (NeedActions.hasOwnProperty(key)) {
+                const element = NeedActions[key];
+                console.log(`key = ${key}`)
+                console.log(`element = ${element}`)
+            }
+        }
+    }, [NeedActions]);
+    React.useEffect(() => {
+        for (const key in NeedReactions) {
+            if (NeedReactions.hasOwnProperty(key)) {
+                const element = NeedReactions[key];
+                console.log(`key = ${key}`)
+                console.log(`element = ${element}`)
+            }
+        }
+    }, [NeedReactions]);
 
     /**
      * This function update the jsonAREA with the services and the actions/reactions
@@ -74,9 +107,12 @@ export const CreateArea = (): JSX.Element => {
     const [defaultReactionDesc, setDefaultReactionDesc] = React.useState("");
 
     const [ActionTitle, setActionTitle] = React.useState("");
+    const [actionDesc, setActionDesc] = React.useState("");
+
     const [ReactionTitle, setReactionTitle] = React.useState("");
+    const [reactionDesc, setReactionDesc] = React.useState("");
 
-
+    //for debug purpose
     React.useEffect(() => {
         console.log(`name = ${name}`)
     }, [name]);
@@ -316,7 +352,7 @@ export const CreateArea = (): JSX.Element => {
 
     /**
      * This function is used in the reaction part.
-     * it is called when the user click on a reaction and set the json of the reaction
+     * it is called when the user click on a reaction and set the json of the reaction of the action or when a user set the needs of an action
      **/
     function CallEndReactions({ reactionDescription }: { reactionDescription: string; }) {
 
@@ -334,18 +370,102 @@ export const CreateArea = (): JSX.Element => {
     }
 
     /**
+    * This function is used in the action part.
+    * it is called when the user click on a action and set the json of the action
+    **/
+    function setReactions({ reactionDescription }: { reactionDescription: string; }) {
+        setReactionNeedDisplay(true);
+        setReactionDesc(reactionDescription);
+    }
+
+    function DisplayReactionNeed({ need, reactionDescription }: { need: { [key: string]: { type: string; required: boolean } }, reactionDescription: string }) {
+
+        const [inputs, setInputs] = React.useState<{ [key: string]: string }>({});
+
+        const handleInputChange = (key: string, value: string) => {
+            setInputs((prevInputs) => ({
+                ...prevInputs,
+                [key]: value,
+            }));
+        };
+
+        const handleAddNeeds = () => {
+            console.log(inputs);
+            for (const key in inputs) {
+                if (inputs.hasOwnProperty(key)) {
+                    const element = inputs[key];
+                    setNeedReactions((prevNeedReactions) => ({
+                        ...prevNeedReactions,
+                        [key]: element,
+                    }));
+                }
+            }
+            CallEndReactions({ reactionDescription });
+        };
+
+        return (
+            <div>
+                {Object.keys(need).map((key) => (
+                    <div key={key}>
+                        <input
+                            type="text"
+                            placeholder={key}
+                            value={inputs[key] || ''}
+                            onChange={(e) => handleInputChange(key, e.target.value)}
+                        />
+                    </div>
+                ))}
+                <button onClick={handleAddNeeds}>Add Needs</button>
+            </div>
+        );
+    }
+
+    /**
      * This function is used in the reaction part.
      * it display the reactions available for a service
      */
     function DisplayReactions({ title, reactions, color }: { title: string; reactions: { [reactionKey: string]: string }; color: string }) {
-
+        const rows: JSX.Element[] = [];
         const reactionBoxes: JSX.Element[] = [];
+
         Object.keys(reactions).forEach((reactionKey) => {
             const reactionDescription = reactions[reactionKey];
             let reactionBox: JSX.Element | null = null;
             if (typeof reactionDescription === 'object') {
+                if (reactionNeedDisplay) {
+                    const reactionObject = reactionDescription as ReactionObject;
+                    const desc = reactionObject.description;
+                    const need = reactionObject.need;
+
+                    if (desc !== "" && desc !== reactionDesc) {
+                        rows.push(
+                            <div />
+                        )
+                        return (
+                            <VStack>
+                                {rows}
+                            </VStack>
+                        )
+                    }
+
+                    console.log("la ca rentre dans la function")
+                    DisplayReactionNeed({ need, reactionDescription: desc });
+                    rows.push(
+                        <VStack>
+                            <DisplayReactionNeed need={need} reactionDescription={desc} />
+                        </VStack>
+                    )
+                    return (
+                        <VStack>
+                            {rows}
+                        </VStack>
+                    )
+                }
                 const reactionObject = reactionDescription as ReactionObject;
                 const desc = reactionObject.description;
+                const need = reactionObject.need;
+                console.log("need = ")
+                console.log(need);
                 reactionBox = (
                     <Box
                         key={reactionKey}
@@ -357,7 +477,7 @@ export const CreateArea = (): JSX.Element => {
                         inlineSize={300}
                         color={"#CCCCCC"}
                         backgroundColor={color}
-                        onClick={() => CallEndReactions({ reactionDescription: desc })}
+                        onClick={() => setReactions({ reactionDescription: desc })}
                     >
                         <Heading fontSize="xl">{desc}</Heading>
                     </Box>
@@ -384,10 +504,19 @@ export const CreateArea = (): JSX.Element => {
             if (reactionBox !== null)
                 reactionBoxes.push(reactionBox);
         });
-        return (
-            <Grid marginTop="90px" marginLeft="340px" templateColumns="repeat(4, 1fr)" gap={4}>
-                {reactionBoxes}
-            </Grid>)
+
+        if (rows.length != 0) {
+            return (
+                <VStack>
+                    {rows}
+                </VStack>
+            )
+        } else {
+            return (
+                <Grid marginTop="90px" marginLeft="340px" templateColumns="repeat(4, 1fr)" gap={4}>
+                    {reactionBoxes}
+                </Grid>)
+        }
     }
 
     /**
@@ -498,7 +627,7 @@ export const CreateArea = (): JSX.Element => {
 
     /**
      * This function is used in the action part.
-     * it is called when the user click on a action and set the json of the action
+     * it is called when the user click on a action and set the json of the action or when a user set the needs of an action
      **/
     function CallEndActions({ actionDescription }: { actionDescription: string; }) {
 
@@ -518,12 +647,69 @@ export const CreateArea = (): JSX.Element => {
         console.log(`title in call action = ${actionDescription}`)
     }
 
+
+    /**
+    * This function is used in the action part.
+    * it is called when the user click on a action and set the json of the action
+    **/
+    function setActions({ actionDescription }: { actionDescription: string; }) {
+
+        // setActionJson(actionDescription);
+        setActionNeedDisplay(true);
+        setActionDesc(actionDescription);
+    }
+
+
+    function DisplayActionNeed({ need, actionDescription }: { need: { [key: string]: { type: string; required: boolean } }, actionDescription: string }) {
+
+        const [inputs, setInputs] = React.useState<{ [key: string]: string }>({});
+
+        const handleInputChange = (key: string, value: string) => {
+            setInputs((prevInputs) => ({
+                ...prevInputs,
+                [key]: value,
+            }));
+        };
+
+        const handleAddNeeds = () => {
+            console.log(inputs);
+            for (const key in inputs) {
+                if (inputs.hasOwnProperty(key)) {
+                    const element = inputs[key];
+                    setNeedActions((prevNeedActions) => ({
+                        ...prevNeedActions,
+                        [key]: element,
+                    }));
+                }
+            }
+            CallEndActions({ actionDescription });
+        };
+
+        return (
+            <div>
+                {Object.keys(need).map((key) => (
+                    <div key={key}>
+                        <input
+                            type="text"
+                            placeholder={key}
+                            value={inputs[key] || ''}
+                            onChange={(e) => handleInputChange(key, e.target.value)}
+                        />
+                    </div>
+                ))}
+                <button onClick={handleAddNeeds}>Add Needs</button>
+            </div>
+        );
+    }
+
+
     /**
      * This function is used in the action part.
      * it display the actions available for a service
      */
     function DisplayActions({ title, actions, color }: { title: string; actions: { [actionKey: string]: string }; color: string }) {
         const actionBoxes: JSX.Element[] = [];
+        const rows: JSX.Element[] = [];
 
         Object.keys(actions).forEach((actionKey) => {
             let actionBox: JSX.Element | null = null;
@@ -532,9 +718,41 @@ export const CreateArea = (): JSX.Element => {
             console.log("type = ")
             console.log(typeof actionDescription);
             if (typeof actionDescription === 'object') {
+                if (actionNeedDisplay) {
+                    const actionObject = actionDescription as ActionObject;
+                    const desc = actionObject.description;
+                    const need = actionObject.need;
+
+                    if (desc !== "" && desc !== actionDesc) {
+                        rows.push(
+                            <div />
+                        )
+                        return (
+                            <VStack>
+                                {rows}
+                            </VStack>
+                        )
+                    }
+
+                    console.log("la ca rentre dans la function")
+                    DisplayActionNeed({ need, actionDescription: desc });
+                    rows.push(
+                        <VStack>
+                            <DisplayActionNeed need={need} actionDescription={desc} />
+                        </VStack>
+                    )
+                    return (
+                        <VStack>
+                            {rows}
+                        </VStack>
+                    )
+                }
                 const actionObject = actionDescription as ActionObject;
                 console.log(actionObject.description);
                 const desc = actionObject.description;
+                const need = actionObject.need;
+                console.log("need = ")
+                console.log(need);
                 actionBox = (
                     <Box
                         key={actionKey}
@@ -546,7 +764,7 @@ export const CreateArea = (): JSX.Element => {
                         borderRadius={30}
                         color={"#CCCCCC"}
                         backgroundColor={color}
-                        onClick={() => CallEndActions({ actionDescription: desc })}
+                        onClick={() => setActions({ actionDescription: desc })}
                     >
                         <Heading fontSize="xl">{desc}</Heading>
                     </Box>
@@ -576,14 +794,22 @@ export const CreateArea = (): JSX.Element => {
             }
         });
 
-        return (
-            <VStack>
-                {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
-                <Grid marginTop="90px" marginLeft={300} templateColumns="repeat(4, 1fr)" gap={4}>
-                    {actionBoxes}
-                </Grid>
-            </VStack>
-        );
+        if (rows.length != 0) {
+            return (
+                <VStack>
+                    {rows}
+                </VStack>
+            )
+        } else {
+            return (
+                <VStack>
+                    {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
+                    <Grid marginTop="90px" marginLeft={300} templateColumns="repeat(4, 1fr)" gap={4}>
+                        {actionBoxes}
+                    </Grid>
+                </VStack>
+            );
+        }
     }
 
     /**
