@@ -3,8 +3,8 @@ FROM node:18-alpine
 COPY . .
 WORKDIR /app
 
-RUN ["npm", "install"]
+RUN npm install
 
-EXPOSE 3001
+EXPOSE 8080
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start"]
