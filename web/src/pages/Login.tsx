@@ -129,9 +129,9 @@ export const Login = (): JSX.Element => {
                 </Link>
             </Button >
 
-            {/* <Link color='black' href='/login-with-service'>
+            <Link color='black' href='/login-with-service'>
                 Continue with Google, Facebook or apple
-            </Link> */}
+            </Link>
             <Button colorScheme='black' variant='outline' >
                 <Link color='black' href={'/client.apk'} download>
                     Download Android

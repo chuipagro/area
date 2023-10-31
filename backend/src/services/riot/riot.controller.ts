@@ -1,11 +1,12 @@
-import { Body, Controller, Delete, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { RiotService } from './riot.service';
 
 @Controller('riot')
 export class RiotController {
-  constructor(private readonly RiotService: RiotService) {}
+  constructor(private readonly RiotService: RiotService) {
+  }
 
   @ApiBody({
     schema: {
@@ -137,4 +138,47 @@ export class RiotController {
     return res.status(200).send(result);
   }
 
+  @ApiOkResponse({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Get('getChampionsRotation')
+  async getChampionsRotation(
+    @Res() res: Response,
+  ): Promise<Response> {
+    const result = await this.RiotService.getChampionsRotation();
+    return res.status(200).send(result);
+  }
+
+  @ApiOkResponse({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Get('getSummonerMatches')
+  async getSummonerMatches(
+    @Body('puuid') puuid: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const result = await this.RiotService.getSummonerMatches(puuid);
+    return res.status(200).send(result);
+  }
+
+  @ApiOkResponse({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Get('getTopChampionsMasteries')
+  async getTopChampionsMasteries(
+    @Body('summonerId') summonerId: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const result = await this.RiotService.getTopChampionsMasteries(summonerId);
+    return res.status(200).send(result);
+  }
 }

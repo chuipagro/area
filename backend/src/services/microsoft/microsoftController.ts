@@ -1,11 +1,11 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { Response } from 'express';
-import { MailService } from './mail.service';
+import { MicrosoftService } from './microsoft.service';
 import { sendEmail } from '../../utils/sendMail';
 
 @Controller('mail')
-export class MailController {
+export class MicrosoftController {
 
   @ApiBody(
     {
@@ -13,6 +13,10 @@ export class MailController {
         type: 'object',
         properties: {
           email: {
+            type: 'string',
+            format: 'email',
+          },
+          from: {
             type: 'string',
             format: 'email',
           },
@@ -32,10 +36,11 @@ export class MailController {
   async sendMail(
     @Res() res: Response,
     @Body('email') email: string,
+    @Body('from') from: string,
     @Body('name') name: string,
     @Body('message') message: string,
   ): Promise<Response> {
-    const result = await sendEmail(email, name, message);
+    const result = await sendEmail(email, from, name, message);
     return res.status(200).send(result);
   }
 }

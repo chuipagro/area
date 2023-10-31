@@ -38,6 +38,34 @@ export class AuthService {
     const user = await this.usersService.create( mail, username, password);
   }
 
+  async signOAuthGithub(
+    mail: string,
+    username: string,
+    oauth: string):
+    Promise<string | null> {
+      const user = await this.usersService.findByMail(mail);
+      if (user) {
+        if (user.username !== username)
+          return null;
+        const payload: JwtPayload = { mail: mail };
+        const token = this.jwtService.sign(payload);
+        await this.usersService.updateUserToken(mail, token);
+        return token;
+      } else {
+        await this.usersService.createOAuthGithub( mail, username, oauth);
+        const userConnexion = await this.usersService.findByMail(mail);
+        if (userConnexion) {
+          if (userConnexion.username !== username)
+            return null;
+          const payload: JwtPayload = { mail: mail };
+          const token = this.jwtService.sign(payload);
+          await this.usersService.updateUserToken(mail, token);
+          return token;
+        }
+        return null;
+      }
+  }
+
   async isConnected(
     token: string):
     Promise<boolean> {

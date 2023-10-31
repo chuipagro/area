@@ -7,40 +7,35 @@ import { allServices, ServicesModel } from '../models/servicesModel';
 @Injectable()
 export class ServicesService
 {
-
-    constructor(@InjectModel('Area') private areaModel: Model<typeof AreaModel>) {}
-
-    async createArea(title: string, active: boolean, createdBy: string, action: object, reaction: object): Promise<void> {
-        const createdArea = new AreaModel({ title, active, createdBy, action, reaction });
-        await createdArea.save();
+    constructor()
+    {
     }
 
-    async getArea(areaName: string, userToken: string): Promise<any> {
-        const area = await AreaModel.findOne({ title: areaName, user: userToken }).exec();
-        return area;
+    async saveService(): Promise<void> {
+        const services = new ServicesModel(allServices);
+        await services.save();
     }
-
-    async getUserAreas(userToken: string): Promise<any> {
-        const areas = await AreaModel.find({ createdBy: userToken }).exec();
-        return areas;
-    }
-
-    async changeAreaStatus(areaName: string, userToken: string, status: boolean): Promise<void> {
-        const area = await AreaModel.findOne({ title: areaName, user: userToken }).exec();
-        if (!area) {
-            throw new Error('Area not found');
+    async getAllServices(): Promise<typeof allServices> {
+        await this.createServices();
+        const services = await ServicesModel.findOne();
+        if (!services) {
+            await this.saveService();
+            return allServices;
         }
-        area.active = status;
-        await area.save();
+        return (services.toObject());
     }
 
-    async getAllServices(): Promise< allServices | null> {
-        const services = new ServicesModel();
-        return services ? services.toObject() as allServices : null;
+    async deleteAllServices(): Promise<void> {
+        await ServicesModel.deleteMany({});
     }
 
-    async getAllAreas(): Promise<IArea[] | null> {
-        const areas = await AreaModel.find().exec();
-        return areas ? areas.map((area) => area.toObject() as IArea) : null;
+    async createServices(): Promise<void> {
+        await this.deleteAllServices();
+        const services = []
+        for (let i = 0; i < allServices.length; i++) {
+            const serviceExist = new ServicesModel(allServices[i]);
+            services.push(serviceExist);
+        }
+        await ServicesModel.insertMany(services);
     }
 }
