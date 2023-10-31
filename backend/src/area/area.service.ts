@@ -13,8 +13,7 @@ export class AreaService {
 
   constructor(@InjectModel('Area') private areaModel: Model<IArea>) {
     this.launchAreas().then(() => {
-    }).catch((err) => {
-      console.log(err);
+        console.log("Areas launched");
     });
   }
 

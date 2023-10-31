@@ -116,30 +116,31 @@ export class RiotService {
   }
 
   async waitForNewWin(puuid: string): Promise<object | null> {
+    const matchId = await this.getSummonerLastMatch(puuid.toString());
     return new Promise<object | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
-      const newMatchId = await this.waitForNewMatch(puuid);
-      if (!newMatchId) {
-        return null;
-      }
 
       const checkForNewWin = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
-        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
+        const cronTimer = cronGestion.timerToCron("S15", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
-          const matchId = await this.waitForNewMatch(puuid.toString());
-          if (!matchId) {
-            return null;
+          const newMatchId = await this.getSummonerLastMatch(puuid.toString());
+          console.log(matchId, newMatchId);
+          let win: boolean;
+          if (matchId[0] != newMatchId[0]) {
+            const match = await this.getMatchById(newMatchId[0].toString());
+            if (!match) {
+                return null;
+            }
+            win = match.info.participants[puuid.toString()].win;
+            if (win) {
+              resolve(match);
+            }
           }
-          const match = await this.getMatchById(matchId.toString());
-          const win = match.info.participants[puuid.toString()].win;
-          console.log(win);
-          if (win) {
-            resolve(match);
-          }
+          return null;
         }, {
           scheduled: true,
           timezone,
@@ -151,25 +152,31 @@ export class RiotService {
   }
 
   async waitForNewLose(puuid: string) : Promise<Object | null> {
+const matchId = await this.getSummonerLastMatch(puuid.toString());
     return new Promise<Object | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
-      const newMatchId = await this.waitForNewMatch(puuid);
-      if (!newMatchId) {
-        return null;
-      }
 
       const checkForNewLose = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
-        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
+        const cronTimer = cronGestion.timerToCron("S20", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
-          const match = await this.getMatchById(puuid.toString());
-          const win = match.info.participants[puuid.toString()].win;
-          if (!win) {
-            resolve(match);
+          const newMatchId = await this.getSummonerLastMatch(puuid.toString());
+          let win: boolean;
+		  console.log(matchId, newMatchId);
+          if (matchId != newMatchId) {
+            const match = await this.getMatchById(newMatchId.toString());
+            if (!match) {
+                return null;
+            }
+            win = match.info.participants[puuid.toString()].win;
+            if (!win) {
+              resolve(match);
+            }
           }
+          return null;
         }, {
           scheduled: true,
           timezone,
@@ -231,7 +238,6 @@ export class RiotService {
   async getPlayerStartANewGame(summonerName: string) : Promise<Object | null>
   {
     return new Promise<Object | null>(async (resolve, reject) => {
-      console.log("test");
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
@@ -242,6 +248,7 @@ export class RiotService {
 
         const job = cron.schedule(cronTimer, async () => {
           const match = await this.getActiveGameBySummonerName(summonerName);
+          console.log(match);
           if (match) {
             resolve(match);
           }
