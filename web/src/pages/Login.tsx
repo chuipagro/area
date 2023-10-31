@@ -132,6 +132,11 @@ export const Login = (): JSX.Element => {
             <Link color='black' href='/login-with-service'>
                 Continue with Google, Facebook or apple
             </Link>
+            <Button colorScheme='black' variant='outline' >
+                <Link color='black' href={'/client.apk'} download>
+                    Download Android
+                </Link>
+            </Button >
         </VStack>
     </div>
 }
