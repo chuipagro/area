@@ -3,8 +3,6 @@ FROM ghcr.io/cirruslabs/flutter:3.13.9
 COPY . /app
 WORKDIR /app
 
-USER root
-
 RUN rm -f .packages
 
 RUN flutter pub get

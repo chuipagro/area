@@ -7,6 +7,7 @@ services:
             - '${BACK_PORT}:3000'
         networks:
             - backend
+        restart: on-failure
 
     backend_discord_service:
         build: 'backend_discord_service/'
@@ -16,6 +17,7 @@ services:
             - backend
         networks:
             - backend_discord_service
+        restart: on-failure
 
     web:
         build: 'web/'
@@ -26,12 +28,12 @@ services:
             - mobile
         volumes:
             - apk:/mobile/
+        restart: on-failure
 
     mobile:
         build: 'mobile/'
         volumes:
             - apk:/mobile/
-
 
 networks:
     backend:

@@ -14,7 +14,7 @@ export const GithubAuthRedirect = (): JSX.Element => {
     const code = url.searchParams.get('code');
 
     axios
-      .post('http://localhost:3000/auth/postToken', { code: code })
+      .post('http://localhost:8080/auth/postToken', { code: code })
       .then((response) => {
         if (response.status == 200) {
           navigate('/home');
