@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import cron = require('node-cron');
+import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 const filepath = './src/services/riot/champion.json';
 const champions = JSON.parse(fs.readFileSync(path.resolve(filepath), 'utf8'));
 
@@ -67,6 +68,7 @@ export class RiotService {
   async getSummonerMatches(puuid: string): Promise<any> {
     const url = `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10&api_key=${this.apiKey}`;
     return await axios.get(url).then((response: any) => {
+      console.log(response.data, randomStringGenerator());
       return response.data;
     });
   }
@@ -78,21 +80,29 @@ export class RiotService {
     });
   }
 
+  async getSummonerLastMatch(puuid: string): Promise<any> {
+    const url = `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=1&api_key=${this.apiKey}`;
+    return await axios.get(url).then((response: any) => {
+      return response.data;
+    });
+  }
+
   async waitForNewMatch(puuid: string): Promise<number | null> {
+    let matchs = await this.getSummonerLastMatch(puuid.toString());
     return new Promise<number | null>((resolve, reject) => {
-      let matchs: any[] = [];
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
-      const checkForNewMatch = () => {
+      const checkForNewMatch =  () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
-        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
+        const cronTimer = cronGestion.timerToCron("S15", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
-          const checkNewMatchs = await this.getSummonerMatches(puuid);
-
+          const checkNewMatchs = await this.getSummonerLastMatch(puuid);
+          console.log(matchs[0], checkNewMatchs[0]);
           if (matchs[0] !== checkNewMatchs[0]) {
+            console.log("new match");
             resolve(checkNewMatchs[0]);
           }
         }, {
@@ -120,8 +130,13 @@ export class RiotService {
         const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
 
         const job = cron.schedule(cronTimer, async () => {
-          const match = await this.getMatchById(puuid.toString());
+          const matchId = await this.waitForNewMatch(puuid.toString());
+          if (!matchId) {
+            return null;
+          }
+          const match = await this.getMatchById(matchId.toString());
           const win = match.info.participants[puuid.toString()].win;
+          console.log(win);
           if (win) {
             resolve(match);
           }
@@ -208,6 +223,7 @@ export class RiotService {
     const summoner = await this.getSummonerByName(summonerName);
     const url = `https://euw1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${summoner.id}?api_key=${this.apiKey}`;
     return await axios.get(url).then((response: any) => {
+      console.log(response.data);
       return response.data;
     });
   }
@@ -215,6 +231,7 @@ export class RiotService {
   async getPlayerStartANewGame(summonerName: string) : Promise<Object | null>
   {
     return new Promise<Object | null>(async (resolve, reject) => {
+      console.log("test");
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
