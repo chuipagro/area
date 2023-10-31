@@ -43,6 +43,6 @@ app.post('/spotify', (req, res) => {
   res.send("success");
 })
 
-app.listen(9999, () => {
+app.listen(3000, () => {
   console.log(`Server listening`);
 });

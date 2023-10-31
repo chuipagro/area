@@ -5,8 +5,6 @@ services:
         build: 'backend/'
         ports:
             - '${BACK_PORT}:3000'
-        networks:
-            - backend
         restart: on-failure
 
     backend_discord_service:
@@ -15,8 +13,6 @@ services:
             - '${DISCORD_BOT_PORT}:3000'
         depends_on:
             - backend
-        networks:
-            - backend_discord_service
         restart: on-failure
 
     web:
@@ -35,8 +31,5 @@ services:
         volumes:
             - apk:/mobile/
 
-networks:
-    backend:
-    backend_discord_service:
 volumes:
     apk:
