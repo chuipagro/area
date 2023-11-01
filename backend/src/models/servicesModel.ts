@@ -57,6 +57,38 @@ const riot = {
         need: {
           summonerName: "summonerName",
         }
+    },
+    {
+      name: "tftCheckPlayerLevel",
+      description: "check player level",
+      id: 7,
+      need: {
+        summonerName: "summonerName",
+      }
+    },
+    {
+      name: "tftCheckSummonerNewGame",
+      description: "check if a player started a new game",
+      id: 8,
+      need: {
+        summonerName: "summonerName",
+      }
+    },
+    {
+      name: "tftCheckSummonerNewWin",
+      description: "check if a player won",
+      id: 9,
+      need: {
+        summonerName: "summonerName",
+      }
+    },
+    {
+      name: "tftCheckSummonerNewLose",
+      description: "check if a player lost",
+      id: 10,
+      need: {
+        summonerName: "summonerName",
+      }
     }
   ],
   reactions: [],

@@ -17,45 +17,37 @@ export class AreaService {
     });
   }
 
-  async launchRiotArea(area: IArea) : Promise<any>
+  async launchRiotAction(area: IArea) : Promise<any>
   {
     const configService = new ConfigService();
     const riotService = new RiotService(configService);
-    let puuid = null;
+    let account = null;
     let actionData;
     
 
     if ( area.data.riot && area.data.riot.summonerName != null) {
-      puuid = await riotService.getSummonerByName(area.data.riot.summonerName);
+      account = await riotService.getSummonerByName(area.data.riot.summonerName);
     }
 
-    if ( puuid == null)
+    if ( account == null)
       throw new Error('Summoner not found');
+    const puuid = account.puuid;
+  
+    const allAction = [
+      await riotService.waitForNewWin(puuid),
+      await riotService.waitForNewLose(puuid),
+      await riotService.checkPlayerLevel(puuid),
+      await riotService.getBasicMatchsInfo(puuid),
+      await riotService.getPlayerStartANewGame(puuid),
+      await riotService.waitForNewMatch(puuid),
+      await riotService.getActiveGameBySummonerName(puuid),
+      await riotService.tftCheckPlayerLevel(puuid),
+      await riotService.tftCheckSummonerNewGame(puuid),
+      await riotService.tftCheckPlayerWin(puuid),
+      await riotService.tftCheckPlayerLose(puuid),
+    ]
 
-
-    switch (area.action.type) {
-      case 1:
-        actionData = await riotService.waitForNewWin(puuid.puuid)
-        break;
-      case 2:
-        actionData = await riotService.waitForNewLose(puuid.puuid)
-        break;
-      case 3:
-        actionData = await riotService.checkPlayerLevel(puuid.puuid)
-        break;
-      case 4:
-        actionData = await riotService.getBasicMatchsInfo(puuid.puuid)
-        break;
-      case 5:
-        actionData = await riotService.getPlayerStartANewGame(puuid.puuid)
-        break;
-      case 6:
-        actionData = await riotService.waitForNewMatch(puuid.puuid)
-        break;
-      default:
-        console.log("action not found");
-        break;
-    }
+    actionData = await allAction[area.action.type - 1];
     return actionData;
   }
 
@@ -107,7 +99,7 @@ export class AreaService {
     let actionData = null;
     switch (area.action.service) {
       case 1:
-        actionData = await this.launchRiotArea(area)
+        actionData = await this.launchRiotAction(area)
         break;
       default:
         console.log("service not found");
@@ -220,7 +212,6 @@ export class AreaService {
     if (!action || !reaction) {
       throw new Error('Action or reaction not found');
     }
-
     return { actionNeed: action.need, reactionNeed: reaction.need };
   }
 }
