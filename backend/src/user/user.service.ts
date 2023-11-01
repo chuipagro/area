@@ -86,6 +86,8 @@ export class UserService {
     if (!user) {
       throw new Error('User not found');
     }
+    if (user.auth == undefined)
+      user.auth = []
     user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null });
     await user.save();
   }

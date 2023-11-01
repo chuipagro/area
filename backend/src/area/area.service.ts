@@ -23,9 +23,11 @@ export class AreaService {
     const riotService = new RiotService(configService);
     let puuid = null;
     let actionData;
+    
 
-    if ( area.data.riot && area.data.riot.summonerName != null)
+    if ( area.data.riot && area.data.riot.summonerName != null) {
       puuid = await riotService.getSummonerByName(area.data.riot.summonerName);
+    }
 
     if ( puuid == null)
       throw new Error('Summoner not found');
@@ -86,8 +88,8 @@ export class AreaService {
     const microsoftService = new MicrosoftService(configService);
     if (area.data.mail == null)
       area.data.mail = {
-        from: "self",
-        to: "pablo.levy@epitech.eu",
+        from: "pablo.levy@epitech.eu",
+        to: "self",
         subject: "no mail",
         text: "no mail"
       };
