@@ -43,74 +43,74 @@ export class AreaController {
 
   @Get('getAllAreas')
   async getAllAreas(
-    @Res() res: Response,
+      @Res() res: Response,
   ): Promise<Response> {
     const areas = await this.areaService.getAllAreas();
     return res.status(200).send({ message: 'success', areas: areas});
   }
 
   @ApiBody(
-    {
-      schema: {
-        type: 'object',
-        properties: {
-          title: { type: 'string' },
-          active: { type: 'boolean' },
-          createdBy: { type: 'string' },
-          action: {
-            type: 'object',
-            properties: {
-              type: { type: "integer"},
-              service: { type: "integer"},
-            }
-          },
-          reaction: {
-            type: 'object',
-            properties: {
-              type: { type: "integer"},
-              service: { type: "integer"},
-            }
-          },
-          data: {
-            type: 'object',
-            properties: {
-              riot: {
-                type: 'object',
-                properties: {
-                  summonerName: { type: "string"},
-                  puuid: { type: "string"},
-                  summonerId: { type: "string"},
-                  matchId: { type: "string"},
+      {
+        schema: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            active: { type: 'boolean' },
+            createdBy: { type: 'string' },
+            action: {
+              type: 'object',
+              properties: {
+                type: { type: "integer"},
+                service: { type: "integer"},
+              }
+            },
+            reaction: {
+              type: 'object',
+              properties: {
+                type: { type: "integer"},
+                service: { type: "integer"},
+              }
+            },
+            data: {
+              type: 'object',
+              properties: {
+                riot: {
+                  type: 'object',
+                  properties: {
+                    summonerName: { type: "string"},
+                    puuid: { type: "string"},
+                    summonerId: { type: "string"},
+                    matchId: { type: "string"},
+                  },
                 },
-              },
-              spotify: {
-                type: 'object',
-                properties: {
-                  playlistId: { type: "string"},
-                  playlistName: { type: "string"},
-                  playlistDescription: { type: "string"},
-                  playlistPublic: { type: "boolean"},
-                  playlistCollaborative: { type: "boolean"},
-                  playlistTracks: { type: "array"},
-                  playlistTracksPosition: { type: "integer"},
-                  playlistTracksUris: { type: "array"},
-                  playlistTracksUrisPosition: { type: "integer"},
+                spotify: {
+                  type: 'object',
+                  properties: {
+                    playlistId: { type: "string"},
+                    playlistName: { type: "string"},
+                    playlistDescription: { type: "string"},
+                    playlistPublic: { type: "boolean"},
+                    playlistCollaborative: { type: "boolean"},
+                    playlistTracks: { type: "array"},
+                    playlistTracksPosition: { type: "integer"},
+                    playlistTracksUris: { type: "array"},
+                    playlistTracksUrisPosition: { type: "integer"},
+                  },
                 },
-              },
-              mail: {
-                type: 'object',
-                properties: {
-                  to: { type: "string"},
-                  from: { type: "string"},
-                  subject: { type: "string"},
-                  text: { type: "string"},
+                mail: {
+                  type: 'object',
+                  properties: {
+                    to: { type: "string"},
+                    from: { type: "string"},
+                    subject: { type: "string"},
+                    text: { type: "string"},
+                  }
                 }
               }
             }
           }
-        }
-      },
-    })
+        },
+      })
 
   @ApiOkResponse ({
     description: 'success',
@@ -120,30 +120,30 @@ export class AreaController {
 
   @Post('createArea')
   async createArea(
-    @Res() res: Response,
-    @Body('title') title: string,
-    @Body('active') active: boolean,
-    @Body('createdBy') user: string,
-    @Body('action') action: object,
-    @Body('reaction') reaction: object,
-    @Body('launchType') launchType: string,
-    @Body('data') data: object,
+      @Res() res: Response,
+      @Body('title') title: string,
+      @Body('active') active: boolean,
+      @Body('createdBy') user: string,
+      @Body('action') action: object,
+      @Body('reaction') reaction: object,
+      @Body('launchType') launchType: string,
+      @Body('data') data: object,
   ): Promise<Response> {
     await this.areaService.createArea(title, active, user, action, reaction, launchType, data);
     return res.status(200).send({ message: 'success' });
   }
 
   @ApiBody(
-    {
-      schema: {
-        type: 'object',
-        properties: {
-          title: { type: 'string' },
-          token: { type: 'string' },
-          active: { type: 'boolean' },
+      {
+        schema: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            token: { type: 'string' },
+            active: { type: 'boolean' },
+          }
         }
-      }
-    })
+      })
 
   @ApiOkResponse ({
     description: 'success',
@@ -153,24 +153,24 @@ export class AreaController {
 
   @Post('changeAreaStatus')
   async changeAreaStatus(
-    @Res() res: Response,
-    @Body('title') title: string,
-    @Body('token') token: string,
-    @Body('active') active: boolean,
+      @Res() res: Response,
+      @Body('title') title: string,
+      @Body('token') token: string,
+      @Body('active') active: boolean,
   ): Promise<Response> {
     await this.areaService.changeAreaStatus(title, token, active);
     return res.status(200).send({ message: 'success' });
   }
 
   @ApiBody(
-    {
-      schema: {
-        type: 'token',
-        properties: {
-          token: { type: 'string' },
+      {
+        schema: {
+          type: 'token',
+          properties: {
+            token: { type: 'string' },
+          }
         }
-      }
-    })
+      })
 
   @ApiOkResponse ({
     description: 'success',
@@ -180,23 +180,23 @@ export class AreaController {
 
   @Post('getUserAreas')
   async getUserAreas(
-    @Res() res: Response,
-    @Body('token') token: string,
+      @Res() res: Response,
+      @Body('token') token: string,
   ): Promise<Response> {
     await this.areaService.getUserAreas(token);
     return res.status(200).send({ message: 'success' });
   }
 
   @ApiBody(
-    {
-      schema: {
-        type: 'object',
-        properties: {
-          title: { type: 'string' },
-          token: { type: 'string' },
-        },
-      }
-    })
+      {
+        schema: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            token: { type: 'string' },
+          },
+        }
+      })
 
   @ApiOkResponse ({
     description: 'success',
@@ -206,25 +206,25 @@ export class AreaController {
 
   @Delete('deleteArea')
   async deleteArea(
-    @Res() res: Response,
-    @Body('title') title: string,
-    @Body('token') token: string,
+      @Res() res: Response,
+      @Body('title') title: string,
+      @Body('token') token: string,
   ): Promise<Response> {
     await this.areaService.deleteArea(title, token);
     return res.status(200).send({ message: 'success' });
   }
 
   @ApiBody(
-    {
-      schema: {
-        type: 'object',
-        properties: {
-          title: { type: 'string' },
-          token: { type: 'string' },
-          updateData: { type: 'object' },
-        },
-      }
-    })
+      {
+        schema: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            token: { type: 'string' },
+            updateData: { type: 'object' },
+          },
+        }
+      })
 
   @ApiOkResponse ({
     description: 'success',
@@ -234,12 +234,136 @@ export class AreaController {
 
   @Post('updateArea')
   async updateArea(
-    @Res() res: Response,
-    @Body('title') title: string,
-    @Body('token') token: string,
-    @Body('updateData') updateData: object,
+      @Res() res: Response,
+      @Body('title') title: string,
+      @Body('token') token: string,
+      @Body('updateData') updateData: object,
   ): Promise<Response> {
     await this.areaService.updateArea(title, token, updateData);
     return res.status(200).send({ message: 'success' });
+  }
+
+  @ApiBody(
+      {
+        schema: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            token: { type: 'string' },
+          },
+        }
+      })
+
+  @ApiOkResponse ({
+    schema: {
+      properties: {
+        areaNeeds: {
+          type: 'object',
+          description: 'return what is needed for the area',
+          properties: {
+            actionNeed: {
+              type: 'object',
+              description: 'return what is needed for the action',
+            },
+            reactionNeed: {
+              type: 'object',
+              description: 'return what is needed for the reaction',
+            },
+          }
+        }
+      }
+    }
+  })
+
+  @Get('getAreaNeeds')
+  async getAreaNeeds(
+      @Res() res: Response,
+      @Body('title') title: string,
+      @Body('token') token: string,
+  ): Promise<Response> {
+    const areaNeeds = await this.areaService.getAreaNeeds(title, token);
+    return res.status(200).send({ areaNeeds: areaNeeds });
+  }
+
+  @ApiBody(
+      {
+        schema: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            token: { type: 'string' },
+          },
+        }
+      })
+
+  @ApiOkResponse ({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        active: { type: 'boolean' },
+        createdBy: { type: 'string' },
+        action: {
+          type: 'object',
+          properties: {
+            type: { type: "integer"},
+            service: { type: "integer"},
+          }
+        },
+        reaction: {
+          type: 'object',
+          properties: {
+            type: { type: "integer"},
+            service: { type: "integer"},
+          }
+        },
+        data: {
+          type: 'object',
+          properties: {
+            riot: {
+              type: 'object',
+              properties: {
+                summonerName: { type: "string"},
+                puuid: { type: "string"},
+                summonerId: { type: "string"},
+                matchId: { type: "string"},
+              },
+            },
+            spotify: {
+              type: 'object',
+              properties: {
+                playlistId: { type: "string"},
+                playlistName: { type: "string"},
+                playlistDescription: { type: "string"},
+                playlistPublic: { type: "boolean"},
+                playlistCollaborative: { type: "boolean"},
+                playlistTracks: { type: "array"},
+                playlistTracksPosition: { type: "integer"},
+                playlistTracksUris: { type: "array"},
+                playlistTracksUrisPosition: { type: "integer"},
+              },
+            },
+            mail: {
+              type: 'object',
+              properties: {
+                to: { type: "string"},
+                from: { type: "string"},
+                subject: { type: "string"},
+                text: { type: "string"},
+              }
+            }
+          }
+        }
+      }
+    },
+  })
+  @Post('getArea')
+  async getArea(
+      @Res() res: Response,
+      @Body('title') title: string,
+      @Body('token') token: string,
+  ): Promise<Response> {
+    const area = await this.areaService.getArea(title, token);
+    return res.status(200).send({ area: area });
   }
 }

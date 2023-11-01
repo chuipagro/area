@@ -11,18 +11,18 @@ import { UserModule } from './user/user.module';
 
 import { AuthModule } from './authentication/auth.module';
 
-import { AreaController } from './area/area.controller';
-import { AreaService } from './area/area.service';
 import { AreaModule } from './area/area.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
-import { CronjobsModule } from './cronjobs/cronjobs.module';
 import { ServicesModule } from './services/services.module';
 import { MicrosoftController } from './services/microsoft/microsoftController';
 import { MicrosoftService } from './services/microsoft/microsoft.service';
 import { MicrosoftModule } from './services/microsoft/microsoftModule';
 import { AreaModel } from './models/area.model';
+import { AboutController } from './about/about.controller';
+import { AboutService } from './about/about.service';
+import { AboutModule } from './about/about.module';
 
 @Module({
   imports: [
@@ -49,11 +49,11 @@ import { AreaModel } from './models/area.model';
     ServicesModule,
     RiotModule,
     SpotifyModule,
-    CronjobsModule,
     MicrosoftModule,
+    AboutModule,
   ],
-  controllers: [AppController, MicrosoftController],
-  providers: [AppService, MicrosoftService],
+  controllers: [AppController, MicrosoftController, AboutController],
+  providers: [AppService, MicrosoftService, AboutService],
 })
 export class AppModule {
 }

@@ -1,353 +1,163 @@
 import { model, Schema } from 'mongoose';
 
-interface riot {
-  id: 1;
-  logo: "assets/images/riotLogo.png";
+const riot = {
+  id: 1,
+  name: "riot",
+  logo: "assets/images/riotLogo.png",
   color: {
-    red: 255;
-    green: 66;
-    blue: 0;
-  };
-  actions: {
-    getNewWin: {
-      description: "check if a player won";
-      id: 1;
-      need: {
-        summonerName: string;
-      }
-    };
-    getNewLose: {
-      description: "check if a player lost";
-      id: 2;
-      need: {
-        summonerName: string;
-      }
-    };
-    getLevelUp: {
-      description: "check if a player leveled up";
-      id: 3;
-      need: {
-        summonerName: string;
-      }
-    };
-    get10LastGames: {
-      description: "get 10 last games";
-      id: 4;
-      need: {
-        summonerName: string;
-      }
-    };
-    getNewGame: {
-      description: "check if there is a new game"
-      id: 5;
-      need: {
-        summonerName: string;
-      }
-    },
-    getPlayerStartNewGame: {
-      description: "check if a player start a new game"
-      id: 6;
-      need: {
-        summonerName: string;
-      }
-    }
-  };
-  reactions: {};
-}
-
-interface spotify {
-  id: 2;
-  logo: "assets/images/spotifyLogo.png";
-  color: {
-    red: 136;
-    green: 238;
-    blue: 81;
-  };
-  actions: {
-    postToken: {
-      description: "post token";
-      id: 1;
-    };
-    getAudioFeaturesTrack: {
-      description: "get audio features track";
-      id: 2;
-    };
-    getNewReleases: {
-      description: "get new releases";
-      id: 3;
-    };
-  };
-  reactions: {};
-}
-
-interface Microsoft {
-  id: 3;
-  logo: "assets/images/microsoftLogo.png";
-  color: {
-    red: 255;
-    green: 255;
-    blue: 255;
-  };
-  actions: {};
-  reactions: {
-    sendMail: {
-      description: "send mail";
-      id: 1;
-      need: {
-        to: string | null | string[];
-        from: string | null;
-        subject: string | null;
-        text: string | null;
-      }
-    };
-  };
-}
-
-export interface allServices {
-  riot: riot;
-  spotify: spotify;
-  microsoft: Microsoft;
-}
-
-export const ServicesSchema = new Schema<allServices>({
-  riot: {
-    logo: {
-      type: String,
-      required: true,
-      default: "assets/images/riotLogo.png"
-    },
-    color: {
-      red: {
-        type: Number,
-        required: true,
-        default: 255
-      },
-      green: {
-        type: Number,
-        required: true,
-        default: 66
-      },
-      blue: {
-        type: Number,
-        required: true,
-        default: 0
-      }
-    },
-    actions: {
-      getNewWin: {
-        description: {
-          type: String,
-          required: true,
-          default: "check if a player won"
-        },
-        id: {
-          type: Number,
-          required: true,
-          default: 1
-        },
-        need: {
-          summonerName: {
-            type: String,
-            required: true
-          }
-          }
-      },
-      getNewLose: {
-        description: {
-          type: String,
-          required: true,
-          default: "check if a player lost"
-        },
-        id: {
-          type: Number,
-          required: true,
-          default: 2
-        },
-        need: {
-          summonerName: {
-            type: String,
-            required: true
-          }
-          }
-      },
-      getLevelUp: {
-        description: {
-          type: String,
-          required: true,
-          default: "check if a player leveled up"
-        },
-        id: {
-          type: Number,
-          required: true,
-          default: 3
-        },
-        need: {
-          summonerName: {
-            type: String,
-            required: true
-          }
-          }
-      },
-      get10LastGames: {
-        description: {
-          type: String,
-          required: true,
-          default: "get 10 last games"
-        },
-        id: {
-          type: Number,
-          required: true,
-          default: 4
-        },
-        need: {
-          summonerName: {
-            type: String,
-            required: true
-          }
-          }
-      },
-      getNewGame: {
-        description: {
-          type: String,
-          required: true,
-          default: "check if there is a new game"
-        },
-        id: {
-          type: Number,
-          required: true,
-          default: 5
-        },
-        need: {
-          summonerName: {
-            type: String,
-            required: true
-          }
-        }
-      },
-      getPlayerStartNewGame: {
-        description: {
-          type: String,
-          required: true,
-          default: "check if a player start a new game"
-        },
-        id: {
-          type: Number,
-          required: true,
-          default: 6
-        },
-        need: {
-          summonerName: {
-            type: String,
-            required: true
-          }
-        }
-      }
-    },
-    reactions: {}
+    red: 255,
+    green: 66,
+    blue: 0,
   },
-  spotify: {
-    logo: {
-      type: String,
-      required: true,
-      default: "assets/images/spotifyLogo.png"
-    },
-    color: {
-      red: {
-        type: Number,
-        required: true,
-        default: 136
-      },
-      green: {
-        type: Number,
-        required: true,
-        default: 238
-      },
-      blue: {
-        type: Number,
-        required: true,
-        default: 81
-      },
-    },
-    actions: {
-      postToken: {
-        type: String,
-        required: true,
-        default: "post token"
-      },
-      getAudioFeaturesTrack: {
-        type: String,
-        required: true,
-        default: "get audio features track"
-      },
-      getNewReleases: {
-        type: String,
-        required: true,
-        default: "get new releases"
-      },
-    },
-    reactions: {}
-  },
-  microsoft: {
-    logo: {
-      type: String,
-      required: true,
-      default: "assets/images/microsoftLogo.png"
-    },
-    color: {
-      red: {
-        type: Number,
-        required: true,
-        default: 255
-      },
-      green: {
-        type: Number,
-        required: true,
-        default: 255
-      },
-      blue: {
-        type: Number,
-        required: true,
-        default: 255
-      },
-    },
-    actions: {},
-    reactions: {
-      sendMail: {
-        description: {
-          type: String,
-          required: true,
-          default: "send mail"
-        },
-        id: {
-          type: Number,
-          required: true,
-          default: 1
-        },
-        need: {
-          to: {
-            type: String,
-            required: false,
-            default: null
-          },
-          from: {
-            type: String,
-            required: false,
-            default: null
-          },
-          subject: {
-            type: String,
-            required: false,
-            default: null
-          },
-          text: {
-            type: String,
-            required: false,
-            default: null
-          }
-        }
+  actions: [
+    {
+      name: "getNewWin",
+      description: "check if a player won",
+      id: 1,
+      need: {
+        summonerName: "summonerName",
       }
+    },
+    {
+      name: "getNewLose",
+      description: "check if a player lost",
+      id: 2,
+      need: {
+        summonerName: "summonerName",
+      }
+    },
+    {
+      name: "checkPlayerLevel",
+      description: "check player level",
+      id: 3,
+      need: {
+        summonerName: "summonerName",
+      }
+    },
+    {
+      name: "getBasicMatchsInfo",
+      description: "get basic matchs info",
+      id: 4,
+      need: {
+        summonerName: "summonerName",
+      }
+    },
+    {
+      name: "getNewMatch",
+      description: "check if a player played a new match",
+      id: 5,
+      need: {
+        summonerName: "summonerName",
+      }
+    },
+    {
+      name: "getActiveGameBySummonerName",
+      description: "get active game by summoner name",
+        id: 6,
+        need: {
+          summonerName: "summonerName",
+        }
     }
-  }
+  ],
+  reactions: [],
+}
+
+const spotify ={
+  id: 2,
+  name: "spotify",
+  logo: "assets/images/spotifyLogo.png",
+  color: {
+    red: 136,
+    green: 238,
+    blue: 81,
+  },
+  actions: [
+    {
+      name: "createPlaylist",
+      description: "create playlist",
+      id: 1,
+      need: {
+        playlistName: "playlistName",
+        playlistDescription: "playlistDescription",
+        playlistPublic: "playlistPublic",
+        playlistCollaborative: "playlistCollaborative",
+      }
+    },
+    {
+      name: "addTrackToPlaylist",
+      description: "add track to playlist",
+      id: 2,
+      need: {
+        playlistId: "playlistId",
+        playlistTracks: "playlistTracks",
+        playlistTracksPosition: "playlistTracksPosition",
+      }
+    },
+    {
+      name: "addTrackUriToPlaylist",
+      description: "add track uri to playlist",
+      id: 3,
+      need: {
+        playlistId: "playlistId",
+        playlistTracksUris: "playlistTracksUris",
+        playlistTracksUrisPosition: "playlistTracksUrisPosition",
+      }
+    },
+  ],
+  reactions: [],
+}
+
+const Microsoft = {
+  id: 3,
+  name: "microsoft",
+  logo: "assets/images/microsoftLogo.png",
+  color: {
+    red: 255,
+    green: 255,
+    blue: 255,
+  },
+  actions: [],
+  reactions: [
+    {
+      name: "sendMail",
+      description: "send mail",
+      id: 1,
+      need: {
+        to: "dest if null send to user mail",
+        from: "from if null send from user mail",
+        subject: "subject if null send default subject",
+        text: "text if null send actionData text",
+      }
+    },
+  ],
+}
+
+export const allServices = [riot, spotify, Microsoft];
+
+const ActionSchema = new Schema({
+    description: { type: String, required: true},
+    id: { type: Number, required: true},
+    need: Schema.Types.Mixed,
 });
 
-export const ServicesModel = model<allServices>('services', ServicesSchema);
+const ReactionSchema = new Schema({
+    description: { type: String, required: true},
+    id: { type: Number, required: true},
+    need: Schema.Types.Mixed,
+});
+
+export const ServiceSchema = new Schema(
+    {
+        id: { type: Number, required: true},
+        name: { type: String, required: true},
+        logo: { type: String, required: true},
+        color: {
+          red: { type: Number, required: true},
+          green: { type: Number, required: true},
+          blue: { type: Number, required: true},
+        },
+        actions: { type: [ActionSchema], required: true},
+        reactions: { type: [ReactionSchema], required: true},
+});
+
+export const ServicesModel = model('Service', ServiceSchema);

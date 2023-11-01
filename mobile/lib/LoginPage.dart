@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
     Future<void> loginUser() async {
         final response = await http.post(
-            Uri.parse('http://'+globals.IPpc+':3000/auth/signin'),
+            Uri.parse('http://'+globals.IPpc+':8080/auth/signin'),
             body: {
                 'mail': emailController.text,
                 'password': passwordController.text,

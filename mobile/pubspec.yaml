@@ -72,6 +72,7 @@ flutter:
     - assets/images/spotifyLogo.png
     - assets/images/mailLogo.png
     - assets/images/GithubLogo.png
+    - assets/images/MicrosoftLogo.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

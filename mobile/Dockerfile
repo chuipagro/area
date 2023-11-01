@@ -1,6 +1,6 @@
-FROM cirrusci/flutter
+FROM ghcr.io/cirruslabs/flutter:3.13.9
 
-COPY . .
+COPY . /app
 WORKDIR /app
 
 USER root

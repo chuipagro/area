@@ -45,6 +45,7 @@ export class AuthService {
     Promise<string | null> {
       const user = await this.usersService.findByMail(mail);
       if (user) {
+        console.log(user.username);
         if (user.username !== username)
           return null;
         const payload: JwtPayload = { mail: mail };
