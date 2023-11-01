@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> onDeconectionTap() async {
     final response = await http.post(
-      Uri.parse('http://' + globals.IPpc + ':3000/user/disconnect'),
+      Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
     );
 
     if (response.statusCode == 200) {

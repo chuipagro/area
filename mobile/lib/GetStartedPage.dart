@@ -51,7 +51,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
       List<String> parts = response.body.split('&');
       String accessToken = parts[0].split('=')[1];
       final res = await http.post(
-        Uri.parse('http://'+globals.IPpc+':3000/auth/signOAuthGithub'),
+        Uri.parse('http://'+globals.IPpc+':8080/auth/signOAuthGithub'),
         body: {
             'token': accessToken,
             'oauth': 'Github',

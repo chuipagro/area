@@ -34,7 +34,7 @@ export const Dashboard = (): JSX.Element => {
 
     const fetchJsonData = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/area/getAllAreas');
+            const response = await axios.get('http://localhost:8080/area/getAllAreas');
             if (response.status === 200) {
                 setAreas(response.data.areas);
                 setSearchAreas(response.data.areas);
@@ -59,7 +59,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     React.useEffect(() => {
-        console.log(SearchAreas);
+        console.log(SearchAreas[0]);
     }, [SearchAreas]);
 
     const searchRef = useRef<HTMLInputElement>(null);
