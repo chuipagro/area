@@ -50,6 +50,14 @@ const riot = {
         summonerName: "summonerName",
       }
     },
+    {
+      name: "getActiveGameBySummonerName",
+      description: "get active game by summoner name",
+        id: 6,
+        need: {
+          summonerName: "summonerName",
+        }
+    }
   ],
   reactions: [],
 }

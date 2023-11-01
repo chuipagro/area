@@ -31,7 +31,15 @@ const App = (): JSX.Element => (
       <Route path="/explore" element={<Explore />} />
       <Route path="/oauthgithub" element={<GithubAuthRedirect />} />
       <Route path="/oauthgoogle" element={<GoogleAuthRedirect />} />
-      <Route path="/create" element={<CreateArea />} />
+      <Route
+        path="/create"
+        element={
+          <CreateArea PUpdate={false} PNameArea="" PUsername="" PActive={false}
+            PServiceAType={-1} PActionType={-1} PServiceRType={-1} PReactionType={-1}
+            PActionsNeeds={[]} PReactionsNeeds={[]}
+          />
+        }
+      />
     </Routes>
   </Router >
 );

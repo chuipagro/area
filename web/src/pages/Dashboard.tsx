@@ -59,7 +59,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     React.useEffect(() => {
-        console.log(SearchAreas);
+        console.log(SearchAreas[0]);
     }, [SearchAreas]);
 
     const searchRef = useRef<HTMLInputElement>(null);

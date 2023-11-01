@@ -13,8 +13,7 @@ export class AreaService {
 
   constructor(@InjectModel('Area') private areaModel: Model<IArea>) {
     this.launchAreas().then(() => {
-    }).catch((err) => {
-      console.log(err);
+        console.log("Areas launched");
     });
   }
 
@@ -24,25 +23,38 @@ export class AreaService {
     const riotService = new RiotService(configService);
     let puuid = null;
     let actionData;
+    
 
-    if ( area.data.riot && area.data.riot.summonerName != null)
+    if ( area.data.riot && area.data.riot.summonerName != null) {
       puuid = await riotService.getSummonerByName(area.data.riot.summonerName);
+    }
+
+    if ( puuid == null)
+      throw new Error('Summoner not found');
+
+
+    if ( puuid == null)
+      throw new Error('Summoner not found');
+
 
     switch (area.action.type) {
       case 1:
-        actionData = await riotService.waitForNewWin(puuid)
+        actionData = await riotService.waitForNewWin(puuid.puuid)
         break;
       case 2:
-        actionData = await riotService.waitForNewLose(puuid)
+        actionData = await riotService.waitForNewLose(puuid.puuid)
         break;
       case 3:
-        actionData = await riotService.checkPlayerLevel(puuid)
+        actionData = await riotService.checkPlayerLevel(puuid.puuid)
         break;
       case 4:
-        actionData = await riotService.getBasicMatchsInfo(puuid)
+        actionData = await riotService.getBasicMatchsInfo(puuid.puuid)
         break;
       case 5:
-        actionData = await riotService.waitForNewMatch(puuid)
+        actionData = await riotService.getPlayerStartANewGame(puuid.puuid)
+        break;
+      case 6:
+        actionData = await riotService.waitForNewMatch(puuid.puuid)
         break;
       default:
         console.log("action not found");
@@ -80,8 +92,8 @@ export class AreaService {
     const microsoftService = new MicrosoftService(configService);
     if (area.data.mail == null)
       area.data.mail = {
-        from: "self",
-        to: "pablo.levy@epitech.eu",
+        from: "pablo.levy@epitech.eu",
+        to: "self",
         subject: "no mail",
         text: "no mail"
       };
@@ -123,10 +135,10 @@ export class AreaService {
       throw new Error('Area not found');
     }
 
-    for (const area of allAreas) {
-      if (area.active)
-        await this.launchArea(area);
-    }
+    allAreas.forEach(async (area) => {
+        if (area.active)
+            await this.launchArea(area);
+    });
   }
 
   async launchAreaByName(areaName: string, userToken: string): Promise<void> {
@@ -140,7 +152,7 @@ export class AreaService {
 
 
   async getAllAreas(): Promise<IArea[] | null> {
-    const areas = await AreaModel.find().exec();
+    const areas = await AreaModel.find();
     return areas ? areas.map((area) => area.toObject() as IArea) : null;
   }
 
