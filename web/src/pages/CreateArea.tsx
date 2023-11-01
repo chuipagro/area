@@ -139,10 +139,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const [ReactionTitle, setReactionTitle] = React.useState("");
     const [reactionDesc, setReactionDesc] = React.useState("");
 
+    const [ServiceAId, setServiceAId] = React.useState(-1);
+    const [ServiceRId, setServiceRId] = React.useState(-1);
 
-    // React.useEffect(() => {
-    //     if (PActionType 
-    // }, []);
 
     //for debug purpose
     React.useEffect(() => {
@@ -152,6 +151,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
     type Data = {
         [key: string]: {
+            name: string;
             logo: string;
             color: {
                 red: string;
@@ -159,10 +159,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 blue: string;
             };
             actions: {
-                [actionKey: string]: ActionData;
+                [actionKey: number]: ActionData;
             };
             reactions: {
-                [reactionKey: string]: ReactionData;
+                [reactionKey: number]: ReactionData;
             };
         };
     };
@@ -302,7 +302,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 jsonAREA: jsonAREA,
             };
 
-            const response = await axios.post('http://localhost:3000/services/createArea',
+            const response = await axios.post('http://localhost:8080/services/createArea',
                 {
                     title: token,
                     active: true,
@@ -587,7 +587,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
      * This function is used in the reaction part.
      * it is called when the user click on a service and set the json of the service
      **/
-    function CallReactions({ title, color }: { title: string; color: string }) {
+    function CallReactions({ title, color, id }: { title: string; color: string, id: number }) {
         if (reactionJson.length != 0) {
             setReactionJson("");
         }
@@ -597,6 +597,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setReactionColor(color);
 
         setReactionTitle(title);
+        setServiceRId(id)
     }
 
     /**
@@ -606,12 +607,12 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     function DisplayServiceReaction({ title, desc, size, data, key }: { title: string, desc: string, size: number, data: any, key: number }) {
 
         const rows = [];
-        let color = `blue`;
+        let color = data.color;
 
         if (title === '_id')
             return (<VStack></VStack>)
 
-        if (data.reactions === undefined) {
+        if (data.reactions.length === 0) {
             return (<VStack></VStack>)
         }
 
@@ -622,7 +623,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             )
         } else if (reactionVisibility) {
             rows.push(
-                <Box onClick={() => CallReactions({ title, color })} p={5} shadow='md' borderRadius={30} borderWidth='1px' marginLeft={200} boxSize={300} inlineSize={size} color={'#CCCCCC'} backgroundColor={color}>
+                <Box onClick={() => CallReactions({ title, color, id: data.service_id })} p={5} shadow='md' borderRadius={30} borderWidth='1px' marginLeft={200} boxSize={300} inlineSize={size} color={'#CCCCCC'} backgroundColor={color}>
                     <Heading fontSize='xl'>{title}</Heading>
                     <Text mt={4}>{desc}</Text>
                 </Box>
@@ -658,9 +659,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 const serviceData = (jsonData as Data)[service];
 
                 dataArray.push({
-                    service: service,
+                    service_id: service,
                     logo: serviceData.logo,
-                    // color: serviceData.color,
+                    name: serviceData.name,
+                    color: `rgb(${serviceData.color.red}, ${serviceData.color.green}, ${serviceData.color.blue})`,
                     actions: serviceData.actions,
                     reactions: serviceData.reactions,
                 });
@@ -674,7 +676,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 {dataArray.map((serviceObject, i) => (
                     <VStack key={i} display="inline-block">
                         <DisplayServiceReaction
-                            title={`${serviceObject.service}`}
+                            title={`${serviceObject.name}`}
                             desc=""
                             size={nb1}
                             data={serviceObject}
@@ -900,20 +902,21 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     function DisplayService({ title, desc, size, data, key }: { title: string, desc: string, size: number, data: any, key: number }) {
 
         const rows = [];
-        let color = `red`;
+        let color = data.color;
 
 
 
         if (title === '_id')
             return (<VStack></VStack>)
 
-        if (data.actions === undefined) {
+        if (data.actions.length === 0) {
             return (<VStack></VStack>)
         }
+        console.log(`data.actions = ${data.actions}`)
 
         if (serviceActionJson === title && actionJson.length === 0) {
             rows.push(
-                <DisplayActions title={title} actions={data.actions} color={'red'} />
+                <DisplayActions title={title} actions={data.actions} color={color} />
             )
         } else if (actionVisibility) {
             rows.push(
@@ -967,9 +970,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 const serviceData = (jsonData as Data)[service];
                 if (service != '_id')
                     dataArray.push({
-                        service: service,
+                        service_id: service,
                         logo: serviceData.logo,
-                        //color: serviceData.color,
+                        name: serviceData.name,
+                        color: `rgb(${serviceData.color.red}, ${serviceData.color.green}, ${serviceData.color.blue})`,
                         actions: serviceData.actions,
                         reactions: serviceData.reactions,
                     });
@@ -982,7 +986,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 {dataArray.map((serviceObject, i) => (
                     <VStack key={i} display="inline-block">
                         <DisplayService
-                            title={`${serviceObject.service}`}
+                            title={`${serviceObject.name}`}
                             desc=""
                             size={nb1}
                             data={serviceObject}
