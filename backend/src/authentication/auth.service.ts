@@ -44,7 +44,9 @@ export class AuthService {
     oauth: string):
     Promise<string | null> {
       const user = await this.usersService.findByMail(mail);
+      console.log("user  " + user);
       if (user) {
+        console.log(user.username);
         if (user.username !== username)
           return null;
         const payload: JwtPayload = { mail: mail };
@@ -52,8 +54,11 @@ export class AuthService {
         await this.usersService.updateUserToken(mail, token);
         return token;
       } else {
+        console.log("usertrcyvgubhinjok!!!!!!!!!");
         await this.usersService.createOAuthGithub( mail, username, oauth);
+        console.log("!!!!!!!!!");
         const userConnexion = await this.usersService.findByMail(mail);
+        console.log("userConnexion      " + userConnexion);
         if (userConnexion) {
           if (userConnexion.username !== username)
             return null;

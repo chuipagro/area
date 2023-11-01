@@ -1,11 +1,6 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
 
 export const GithubAuthRedirect = (): JSX.Element => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const handleGitHubLogin = () => {
     const currentURL = window.location.href;
     const url = new URL(currentURL);

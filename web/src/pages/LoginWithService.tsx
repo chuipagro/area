@@ -47,10 +47,12 @@ export const LoginWithService = (): JSX.Element => {
       if (event.origin === 'http://localhost:8081') {
         const receivedData = event.data;
         if (receivedData && receivedData.code) {
-          const authorizationCode = receivedData.code;
+          const codeTmp = receivedData.code;
+          const code = String(codeTmp);
 
+          console.log(code)
           if (!isBackendCalled.current) {
-            axios.post('http://localhost:8080/auth/postToken', { code: authorizationCode })
+            axios.post('http://localhost:8080/auth/postToken', { code: code })
               .then(response => {
                 if (response.status === 200) {
                   navigate('/home');
