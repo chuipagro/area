@@ -33,6 +33,10 @@ export class AreaService {
       throw new Error('Summoner not found');
 
 
+    if ( puuid == null)
+      throw new Error('Summoner not found');
+
+
     switch (area.action.type) {
       case 1:
         actionData = await riotService.waitForNewWin(puuid.puuid)
