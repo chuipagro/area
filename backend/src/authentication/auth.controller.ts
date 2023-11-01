@@ -170,7 +170,6 @@ export class AuthController {
       const userUsername = await userResponse.json();
       const username = userUsername['login'];
 
-      console.log(userResponse.status);
       if (userResponse.status === 200) {
         const emailResponse = await fetch(githubEmailsUrl, {
           method: 'GET',
@@ -181,7 +180,6 @@ export class AuthController {
 
         const userEmails = await emailResponse.json();
         const mail = userEmails[0].email;
-        console.log(mail + "        " + username);
         await this.authService.signOAuthGithub(mail, username, oauth);
         return res.status(200).json({ message: 'User created' });
       } else {

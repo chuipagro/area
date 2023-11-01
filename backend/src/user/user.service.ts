@@ -35,13 +35,12 @@ export class UserService {
     }
   }
 
-  async createOAuthGithub(mail: string, username: string, oauth: string): Promise<typeof UserModel> {
+  async createOAuthGithub(mail: string, username: string, oauthName: string): Promise<typeof UserModel> {
     const uid = uuidv4();
-    console.log("uid:", uid, "mail:", mail, "username:", username, "oauth:", oauth)
-    const createdUser = new this.userModel({ uid, mail, username, oauth, token: null });
+    console.log("uid:", uid, "mail:", mail, "username:", username, "oauthname:", oauthName)
+    const createdUser = new this.userModel({ uid, mail, username, oauthName, token: null });
 
     try {
-      console.log("VUIIIIIIIIIIIII");
       return await createdUser.save();
     } catch (error) {
       if (error.code === 11000) {
