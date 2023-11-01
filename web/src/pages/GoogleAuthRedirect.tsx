@@ -16,7 +16,7 @@ export const GoogleAuthRedirect = (): JSX.Element => {
     const accessToken = fragmentParams.get('access_token');
 
     axios
-      .post('http://localhost:3000/auth/postGoogle', { token: accessToken })
+      .post('http://localhost:8080/auth/postGoogle', { token: accessToken })
       .then((response) => {
         console.log(response.status);
         if (response.status == 200) {
