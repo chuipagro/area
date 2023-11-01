@@ -79,6 +79,17 @@ export class UserService {
     await user.save();
   }
 
+  async connectOAuth(token:string, oauthToken: String, mail: String, oauthName: string): Promise<void>
+  {
+    const user = await UserModel.findOne({ token: token }).exec();
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null });
+    await user.save();
+  }
+
   async updateUserToken(mail: string, token: string): Promise<void> {
     await this.userModel.updateOne({ mail: mail }, { token: token }).exec();
   }
