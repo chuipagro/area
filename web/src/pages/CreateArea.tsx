@@ -8,12 +8,39 @@ import ArrowArea from '../app/ArrowArea.png'
 import { Taskbar } from '../component/VerticalTaskbar';
 import { DisconnectButtun } from '../component/disconnect';
 import { InputText } from '../component/TexInput';
+import { data } from '../types/types';
 
+
+interface CreateAreaProps {
+    PUpdate: boolean;
+    PNameArea: string;
+    PUsername: string;
+    PActive: boolean;
+    PServiceAType: number;
+    PActionType: number;
+    PServiceRType: number;
+    PReactionType: number;
+    PActionsNeeds: { key: string; data: any }[];
+    PReactionsNeeds: { key: string; data: any }[];
+}
 
 /**
  * This page display the create area page with the services and the actions/reactions
  */
-export const CreateArea = (): JSX.Element => {
+export const CreateArea = (props: CreateAreaProps): JSX.Element => {
+    const {
+        PUpdate,
+        PNameArea,
+        PUsername,
+        PActive,
+        PServiceAType,
+        PActionType,
+        PServiceRType,
+        PReactionType,
+        PActionsNeeds,
+        PReactionsNeeds,
+    } = props;
+
     const navigate = useNavigate()
 
     // const [areaName, setAreaName] = React.useState('');
@@ -112,6 +139,11 @@ export const CreateArea = (): JSX.Element => {
     const [ReactionTitle, setReactionTitle] = React.useState("");
     const [reactionDesc, setReactionDesc] = React.useState("");
 
+
+    // React.useEffect(() => {
+    //     if (PActionType 
+    // }, []);
+
     //for debug purpose
     React.useEffect(() => {
         console.log(`name = ${name}`)
@@ -188,6 +220,38 @@ export const CreateArea = (): JSX.Element => {
     React.useEffect(() => {
         fetchJsonData();
     }, []);
+
+
+    React.useEffect(() => {
+
+        if (
+            PUpdate &&
+            PNameArea !== '' &&
+            PUsername !== '' &&
+            PServiceAType > 0 &&
+            PActionType > 0 &&
+            PServiceRType > 0 &&
+            PReactionType > 0 &&
+            Array.isArray(PActionsNeeds) &&
+            Array.isArray(PReactionsNeeds) &&
+            PActionsNeeds.length > 0 &&
+            PReactionsNeeds.length > 0
+        ) {
+            console.log('All values are filled');
+        } else {
+            console.log('All values are not filled');
+        }
+    }, [
+        PUpdate,
+        PNameArea,
+        PUsername,
+        PServiceAType,
+        PActionType,
+        PServiceRType,
+        PReactionType,
+        PActionsNeeds,
+        PReactionsNeeds,
+    ]);
 
     // const jsonData: Data = {
     //     "discord": {
