@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'HomeGlobale.dart';
-import 'HomeElementList.dart';
 import 'HomeAllButton.dart';
 
 Widget buildProfilPageContent(setState, context) {

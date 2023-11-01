@@ -9,14 +9,26 @@ enum PageState {
   ReactionList,
 }
 
+class actionServices {
+  final String name;
+  final String description;
+  List<String> needs = [];
+
+  actionServices({
+    required this.name,
+    required this.description,
+    required this.needs,
+  });
+}
+
 class Service {
   final String titre;
   final String iconPath;
   final int red;
   final int green;
   final int blue;
-  final List<String> actions;
-  final List<String> reactions;
+  final List<actionServices> actions;
+  final List<actionServices> reactions;
 
   Service({
     required this.titre,
@@ -46,5 +58,17 @@ class CreatedArea {
     required this.areaOneActionId,
     required this.areaTwoActionId,
     required this.createdBy,
+  });
+}
+
+class ProfilInfo {
+  final String name;
+  final String email;
+  final String password;
+
+  ProfilInfo({
+    required this.name,
+    required this.email,
+    required this.password,
   });
 }

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'HomeGlobale.dart';
-import 'HomeElementList.dart';
 import 'HomeAllButton.dart';
 
 Widget buildHomePageContent(setState, context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    loadAll();
 
     return Scaffold(
       body: Center(
@@ -17,7 +15,7 @@ Widget buildHomePageContent(setState, context) {
               right: screenWidth * 0.05,
               child: TextButton(
                 onPressed: () {
-                  onDeconectionTap(setState);
+                  onDeconectionTap(context);
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.transparent,
@@ -69,24 +67,26 @@ Widget buildHomePageContent(setState, context) {
                 ),
               ),
             ),
-            // Positioned(
-            //   left: screenWidth * 0.85,
-            //   top: screenHeight * 0.9,
-            //   child: GestureDetector(
-            //     onTap: profilButtonPress,
-            //     child: Container(
-            //       width: 40,
-            //       height: 40,
-            //       decoration: BoxDecoration(
-            //         image: DecorationImage(
-            //           image: AssetImage('assets/images/profilButton.png'),
-            //           fit: BoxFit.cover,
-            //         ),
-            //         borderRadius: BorderRadius.circular(10.0),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Positioned(
+              left: screenWidth * 0.85,
+              top: screenHeight * 0.9,
+              child: GestureDetector(
+                onTap: () {
+                  profilButtonPress(setState);
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/profilButton.png'),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+            ),
             Positioned(
               left: screenWidth * 0.07,
               top: screenHeight * 0.07,
@@ -121,13 +121,24 @@ Widget buildHomePageContent(setState, context) {
               ),
             ),
             Positioned(
+              top: screenHeight * 0.15,
+              left: screenWidth * 0.15,
+              child: Text(
+                elements.length.toString() + "   "  + createdAreas.length.toString(),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Positioned(
               left: screenWidth * 0.05,
               top: screenHeight * 0.15,
               child: Container(
                 width: screenWidth * 0.9,
                 height: screenHeight * 0.71,
                 child: ListView.separated(
-                  itemCount: createdAreas.length,
+                  itemCount: createdAreas.length - 1,
                   separatorBuilder: (context, index) => SizedBox(height: 16.0),
                   itemBuilder: (context, index) {
                     final element = createdAreas[index];
@@ -138,7 +149,7 @@ Widget buildHomePageContent(setState, context) {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 125, 140, 140),
+                              color: Color.fromARGB(255, 180, 165, 165),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
@@ -188,7 +199,7 @@ Widget buildHomePageContent(setState, context) {
                             top: 50.0,
                             left: 10.0,
                             child: Text(
-                              elements[element.areaIdOne - 1].actions[element.areaOneActionId - 1],
+                              elements[element.areaIdOne - 1].actions[element.areaOneActionId - 1].name,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -200,7 +211,7 @@ Widget buildHomePageContent(setState, context) {
                             top: 80.0,
                             left: 10.0,
                             child: Text(
-                              elements[element.areaIdTwo - 1].reactions[element.areaTwoActionId - 1],
+                              elements[element.areaIdTwo - 1].reactions[element.areaTwoActionId - 1].name,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

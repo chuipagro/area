@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'HomeGlobale.dart';
-import 'HomeElementList.dart';
 import 'HomeAllButton.dart';
 
 Widget buildServicesReactionsContent(TextEditingController searchControllerReaction, setState, context) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'HomeGlobale.dart';
-import 'HomeElementList.dart';
 import 'HomeAllButton.dart';
 
 Widget buildActionsListContent(setState, context) {
@@ -105,7 +104,7 @@ Widget buildActionsListContent(setState, context) {
                             left: screenWidth * 0.05,
                             top: screenHeight * 0.03,
                             child: Text(
-                              element.actions[index],
+                              element.actions[index].name,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

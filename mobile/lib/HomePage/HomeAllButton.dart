@@ -106,7 +106,7 @@ Future<void> addArea(String name, setState) async {
   }
 }
 
-Future<void> onDeconectionTap(BuildContext context) async {
+Future<void> onDeconectionTap(context) async {
   final response = await http.post(
     Uri.parse('http://' + globals.IPpc + ':3000/user/disconnect'),
   );
@@ -153,11 +153,11 @@ Future<Map<String, dynamic>> callForAllAreas() async {
 
   if (reponse.statusCode == 200) {
     final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
-    print("================================================================");
-    print("================================================================");
-    print(jsonResponse);
-    print("================================================================");
-    print("================================================================");
+    // print("================================================================");
+    // print("================================================================");
+    // print(jsonResponse);
+    // print("================================================================");
+    // print("================================================================");
     return jsonResponse;
   } else {
     throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
@@ -168,15 +168,48 @@ void createServiceList(Map<String, dynamic> json)
 {
   final Map<String, dynamic> servicesData = json["services"];
   servicesData.forEach((serviceName, serviceData) {
+    // print("================================================================");
+    // print("================================================================");
+    // print(serviceName);
+    // print("================================================================");
+    // print("================================================================");
     if (serviceName != "_id") {
       final String titre = serviceName;
       final String iconPath = serviceData["logo"];
       final int red = serviceData["color"]["red"];
       final int green = serviceData["color"]["green"];
       final int blue = serviceData["color"]["blue"];
-      final List<String> actions = (serviceData["actions"] != null) ? List<String>.from(serviceData["actions"].values) : [];
-      final List<String> reactions = (serviceData["reactions"] != null) ? List<String>.from(serviceData["reactions"].values) : [];
-
+      final List<actionServices> actions = [];
+      if (serviceData["actions"] != null) {
+        serviceData["actions"].forEach((actionName, actionData) {
+          print(actionName);
+          final String description = actionData["description"];
+          final List<String> needs = (actionData["needs"] != null)
+              ? List<String>.from(actionData["needs"].values)
+              : [];
+          final actionServices action = actionServices(
+            name: actionName,
+            description: description,
+            needs: needs,
+          );
+          actions.add(action);
+        });
+      }
+      final List<actionServices> reactions = [];
+      if (serviceData["reactions"] != null) {
+        serviceData["reactions"].forEach((reactionName, reactionData) {
+          final String description = reactionData["description"];
+          final List<String> needs = (reactionData["needs"] != null)
+              ? List<String>.from(reactionData["needs"].values)
+              : [];
+          final actionServices reaction = actionServices(
+            name: reactionName,
+            description: description,
+            needs: needs,
+          );
+          reactions.add(reaction);
+        });
+      }
       Service service = Service(
         titre: titre,
         iconPath: iconPath,
@@ -197,13 +230,18 @@ void createAreaList(Map<String, dynamic> json)
   if (json.containsKey("areas")) {
     final List<dynamic> areas = json["areas"];
     for (var areaData in areas) {
+      print("================================================================");
+      print("================================================================");
+      print(areaData);
+      print("================================================================");
+      print("================================================================");
       final String titre = areaData["title"];
       final bool isActive = areaData["active"];
       final String createdBy = areaData["createdBy"];
-      final int serviceIndexOne = areaData["action"]["service"];
-      final int serviceIndexTwo = areaData["reaction"]["service"];
-      final int actionIndexServiceOne = areaData["action"]["type"];
-      final int actionIndexServiceTwo = areaData["reaction"]["type"];
+      final int serviceIndexOne = areaData["action"]["service"] < 4 ? areaData["action"]["service"] : 3;
+      final int serviceIndexTwo = areaData["reaction"]["service"] < 4 ? areaData["reaction"]["service"] : 3;
+      final int actionIndexServiceOne = areaData["action"]["type"] < 4 ? areaData["action"]["type"] : 3;
+      final int actionIndexServiceTwo = areaData["reaction"]["type"] < 5 ? areaData["reaction"]["type"] : 3;
 
       CreatedArea area = CreatedArea(
         name: titre,
@@ -214,8 +252,12 @@ void createAreaList(Map<String, dynamic> json)
         areaOneActionId: actionIndexServiceOne,
         areaTwoActionId: actionIndexServiceTwo,
       );
-
       createdAreas.add(area);
+      print("================================================================a");
+      print("================================================================a");
+      print(area);
+      print("================================================================a");
+      print("================================================================a");
     }
   }
 }
@@ -223,14 +265,16 @@ void createAreaList(Map<String, dynamic> json)
 ///
 /// [@var		mixed	async]
 ///
-Future<void> loadAll() async
+Future<void> loadAll(setState) async
 {
   createdAreas.clear();
   elements.clear();
   final Map<String, dynamic> jsonResultServices = await callForAllServices();
-  createServiceList(jsonResultServices);
   final Map<String, dynamic> jsonResultArea = await callForAllAreas();
-  createAreaList(jsonResultArea);
+  setState(() {
+    createServiceList(jsonResultServices);
+    createAreaList(jsonResultArea);
+  });
 }
 
 ///
