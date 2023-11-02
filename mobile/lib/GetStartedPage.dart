@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobile/HomePage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/Globals.dart' as globals;
@@ -35,7 +36,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
 
     String? codeParam = Uri.parse(result).queryParameters['code'];
 
-    print(codeParam);
     final response = await http.post(
         Uri.parse('https://github.com/login/oauth/access_token'),
         headers: <String, String>{
@@ -48,11 +48,9 @@ class _GetStartedPageState extends State<GetStartedPage> {
         }),
     );
 
-    print(response.statusCode);
     if (response.statusCode == 200) { 
       List<String> parts = response.body.split('&');
       String accessToken = parts[0].split('=')[1];
-      print(accessToken);
       final res = await http.post(
         Uri.parse('http://'+globals.IPpc+':8080/auth/signOAuthGithub'),
         body: {
@@ -60,8 +58,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
             'oauth': 'github',
         },
       );
-      print("xfcgvhbjnkcgvhb");
-      print(res.statusCode);
       if (res.statusCode == 200) {
        Navigator.push(
             context,
@@ -80,7 +76,39 @@ class _GetStartedPageState extends State<GetStartedPage> {
   }
 
   Future<void> _authenticateWithGoogle() async {
-      print('Erreur lors de l\'obtention du jeton d\'accès : Google');
+    final _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+          final googleAuth = await googleUser.authentication;
+          final accessToken = googleAuth.accessToken;
+
+          final res = await http.post(
+            Uri.parse('http://'+globals.IPpc+':8080/auth/postGoogle'),
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({
+              'token': accessToken,
+            })
+        );
+        if (res.statusCode == 200) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+        } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: Text('Echec'),
+                ),
+            );
+        }
+      }
+    } catch (error) {
+      print("Erreur lors de la connexion: $error");
+    }
   }
 
   Future<void> _authenticateWithMicrosoft() async {
