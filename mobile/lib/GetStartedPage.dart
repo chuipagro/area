@@ -35,6 +35,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
 
     String? codeParam = Uri.parse(result).queryParameters['code'];
 
+    print(codeParam);
     final response = await http.post(
         Uri.parse('https://github.com/login/oauth/access_token'),
         headers: <String, String>{
@@ -47,16 +48,20 @@ class _GetStartedPageState extends State<GetStartedPage> {
         }),
     );
 
+    print(response.statusCode);
     if (response.statusCode == 200) { 
       List<String> parts = response.body.split('&');
       String accessToken = parts[0].split('=')[1];
+      print(accessToken);
       final res = await http.post(
         Uri.parse('http://'+globals.IPpc+':8080/auth/signOAuthGithub'),
         body: {
             'token': accessToken,
-            'oauth': 'Github',
+            'oauth': 'github',
         },
       );
+      print("xfcgvhbjnkcgvhb");
+      print(res.statusCode);
       if (res.statusCode == 200) {
        Navigator.push(
             context,

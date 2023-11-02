@@ -155,6 +155,8 @@ export class AuthController {
     @Body('token') token: string,
     @Body('oauth') oauth: string)
     : Promise<any> {
+      console.log(token);
+      console.log(oauth);
     if (!token || !oauth) {
       throw new Error('no empty field allowed');
     }
@@ -180,7 +182,7 @@ export class AuthController {
 
         const userEmails = await emailResponse.json();
         const mail = userEmails[0].email;
-        await this.authService.signOAuthGithub(mail, username, oauth);
+        await this.authService.signOAuthGithub(mail, username, oauth, token);
         return res.status(200).json({ message: 'User created' });
       } else {
         return res.status(userResponse.status).json({ error: 'Failed to fetch user data' });
@@ -215,7 +217,6 @@ export class AuthController {
     const clientIdGithub = '46d5db5635abf205e5fb';
     const clientSecretGithub = 'c7e2fffd378ec39098fbbce38a3b6adcd4756fc0';
 
-    console.log("123456789");
     try {
       const response = await fetch("https://github.com/login/oauth/access_token", {
         method: "POST",
@@ -229,7 +230,6 @@ export class AuthController {
         }),
       });
   
-      console.log(response);
       if (response.ok) {
         const textData = await response.text();
         const params = new URLSearchParams(textData);
@@ -237,8 +237,6 @@ export class AuthController {
         const accessToken = params.get('access_token');
         const token = String(accessToken);
         const oauth = "github";
-        console.log("WIN1!!!!!!");
-        console.log(token);
         await this.OAuth2(res, token, oauth);
       } else {
         res.status(response.status).send('Erreur lors de la demande à GitHub');
@@ -285,8 +283,10 @@ export class AuthController {
         const Susername = params.name;
         const mail = String(Smail);
         const username = String(Susername);
-        const oauth = "Google";
-        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth) });
+        const oauth = "google";
+        console.log("mail     " + mail)
+        console.log("username    " + username)
+        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth, token) });
       } else {
         res.status(response.status).send('Erreur lors de la demande à Google');
       }
