@@ -37,6 +37,7 @@ export const LoginWithService = (): JSX.Element => {
   const [isListenerSet, setIsListenerSet] = useState(false);
   const isBackendCalled = useRef(false);
   const [key, setKey] = useState(0);
+  const [keyG, setKeyG] = useState(0);
 
   useEffect(() => {
     const handleMessageEvent = (event: MessageEvent) => {
@@ -78,6 +79,46 @@ export const LoginWithService = (): JSX.Element => {
     };
   }, [key]);
 
+  useEffect(() => {
+    const handleMessageEvent = (event: MessageEvent) => {
+      if (isBackendCalled.current) {
+        return;
+      }
+
+      if (event.origin === 'http://localhost:8081') {
+        const receivedData = event.data;
+        if (receivedData && receivedData.token) {
+          const tokenTmp = receivedData.token;
+          const token = String(tokenTmp);
+
+          console.log("token   " + token);
+          if (!isBackendCalled.current) {
+            axios.post('http://localhost:8080/auth/postGoogle', { token: token })
+              .then(response => {
+                if (response.status === 200) {
+                  navigate('/home');
+                }
+              })
+              .catch(error => {
+                console.error('Erreur lors de l\'appel au backend:', error);
+              });
+
+            isBackendCalled.current = true;
+          }
+        }
+      }
+    };
+
+    if (!isListenerSet) {
+      window.addEventListener('message', handleMessageEvent);
+      setIsListenerSet(true);
+    }
+
+    return () => {
+      window.removeEventListener('message', handleMessageEvent);
+    };
+  }, [keyG]);
+
   const authenticateWithGithub = async () => {
     const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
 
@@ -90,7 +131,14 @@ export const LoginWithService = (): JSX.Element => {
   };
 
   const authenticateWithGoogle = () => {
-    window.location.assign(authUrlGoogle);
+    const popup = window.open(authUrlGoogle, 'authUrlGoogle', 'width=500,height=600');
+
+    const interval = setInterval(() => {
+      if (popup?.closed) {
+        clearInterval(interval);
+        setKeyG(prevKey => prevKey + 1);
+      }
+    }, 1000);
   };
 
   const authenticateWithMicrosoft = () => {
