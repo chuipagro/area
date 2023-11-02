@@ -26,7 +26,11 @@ export class AreaService {
     
 
     if ( area.data.riot && area.data.riot.summonerName != null) {
-      account = await riotService.getSummonerByName(area.data.riot.summonerName);
+      try {
+        account = await riotService.getSummonerByName(area.data.riot.summonerName);
+      } catch (error) {
+        throw new Error('Summoner not found or Api Key not valid');
+      }
     }
 
     if ( account == null)
@@ -47,7 +51,11 @@ export class AreaService {
       await riotService.tftCheckPlayerLose(puuid),
     ]
 
-    actionData = await allAction[area.action.type - 1];
+    try {
+      actionData = await allAction[area.action.type - 1];
+    } catch (error) {
+      throw new Error('Action not found or Api error');
+    }
     return actionData;
   }
 

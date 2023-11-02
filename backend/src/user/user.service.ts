@@ -88,6 +88,14 @@ export class UserService {
     }
     if (user.auth == undefined)
       user.auth = []
+    for (let i = 0; i < user.auth.length; i++) {
+      if (user.auth[i].oauthName == oauthName)
+      {
+        user.auth[i].token = oauthToken.toString();
+        await user.save();
+        return ;
+      }
+    }
     user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null });
     await user.save();
   }
