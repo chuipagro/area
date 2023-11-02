@@ -55,5 +55,103 @@ export class GithubService {
       return response.data;
     });
   };
+  
+  async checkNewRepoCreation(): Promise<any> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/user/repos`;
+    
+    return await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'User-Agent': 'Area',
+    }
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async checkNewCommit(): Promise<any> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/user/repos`;
+    
+    return await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'User-Agent': 'Area',
+    }
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async checkNewIssue(): Promise<any> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/user/repos`;
+    
+    return await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'User-Agent': 'Area',
+    }
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async checkNewPullRequest(): Promise<any> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/user/repos`;
+    
+    return await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'User-Agent': 'Area',
+    }
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async checkNewRelease(): Promise<any> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/user/repos`;
+    
+    return await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'User-Agent': 'Area',
+    }
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async checkNewStar(): Promise<any> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/user/repos`;
+    
+    return await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'User-Agent': 'Area',
+    }
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async createRepo(): Promise<any> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/user/repos`;
+    
+    return await axios.post(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'Area/vnd.github.v3+json',
+    }
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
 
 }

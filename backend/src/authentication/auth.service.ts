@@ -50,7 +50,7 @@ export class AuthService {
           return null;
         const payload: JwtPayload = { mail: mail };
         const token = this.jwtService.sign(payload);
-        this.usersService.connectOAuth(token, tokenOauth, mail, oauth);
+        this.usersService.connectOAuth(token, tokenOauth, mail, username, oauth);
         await this.usersService.updateUserToken(mail, token);
         return token;
       } else {
@@ -61,7 +61,7 @@ export class AuthService {
             return null;
           const payload: JwtPayload = { mail: mail };
           const token = this.jwtService.sign(payload);
-          this.usersService.connectOAuth(token, tokenOauth, mail, oauth);
+          this.usersService.connectOAuth(token, tokenOauth, mail, username, oauth);
           await this.usersService.updateUserToken(mail, token);
           return token;
         }

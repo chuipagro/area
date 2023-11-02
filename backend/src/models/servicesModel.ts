@@ -164,7 +164,46 @@ const Microsoft = {
   ],
 }
 
-export const allServices = [riot, spotify, Microsoft];
+const github = {
+  id: 4,
+  name: "github",
+  logo: "assets/images/githubLogo.png",
+  color: {
+    red: 0,
+    green: 0,
+    blue: 0,
+  },
+  actions: [],
+  reactions: [],
+}
+
+const discord = {
+  id: 5,
+  name: "discord",
+  logo: "assets/images/discordLogo.png",
+  color: {
+    red: 0,
+    green: 0,
+    blue: 0,
+  },
+  actions: [],
+  reactions: [],
+}
+
+const google = {
+  id: 6,
+  name: "google",
+  logo: "assets/images/googleLogo.png",
+  color: {
+    red: 0,
+    green: 0,
+    blue: 0,
+  },
+  actions: [],
+  reactions: [],
+}
+
+export const allServices = [riot, spotify, Microsoft, github, discord, google];
 
 const ActionSchema = new Schema({
     description: { type: String, required: true},

@@ -79,7 +79,7 @@ export class UserService {
     await user.save();
   }
 
-  async connectOAuth(token:string, oauthToken: String, mail: String, oauthName: string): Promise<void>
+  async connectOAuth(token:string, oauthToken: String, mail: String, username: string, oauthName: string): Promise<void>
   {
     const user = await UserModel.findOne({ token: token }).exec();
 
@@ -96,7 +96,7 @@ export class UserService {
         return ;
       }
     }
-    user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null });
+    user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null, username: username.toString(), mail: mail.toString() });
     await user.save();
   }
 
