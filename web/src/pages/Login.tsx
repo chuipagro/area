@@ -27,7 +27,7 @@ export const Login = (): JSX.Element => {
             console.log(mail, password)
             const mailSend = mail.toString();
             localStorage.setItem('userMail', mailSend);
-            const response = await axios.post('http://localhost:3000/auth/signin', {
+            const response = await axios.post('http://localhost:8080/auth/signin', {
                 mail,
                 password,
             });
@@ -132,6 +132,11 @@ export const Login = (): JSX.Element => {
             <Link color='black' href='/login-with-service'>
                 Continue with Google, Facebook or apple
             </Link>
+            <Button colorScheme='black' variant='outline' >
+                <Link color='black' href={'/client.apk'} download>
+                    Download Android
+                </Link>
+            </Button >
         </VStack>
     </div>
 }

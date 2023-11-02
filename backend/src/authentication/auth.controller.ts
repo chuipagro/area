@@ -215,6 +215,7 @@ export class AuthController {
     const clientIdGithub = '46d5db5635abf205e5fb';
     const clientSecretGithub = 'c7e2fffd378ec39098fbbce38a3b6adcd4756fc0';
 
+    console.log("123456789");
     try {
       const response = await fetch("https://github.com/login/oauth/access_token", {
         method: "POST",
@@ -228,13 +229,16 @@ export class AuthController {
         }),
       });
   
+      console.log(response);
       if (response.ok) {
         const textData = await response.text();
         const params = new URLSearchParams(textData);
 
         const accessToken = params.get('access_token');
         const token = String(accessToken);
-        const oauth = "Github";
+        const oauth = "github";
+        console.log("WIN1!!!!!!");
+        console.log(token);
         await this.OAuth2(res, token, oauth);
       } else {
         res.status(response.status).send('Erreur lors de la demande à GitHub');

@@ -50,11 +50,12 @@ export class AreaService {
       await riotService.tftCheckPlayerWin(puuid),
       await riotService.tftCheckPlayerLose(puuid),
     ]
-
+    
     try {
-      actionData = await allAction[area.action.type - 1];
-    } catch (error) {
-      throw new Error('Action not found or Api error');
+    actionData = await allAction[area.action.type - 1];
+    }
+    catch (error) {
+      throw new Error('Action not found or failed');
     }
     return actionData;
   }

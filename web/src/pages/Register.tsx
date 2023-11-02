@@ -28,7 +28,7 @@ export const Register = (): JSX.Element => {
         try {
             const mailSend = mail.toString();
             localStorage.setItem('userMail', mailSend);
-            const response = await axios.post('http://localhost:3000/auth/signup', {
+            const response = await axios.post('http://localhost:8080/auth/signup', {
                 mail,
                 username,
                 password,

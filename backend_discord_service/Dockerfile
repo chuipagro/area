@@ -3,8 +3,8 @@ FROM node:18-alpine
 COPY . .
 WORKDIR /app
 
-RUN ["npm", "install"]
+RUN npm install && npm run build
 
 EXPOSE 9999
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start"]

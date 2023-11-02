@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-COPY . .
+COPY . /app
 WORKDIR /app
 
 RUN mkdir -p /mobile_app/

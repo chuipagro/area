@@ -35,10 +35,10 @@ export class UserService {
     }
   }
 
-  async createOAuthGithub(mail: string, username: string, password: string): Promise<typeof UserModel> {
+  async createOAuthGithub(mail: string, username: string, oauthName: string): Promise<typeof UserModel> {
     const uid = uuidv4();
-    console.log("uid:", uid, "mail:", mail, "username:", username, "password:", password)
-    const createdUser = new this.userModel({ uid, mail, username, password, token: null });
+    console.log("uid:", uid, "mail:", mail, "username:", username, "oauthname:", oauthName)
+    const createdUser = new this.userModel({ uid, mail, username, oauthName, token: null });
 
     try {
       return await createdUser.save();

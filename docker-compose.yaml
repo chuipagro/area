@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+    backend:
+        build: 'backend/'
+        ports:
+            - '${BACK_PORT}:3000'
+        restart: always
+
+    backend_discord_service:
+        build: 'backend_discord_service/'
+        ports:
+            - '${DISCORD_BOT_PORT}:3000'
+        depends_on:
+            - backend
+        restart: always
+
+    web:
+        build: 'web/'
+        ports:
+            - '${FRONT_PORT}:3000'
+        depends_on:
+            - backend
+            - mobile
+        volumes:
+            - apk:/mobile_app/
+        restart: always
+
+    mobile:
+        build: 'mobile/'
+        volumes:
+            - apk:/mobile_app/
+
+volumes:
+    apk:
