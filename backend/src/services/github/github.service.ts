@@ -24,9 +24,6 @@ export class GithubService {
     const urlParams = new URLSearchParams(queryString);
     this.code = urlParams.get("code");
 
-    //if (code) {
-    //    handleLogin(code);
-    //}
   }
 
   async postToken(): Promise<any> {
