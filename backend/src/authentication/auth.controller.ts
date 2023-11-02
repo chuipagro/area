@@ -155,8 +155,6 @@ export class AuthController {
     @Body('token') token: string,
     @Body('oauth') oauth: string)
     : Promise<any> {
-      console.log(token);
-      console.log(oauth);
     if (!token || !oauth) {
       throw new Error('no empty field allowed');
     }
@@ -284,8 +282,6 @@ export class AuthController {
         const mail = String(Smail);
         const username = String(Susername);
         const oauth = "google";
-        console.log("mail     " + mail)
-        console.log("username    " + username)
         return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth, token) });
       } else {
         res.status(response.status).send('Erreur lors de la demande à Google');
