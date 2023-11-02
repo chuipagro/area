@@ -105,6 +105,7 @@ export class AreaService {
         console.log("service not found");
         break
     }
+    console.log(actionData);
 
     switch (area.reaction.service) {
       case 3:

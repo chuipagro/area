@@ -100,9 +100,7 @@ export class RiotService {
 
         const job = cron.schedule(cronTimer, async () => {
           const checkNewMatchs = await this.getSummonerLastMatch(puuid);
-          console.log(matchs[0], checkNewMatchs[0]);
           if (matchs[0] !== checkNewMatchs[0]) {
-            console.log("new match");
             resolve(checkNewMatchs[0]);
           }
         }, {
@@ -128,7 +126,6 @@ export class RiotService {
 
         const job = cron.schedule(cronTimer, async () => {
           const newMatchId = await this.getSummonerLastMatch(puuid.toString());
-          console.log(matchId, newMatchId);
           let win: boolean;
           if (matchId[0] != newMatchId[0]) {
             const match = await this.getMatchById(newMatchId[0].toString());
@@ -165,7 +162,6 @@ export class RiotService {
         const job = cron.schedule(cronTimer, async () => {
           const newMatchId = await this.getSummonerLastMatch(puuid.toString());
           let win: boolean;
-		  console.log(matchId, newMatchId);
           if (matchId != newMatchId) {
             const match = await this.getMatchById(newMatchId.toString());
             if (!match) {
