@@ -233,7 +233,7 @@ export class AreaController {
     },
   })
 
-  @Get('getUserAreas')
+  @Post('getUserAreas')
   async getUserAreas(
       @Res() res: Response,
       @Body('token') token: string,

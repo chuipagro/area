@@ -37,7 +37,13 @@ export const Dashboard = (): JSX.Element => {
     const fetchJsonData = async () => {
         try {
             if (token != null) {
-                const response = await axios.get('http://localhost:8080/area/getUserAreas');
+                const body = {
+                    "token": token,
+                };
+
+                console.log(token);
+                const response = await axios.post('http://localhost:8080/area/getUserAreas', body);
+                console.log(response.data);
                 if (response.status === 200) {
                     setAreas(response.data.areas);
                     setSearchAreas(response.data.areas);
