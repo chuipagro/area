@@ -227,10 +227,10 @@ export class AreaService {
     return areas ? areas.map((area) => area.toObject() as IArea) : null;
   }
 
-  async createArea(title: string, active: boolean, createdBy: string, action: object, reaction: object, launchType: string, data: object): Promise<void> {
+  async createArea(title: string, active: boolean, createdBy: string, action: object, reaction: object, data: object): Promise<void> {
     const dateAtCreation = new Date().toLocaleDateString();
     const timeAtCreation = new Date().toLocaleTimeString();
-    const createdArea = new AreaModel({ title, active, createdBy, action, reaction, launchType, data, timeAtCreation, dateAtCreation });
+    const createdArea = new AreaModel({ title, active, createdBy, action, reaction, data, timeAtCreation, dateAtCreation });
     await createdArea.save();
     await this.launchAreaByName(createdArea.title, createdArea.createdBy);
   }

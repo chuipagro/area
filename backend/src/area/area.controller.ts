@@ -126,10 +126,9 @@ export class AreaController {
       @Body('createdBy') user: string,
       @Body('action') action: object,
       @Body('reaction') reaction: object,
-      @Body('launchType') launchType: string,
       @Body('data') data: object,
   ): Promise<Response> {
-    await this.areaService.createArea(title, active, user, action, reaction, launchType, data);
+    await this.areaService.createArea(title, active, user, action, reaction, data);
     return res.status(200).send({ message: 'success' });
   }
 
