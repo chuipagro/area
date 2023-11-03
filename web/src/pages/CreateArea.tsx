@@ -7,8 +7,6 @@ import leftArrow from '../app/leftArrow.png'
 import ArrowArea from '../app/ArrowArea.png'
 import { Taskbar } from '../component/VerticalTaskbar';
 import { DisconnectButtun } from '../component/disconnect';
-import { InputText } from '../component/TexInput';
-import { data } from '../types/types';
 
 
 interface CreateAreaProps {
@@ -43,8 +41,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
     const navigate = useNavigate()
 
-    // const [areaName, setAreaName] = React.useState('');
-    // const [areaName, setAreaName] =
     const areaName = React.useRef<HTMLInputElement | null>(null);
 
     const [areaReceived, setAreaReceived] = React.useState(false);
@@ -77,32 +73,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const [NeedActions, setNeedActions] = React.useState<{ [key: string]: string }>({});
     const [NeedReactions, setNeedReactions] = React.useState<{ [key: string]: string }>({});
 
-
-    // for debug purpose
-    React.useEffect(() => {
-        console.log(`need actions = ${NeedActions}`)
-    }, [NeedActions]);
-    React.useEffect(() => {
-        console.log(`need actions = ${NeedReactions}`)
-    }, [NeedReactions]);
-    React.useEffect(() => {
-        for (const key in NeedActions) {
-            if (NeedActions.hasOwnProperty(key)) {
-                const element = NeedActions[key];
-                console.log(`key = ${key}`)
-                console.log(`element = ${element}`)
-            }
-        }
-    }, [NeedActions]);
-    React.useEffect(() => {
-        for (const key in NeedReactions) {
-            if (NeedReactions.hasOwnProperty(key)) {
-                const element = NeedReactions[key];
-                console.log(`key = ${key}`)
-                console.log(`element = ${element}`)
-            }
-        }
-    }, [NeedReactions]);
 
     /**
      * This function update the jsonAREA with the services and the actions/reactions
@@ -298,7 +268,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         }
     };
 
-    //for debug purpose
     React.useEffect(() => {
         console.log(`title = ${name}`)
         console.log(`crated by = ${token}`)
@@ -312,26 +281,8 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         console.log(`data = ${data}`);
         console.log("now calling api");
         // callApiCreate();
-        // callApiCreate();
     }, [name]);
 
-    React.useEffect(() => {
-        console.log(jsonAREA);
-        console.log(storedUsername);
-    }, [jsonAREA]);
-
-    const handleApiCall = () => {
-        // updateJsonAREA();
-        // callApi().then(response => {
-        // }).catch(error => {
-        //     console.log(error);
-        // });
-        return (
-            <div>
-                <Alert>Vous avez créé votre AREA</Alert>
-            </div>
-        )
-    }
 
     /**
      * This function handle what to display when the user click on the action button
@@ -479,22 +430,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 </Box>
             </div>
         );
-
-        return (
-            <div>
-                {Object.keys(need).map((key) => (
-                    <div key={key}>
-                        <input
-                            type="text"
-                            placeholder={key}
-                            value={inputs[key] || ''}
-                            onChange={(e) => handleInputChange(key, e.target.value)}
-                        />
-                    </div>
-                ))}
-                <button onClick={handleAddNeeds}>Add Needs</button>
-            </div>
-        );
     }
 
     /**
@@ -524,11 +459,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                             </VStack>
                         )
                     }
-
-                    //for debug purpose
-                    // console.log("la ca rentre dans la function")
-                    // DisplayReactionNeed({ need, reactionDescription: desc, id: reactionObject.id });
-                    //-----------------
 
                     rows.push(
                         <VStack>
@@ -563,24 +493,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     </Box>
                 );
             }
-            // if (typeof reactionDescription === 'string') {
-            //     reactionBox = (
-            //         <Box
-            //             key={reactionKey}
-            //             p={5}
-            //             shadow="md"
-            //             borderWidth="1px"
-            //             borderRadius={30}
-            //             boxSize={300}
-            //             inlineSize={300}
-            //             color={"#CCCCCC"}
-            //             backgroundColor={color}
-            //             onClick={() => CallEndReactions({ reactionDescription })}
-            //         >
-            //             <Heading fontSize="xl">{reactionDescription}</Heading>
-            //         </Box>
-            //     );
-            // }
             if (reactionBox !== null)
                 reactionBoxes.push(reactionBox);
         });
@@ -656,18 +568,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
      * it parse the json received and display the services available
      */
     function ServicesReaction() {
-        const rows = [];
-        let numrows = Object.keys(jsonData).length;
-        const jsonKeys = Object.keys(jsonData);
         let nb1: number = 600;
-        let nb2: number = 300;
-        const jsonArray: Data[] = Object.keys(jsonData).map((key) => ({
-            [key]: (jsonData as Data)[key],
-        }));
-        let i: number = 0;
-
-        const index = 0;
-        const element = jsonArray[index];
 
         const dataArray = [];
         let y: number = 0;
@@ -737,8 +638,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     * it is called when the user click on a action and set the json of the action
     **/
     function setActions({ actionDescription }: { actionDescription: string; }) {
-
-        // setActionJson(actionDescription);
         setActionNeedDisplay(true);
         setActionDesc(actionDescription);
     }
@@ -833,11 +732,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                             </VStack>
                         )
                     }
-                    //for debug purpose
-                    // console.log("la ca rentre dans la function")
-                    // DisplayActionNeed({ need, actionDescription: desc, id: actionObject.id });
-                    //-----------------
-
                     rows.push(
                         <VStack>
                             <DisplayActionNeed need={need} actionDescription={desc} id={actionObject.id} color={color} />
@@ -886,7 +780,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         } else {
             return (
                 <VStack>
-                    {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginLeft: '150px' }} /> */}
                     <Grid marginTop="90px" marginLeft={300} templateColumns="repeat(4, 1fr)" gap={4}>
                         {actionBoxes}
                     </Grid>
@@ -965,22 +858,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
      * it parse the json received and display the services available
      */
     function Services() {
-        const rows = [];
-        let numrows = Object.keys(jsonData).length;
-        const jsonKeys = Object.keys(jsonData);
         let nb1: number = 600;
-        let nb2: number = 300;
-
-        let serviceActionNb: number = 0;
-        let serviceReactionNb: number = 0;
-
-        const jsonArray: Data[] = Object.keys(jsonData).map((key) => ({
-            [key]: (jsonData as Data)[key],
-        }));
-        let i: number = 0;
-
-        const index = 0;
-        const element = jsonArray[index];
 
         const dataArray = [];
         let y: number = 0;
@@ -1075,8 +953,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                         type="text"
                         color="black"
                         placeholder="Enter your AREA name"
-                        // value={areaName}
-                        // onChange={e => setAreaName(e.target.value)}
                         ref={areaName}
                     />
                     <Button onClick={() => setName(getInputValue)} marginTop={100} marginLeft={40} boxSize={370} blockSize={50} borderRadius='md' bg='black' color='white' px={4} h={8}>
