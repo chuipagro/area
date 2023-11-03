@@ -9,3 +9,5 @@ backend/.env
 
 /backend/dist/
 web/build/
+
+backend/.env
