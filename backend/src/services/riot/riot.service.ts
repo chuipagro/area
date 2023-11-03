@@ -100,9 +100,7 @@ export class RiotService {
 
         const job = cron.schedule(cronTimer, async () => {
           const checkNewMatchs = await this.getSummonerLastMatch(puuid);
-          console.log(matchs[0], checkNewMatchs[0]);
           if (matchs[0] !== checkNewMatchs[0]) {
-            console.log("new match");
             resolve(checkNewMatchs[0]);
           }
         }, {
@@ -128,7 +126,6 @@ export class RiotService {
 
         const job = cron.schedule(cronTimer, async () => {
           const newMatchId = await this.getSummonerLastMatch(puuid.toString());
-          console.log(matchId, newMatchId);
           let win: boolean;
           if (matchId[0] != newMatchId[0]) {
             const match = await this.getMatchById(newMatchId[0].toString());
@@ -152,7 +149,7 @@ export class RiotService {
   }
 
   async waitForNewLose(puuid: string) : Promise<Object | null> {
-const matchId = await this.getSummonerLastMatch(puuid.toString());
+    const matchId = await this.getSummonerLastMatch(puuid.toString());
     return new Promise<Object | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
@@ -165,7 +162,6 @@ const matchId = await this.getSummonerLastMatch(puuid.toString());
         const job = cron.schedule(cronTimer, async () => {
           const newMatchId = await this.getSummonerLastMatch(puuid.toString());
           let win: boolean;
-		  console.log(matchId, newMatchId);
           if (matchId != newMatchId) {
             const match = await this.getMatchById(newMatchId.toString());
             if (!match) {
@@ -252,6 +248,155 @@ const matchId = await this.getSummonerLastMatch(puuid.toString());
           if (match) {
             resolve(match);
           }
+        });
+        job.start();
+      }
+      checkForNewMatch();
+    });
+  }
+  async tftGetSummonerByName(name: string): Promise<any> {
+    const url = `https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-name/${name}?api_key=${this.apiKey}`;
+    return await axios.get(url).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async tftGetSummonerByPuuid(puuid: string): Promise<any> {
+    const url = `https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-puuid/${puuid}?api_key=${this.apiKey}`;
+    return await axios.get(url).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async tftCheckPlayerLevel(puuid: string) : Promise<String | null>
+  {
+    return new Promise<String | null>(async (resolve, reject) => {
+      const cronGestion = new CronGestion();
+      const timezone = "Europe/Paris";
+      const lvl = this.tftGetSummonerByPuuid(puuid).then((response: any) => {
+        return response.summonerLevel;
+      });
+      const getnewPlayerLevel = () => {
+        const dateAtCreation = new Date().toLocaleDateString();
+        const timeAtCreation = new Date().toLocaleTimeString();
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
+  
+        const job = cron.schedule(cronTimer, async () => {
+          const newLevel = this.tftGetSummonerByPuuid(puuid).then((response: any) => {
+            return response.summonerLevel;
+          });
+          if (newLevel != lvl)
+            resolve("congrat!! you reached the " + newLevel + "level")
+        }, {
+          scheduled: true,
+          timezone,
+        });
+        job.start();
+      }
+    })
+  }
+  
+  async tftGetSummonerLastMatch(puuid: string): Promise<any> {
+    const url = `https://europe.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids?start=0&count=1&api_key=${this.apiKey}`;
+    return await axios.get(url).then((response: any) => {
+      return response.data;
+    });
+  }
+  async tftCheckSummonerNewGame(puuid: string) : Promise<Object | null>
+  {
+    const matchId = await this.tftGetSummonerLastMatch(puuid.toString());
+    
+    return new Promise<Object | null>(async (resolve, reject) => {
+      const cronGestion = new CronGestion();
+      const timezone = "Europe/Paris";
+  
+      const checkForNewMatch = () => {
+        const dateAtCreation = new Date().toLocaleDateString();
+        const timeAtCreation = new Date().toLocaleTimeString();
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
+  
+        const job = cron.schedule(cronTimer, async () => {
+          const newMatchId = await this.tftGetSummonerLastMatch(puuid.toString());
+          console.log(matchId, newMatchId);
+          if (matchId != newMatchId) {
+            const match = await this.getMatchById(newMatchId.toString());
+            if (!match) {
+                return null;
+            }
+            resolve(match);
+          }
+          return null;
+        }, {
+          scheduled: true,
+          timezone,
+        });
+        job.start();
+      }
+      checkForNewMatch();
+    });
+  }
+  
+  async tftCheckPlayerWin(puuid: string) : Promise<Object | null>
+  {
+    const matchId = await this.tftGetSummonerLastMatch(puuid.toString());
+    
+    return new Promise<Object | null>(async (resolve, reject) => {
+      const cronGestion = new CronGestion();
+      const timezone = "Europe/Paris";
+  
+      const checkForNewMatch = () => {
+        const dateAtCreation = new Date().toLocaleDateString();
+        const timeAtCreation = new Date().toLocaleTimeString();
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
+  
+        const job = cron.schedule(cronTimer, async () => {
+          const newMatchId = await this.tftGetSummonerLastMatch(puuid.toString());
+          console.log(matchId, newMatchId);
+          if (matchId != newMatchId) {
+            const match = await this.getMatchById(newMatchId.toString());
+            if (!match) {
+                return null;
+            }
+            resolve(match);
+          }
+          return null;
+        }, {
+          scheduled: true,
+          timezone,
+        });
+        job.start();
+      }
+      checkForNewMatch();
+    });
+  }
+  
+  async tftCheckPlayerLose(puuid: string) : Promise<Object | null>
+  {
+    const matchId = await this.tftGetSummonerLastMatch(puuid.toString());
+    
+    return new Promise<Object | null>(async (resolve, reject) => {
+      const cronGestion = new CronGestion();
+      const timezone = "Europe/Paris";
+  
+      const checkForNewMatch = () => {
+        const dateAtCreation = new Date().toLocaleDateString();
+        const timeAtCreation = new Date().toLocaleTimeString();
+        const cronTimer = cronGestion.timerToCron("S10", timeAtCreation, dateAtCreation);
+  
+        const job = cron.schedule(cronTimer, async () => {
+          const newMatchId = await this.tftGetSummonerLastMatch(puuid.toString());
+          console.log(matchId, newMatchId);
+          if (matchId != newMatchId) {
+            const match = await this.getMatchById(newMatchId.toString());
+            if (!match) {
+                return null;
+            }
+            resolve(match);
+          }
+          return null;
+        }, {
+          scheduled: true,
+          timezone,
         });
         job.start();
       }
