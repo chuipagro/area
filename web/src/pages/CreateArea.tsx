@@ -235,9 +235,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 'Authorization': `Bearer ${storedUsername} `,
             };
 
-            const actionObject = { type: Aid, service: ASid };
-            const reactionObject = { type: Rid, service: RSid };
-
             const test1 = defaultActionTitle.trim()
             const test2 = defaultReactionTitle.trim()
 
@@ -257,43 +254,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 "data": data
             };
 
-            const body2 = {
-                "title": "poupoule",
-                "active": true,
-                "createdBy": "poupoule",
-                "action": {
-                    "type": 1,
-                    "service": 2
-                },
-                "reaction": {
-                    "type": 1,
-                    "service": 3
-                },
-                "data": {
-                    "email": {
-                        "to": "pablo.levy@epitech.eu",
-                        "from": "pablo.levy@epitech.eu",
-                        "subject": "test",
-                        "text": "youpi"
-                    },
-                    "riot": {
-                        "summonerName": "pablo0675"
-                    },
-                    "cron": {
-                        "time": "S50"
-                    }
-                }
-            };
-
-
-            console.log("request body = ")
-            console.log(body)
-
             const response = await axios.post('http://localhost:8080/area/createArea', body
             );
 
-            console.log('Response:', response.data);
-            if (response.status === 200) {
+            if (response.status == 200) {
                 alert("AREA created successfully");
                 navigate('/home');
             } else {
@@ -303,7 +267,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
             return response.data;
         } catch (error) {
-            console.log("feur")
             console.error('Error:', error);
             throw error;
 
