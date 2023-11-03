@@ -12,6 +12,7 @@ import { GetStarted } from "../pages/GetStarted"
 import { CreateArea } from "../pages/CreateArea";
 import { GithubAuthRedirect } from "../pages/GithubAuthRedirect"
 import { GoogleAuthRedirect } from "../pages/GoogleAuthRedirect";
+import { Profil } from "../pages/profil"
 
 /**
  * This function display the app
@@ -40,6 +41,7 @@ const App = (): JSX.Element => (
           />
         }
       />
+      <Route path="/profil" element={<Profil />} />
     </Routes>
   </Router >
 );

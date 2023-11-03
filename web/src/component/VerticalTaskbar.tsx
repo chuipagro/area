@@ -18,6 +18,7 @@ export function Taskbar() {
     const location = useLocation();
     const isHomePage = location.pathname === "/home";
     const isCreatePage = location.pathname === "/create";
+    const isProfilPage = location.pathname === "/profil";
 
 
     return (
@@ -54,6 +55,18 @@ export function Taskbar() {
                 left="26"
                 boxShadow="md"
                 onClick={() => navigate('/create')}>
+
+            </Box>
+            <Box
+                backgroundColor={isProfilPage ? "blue" : "white"}
+                px={6}
+                py={6}
+                position="fixed"
+                borderRadius={50}
+                top="600"
+                left="26"
+                boxShadow="md"
+                onClick={() => navigate('/profil')}>
 
             </Box>
         </Box>)
