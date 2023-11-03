@@ -15,14 +15,14 @@ export class ServicesService
         const services = new ServicesModel(allServices);
         await services.save();
     }
-    async getAllServices(): Promise<typeof allServices> {
+    async getAllServices(): Promise<any> {
         await this.createServices();
-        const services = await ServicesModel.findOne();
+        const services = await ServicesModel.find();
         if (!services) {
             await this.saveService();
             return allServices;
         }
-        return (services.toObject());
+        return (services);
     }
 
     async deleteAllServices(): Promise<void> {

@@ -10,4 +10,5 @@ RUN flutter clean
 RUN flutter build apk
 
 RUN mkdir /mobile_app/
-RUN cp build/app/outputs/apk/release/app-release.apk /mobile_app/client.apk
+
+CMD ["cp", "/app/build/app/outputs/apk/release/app-release.apk", "/mobile_app/client.apk"]

@@ -35,10 +35,10 @@ export class UserService {
     }
   }
 
-  async createOAuthGithub(mail: string, username: string, password: string): Promise<typeof UserModel> {
+  async createOAuthGithub(mail: string, username: string, oauthName: string): Promise<typeof UserModel> {
     const uid = uuidv4();
-    console.log("uid:", uid, "mail:", mail, "username:", username, "password:", password)
-    const createdUser = new this.userModel({ uid, mail, username, password, token: null });
+    console.log("uid:", uid, "mail:", mail, "username:", username, "oauthname:", oauthName)
+    const createdUser = new this.userModel({ uid, mail, username, oauthName, token: null });
 
     try {
       return await createdUser.save();
@@ -76,6 +76,19 @@ export class UserService {
     }
 
     user.mail = mail.toString();
+    await user.save();
+  }
+
+  async connectOAuth(token:string, oauthToken: String, mail: String, oauthName: string): Promise<void>
+  {
+    const user = await UserModel.findOne({ token: token }).exec();
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+    if (user.auth == undefined)
+      user.auth = []
+    user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null });
     await user.save();
   }
 

@@ -11,13 +11,10 @@ import { UserModule } from './user/user.module';
 
 import { AuthModule } from './authentication/auth.module';
 
-import { AreaController } from './area/area.controller';
-import { AreaService } from './area/area.service';
 import { AreaModule } from './area/area.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
-import { CronjobsModule } from './cronjobs/cronjobs.module';
 import { ServicesModule } from './services/services.module';
 import { MicrosoftController } from './services/microsoft/microsoftController';
 import { MicrosoftService } from './services/microsoft/microsoft.service';
