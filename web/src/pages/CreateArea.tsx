@@ -237,22 +237,59 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
             const actionObject = { type: Aid, service: ASid };
             const reactionObject = { type: Rid, service: RSid };
+
+            const test1 = defaultActionTitle.trim()
+            const test2 = defaultReactionTitle.trim()
+
             const data = {
-                [defaultActionTitle]: NeedActions,
-                [defaultReactionTitle]: NeedReactions,
+                [test1]: NeedActions,
+                [test2]: NeedReactions,
+            };
+            console.log("data =" + test1 + ".")
+
+            const body = {
+                "title": name,
+                "active": true,
+                "createdBy": token,
+                "action": { "type": Aid, "service": ASid },
+                "reaction": { "type": Rid, "service": RSid },
+                "launchType": "manual",
+                "data": data
             };
 
-            const requestBody = {
-                title: name,
-                createdBy: token,
-                active: true,
-                action: actionObject,
-                reaction: reactionObject,
-                data: data,
+            const body2 = {
+                "title": "poupoule",
+                "active": true,
+                "createdBy": "poupoule",
+                "action": {
+                    "type": 1,
+                    "service": 2
+                },
+                "reaction": {
+                    "type": 1,
+                    "service": 3
+                },
+                "data": {
+                    "email": {
+                        "to": "pablo.levy@epitech.eu",
+                        "from": "pablo.levy@epitech.eu",
+                        "subject": "test",
+                        "text": "youpi"
+                    },
+                    "riot": {
+                        "summonerName": "pablo0675"
+                    },
+                    "cron": {
+                        "time": "S50"
+                    }
+                }
             };
 
 
-            const response = await axios.post('http://localhost:8000/area/createArea', requestBody, { headers: headers }
+            console.log("request body = ")
+            console.log(body)
+
+            const response = await axios.post('http://localhost:8080/area/createArea', body
             );
 
             console.log('Response:', response.data);
@@ -266,8 +303,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
             return response.data;
         } catch (error) {
+            console.log("feur")
             console.error('Error:', error);
             throw error;
+
         }
     };
 
@@ -286,7 +325,8 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         };
         console.log(`data = ${data}`);
         console.log("now calling api");
-        // callApiCreate();
+        if (name !== "")
+            callApiCreate();
     }, [name]);
 
 
