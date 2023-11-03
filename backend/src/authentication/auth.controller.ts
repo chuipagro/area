@@ -291,4 +291,51 @@ export class AuthController {
       res.status(500).send('Erreur interne du serveur');
     }
   }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'Token',
+    type: String,
+    status: 200,
+  })
+
+  @Post('postSpotify')
+  async postSpotify(
+    @Res() res: Response,
+    @Body('token') token: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const textData = await response.text();
+        const params = JSON.parse(textData);
+        const Smail = params.email;
+        const Susername = params.display_name;
+        const mail = String(Smail);
+        const username = String(Susername);
+        const oauth = "spotify";
+        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth, token) });
+      } else {
+        res.status(response.status).send('Erreur lors de la demande à Spotify');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la demande à Spotify:', error);
+      res.status(500).send('Erreur interne du serveur');
+    }
+  }
 }

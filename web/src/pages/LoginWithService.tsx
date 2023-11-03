@@ -4,8 +4,10 @@ import '../app/App.css';
 import { Text, VStack } from '@chakra-ui/react';
 import GithubLogo from "../images/GithubLogo.png";
 import MicrosoftLogo from "../images/MicrosoftLogo.png";
+import SpotifyLogo from "../images/SpotifyLogo.png";
 import GoogleLogo from "../images/GoogleLogo.png";
 import { Taskbar } from '../component/Taskbar';
+import querystring from 'query-string';
 import axios from 'axios';
 
 /**
@@ -26,10 +28,13 @@ function Title() {
 export const LoginWithService = (): JSX.Element => {
   const clientIdGithub = '46d5db5635abf205e5fb';
   const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
+  const clientIdSpotify = 'a549fb0ad4554f449fa69ce2322dbfc8';
 
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
+  const RedirectSpotify = 'http://localhost:8081/oauthspotify';
 
   const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}`;
+  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
   const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=profile email&access_type=online`;
 
   const navigate = useNavigate();
@@ -38,6 +43,7 @@ export const LoginWithService = (): JSX.Element => {
   const isBackendCalled = useRef(false);
   const [key, setKey] = useState(0);
   const [keyG, setKeyG] = useState(0);
+  const [keyS, setKeyS] = useState(0);
 
   useEffect(() => {
     const handleMessageEvent = (event: MessageEvent) => {
@@ -51,7 +57,6 @@ export const LoginWithService = (): JSX.Element => {
           const codeTmp = receivedData.code;
           const code = String(codeTmp);
 
-          console.log(code)
           if (!isBackendCalled.current) {
             axios.post('http://localhost:8080/auth/postToken', { code: code })
               .then(response => {
@@ -91,7 +96,6 @@ export const LoginWithService = (): JSX.Element => {
           const tokenTmp = receivedData.token;
           const token = String(tokenTmp);
 
-          console.log("token   " + token);
           if (!isBackendCalled.current) {
             axios.post('http://localhost:8080/auth/postGoogle', { token: token })
               .then(response => {
@@ -119,6 +123,45 @@ export const LoginWithService = (): JSX.Element => {
     };
   }, [keyG]);
 
+  useEffect(() => {
+    const handleMessageEvent = (event: MessageEvent) => {
+      if (isBackendCalled.current) {
+        return;
+      }
+
+      if (event.origin === 'http://localhost:8081') {
+        const receivedData = event.data;
+        if (receivedData && receivedData.tokenS) {
+          const tokenTmp = receivedData.tokenS;
+          const token = String(tokenTmp);
+
+          if (!isBackendCalled.current) {
+            axios.post('http://localhost:8080/auth/postSpotify', { token: token })
+              .then(response => {
+                if (response.status === 200) {
+                  navigate('/home');
+                }
+              })
+              .catch(error => {
+                console.error('Erreur lors de l\'appel au backend:', error);
+              });
+
+            isBackendCalled.current = true;
+          }
+        }
+      }
+    };
+
+    if (!isListenerSet) {
+      window.addEventListener('message', handleMessageEvent);
+      setIsListenerSet(true);
+    }
+
+    return () => {
+      window.removeEventListener('message', handleMessageEvent);
+    };
+  }, [keyS]);
+
   const authenticateWithGithub = async () => {
     const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
 
@@ -141,8 +184,15 @@ export const LoginWithService = (): JSX.Element => {
     }, 1000);
   };
 
-  const authenticateWithMicrosoft = () => {
-    console.log("Connexion pas encore faite");
+  const authenticateWithSpotify = () => {
+    const popup = window.open(authUrlSpotify, 'authUrlSpotify', 'width=500,height=600');
+
+    const interval = setInterval(() => {
+      if (popup?.closed) {
+        clearInterval(interval);
+        setKeyS(prevKey => prevKey + 1);
+      }
+    }, 1000);
   };
 
   return (
@@ -165,7 +215,7 @@ export const LoginWithService = (): JSX.Element => {
       }}>
         <button onClick={authenticateWithGoogle} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
           <img src={GoogleLogo} alt="Google Logo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec GitHub</span>
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Google</span>
         </button>
       </div>
 
@@ -183,7 +233,7 @@ export const LoginWithService = (): JSX.Element => {
       }}>
         <button onClick={authenticateWithGithub} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
           <img src={GithubLogo} alt="GithubLogo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Google</span>
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Github</span>
         </button>
       </div>
 
@@ -199,9 +249,9 @@ export const LoginWithService = (): JSX.Element => {
         margin: '0 auto',
         marginTop: '2%',
       }}>
-        <button onClick={authenticateWithMicrosoft} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
-          <img src={MicrosoftLogo} alt="MicrosoftLogo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Google</span>
+        <button onClick={authenticateWithSpotify} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
+          <img src={SpotifyLogo} alt="SpotifyLogo" style={{ width: 35, height: 35 }} />
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Spotify</span>
         </button>
       </div>
 
