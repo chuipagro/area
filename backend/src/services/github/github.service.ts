@@ -9,6 +9,7 @@ export class GithubService {
   private clientSECRET: string | undefined;
   private callbackURL: string | undefined;
   private code: string | null;
+  private baseUrl = `https://api.github.com/user`;
 
   constructor(private configService: ConfigService) {
     this.clientID = this.configService.get<string>('GITHUB_CLIENT_ID');
@@ -44,9 +45,8 @@ export class GithubService {
 
   async getUserProfileData(): Promise<any> {
     const access_token = await this.postToken();
-    const url = `https://api.github.com/user`;
 
-    return await axios.get(url, {
+    return await axios.get(this.baseUrl, {
       headers: {
         'Authorization': `Bearer ${access_token}`,
         'User-Agent': 'Area',
@@ -56,102 +56,281 @@ export class GithubService {
     });
   };
   
-  async checkNewRepoCreation(): Promise<any> {
+  async createRepo(name: string, description: string, homepage: string, privateRepo: boolean): Promise<void> {
     const access_token = await this.postToken();
-    const url = `https://api.github.com/user/repos`;
     
-    return await axios.get(url, {
+    const body = {
+      name: name,
+      description: description,
+      homepage: homepage,
+      private: privateRepo,
+    };
+    
+    return await axios.post(this.baseUrl, body, {
       headers: {
         'Authorization': `Bearer ${access_token}`,
-        'User-Agent': 'Area',
-    }
+        'Accept': 'application/vnd.github.v3+json',
+    },
     }).then((response: any) => {
       return response.data;
     });
   }
   
-  async checkNewCommit(): Promise<any> {
+  async modifyRepoName(repoName: string, owner: string, newName: string): Promise<void> {
     const access_token = await this.postToken();
-    const url = `https://api.github.com/user/repos`;
+    const url = `https://api.github.com/repos/${owner}/${repoName}`;
     
-    return await axios.get(url, {
+    return await axios.patch(url, { name: newName }, {
       headers: {
         'Authorization': `Bearer ${access_token}`,
-        'User-Agent': 'Area',
-    }
+        'Accept': 'application/vnd.github.v3+json',
+    },
     }).then((response: any) => {
       return response.data;
     });
   }
   
-  async checkNewIssue(): Promise<any> {
+  async modifyRepoDescription(repoName: string, owner: string, newDescription: string): Promise<void> {
     const access_token = await this.postToken();
-    const url = `https://api.github.com/user/repos`;
+    const url = `https://api.github.com/repos/${owner}/${repoName}`;
     
-    return await axios.get(url, {
+    return await axios.patch(url, { description: newDescription }, {
       headers: {
         'Authorization': `Bearer ${access_token}`,
-        'User-Agent': 'Area',
-    }
+        'Accept': 'application/vnd.github.v3+json',
+    },
     }).then((response: any) => {
       return response.data;
     });
   }
   
-  async checkNewPullRequest(): Promise<any> {
+  async modifyRepoStatus(repoName: string, owner: string, newStatus: boolean): Promise<void> {
     const access_token = await this.postToken();
-    const url = `https://api.github.com/user/repos`;
+    const url = `https://api.github.com/repos/${owner}/${repoName}`;
     
-    return await axios.get(url, {
+    return await axios.patch(url, { private: newStatus }, {
       headers: {
         'Authorization': `Bearer ${access_token}`,
-        'User-Agent': 'Area',
-    }
+        'Accept': 'application/vnd.github.v3+json',
+    },
     }).then((response: any) => {
       return response.data;
     });
   }
   
-  async checkNewRelease(): Promise<any> {
+  async deleteRepo(repoName: string, owner: string): Promise<void> {
     const access_token = await this.postToken();
-    const url = `https://api.github.com/user/repos`;
+    const url = `https://api.github.com/repos/${owner}/${repoName}`;
     
-    return await axios.get(url, {
+    return await axios.delete(url, {
       headers: {
         'Authorization': `Bearer ${access_token}`,
-        'User-Agent': 'Area',
-    }
+        'Accept': 'application/vnd.github.v3+json',
+    },
     }).then((response: any) => {
       return response.data;
     });
   }
   
-  async checkNewStar(): Promise<any> {
+  async starRepo(repoName: string, owner: string): Promise<void> {
     const access_token = await this.postToken();
-    const url = `https://api.github.com/user/repos`;
+    const url = `https://api.github.com/user/starred/${owner}/${repoName}`;
     
-    return await axios.get(url, {
+    return await axios.put(url, {}, {
       headers: {
         'Authorization': `Bearer ${access_token}`,
-        'User-Agent': 'Area',
-    }
+        'Accept': 'application/vnd.github.v3+json',
+    },
     }).then((response: any) => {
       return response.data;
     });
   }
   
-  async createRepo(): Promise<any> {
+  async unstarRepo(repoName: string, owner: string): Promise<void> {
     const access_token = await this.postToken();
-    const url = `https://api.github.com/user/repos`;
+    const url = `https://api.github.com/user/starred/${owner}/${repoName}`;
     
-    return await axios.post(url, {
+    return await axios.delete(url, {
       headers: {
         'Authorization': `Bearer ${access_token}`,
-        'Accept': 'Area/vnd.github.v3+json',
-    }
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async forkRepo(repoName: string, owner: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/forks`;
+    
+    return await axios.post(url, {}, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
     }).then((response: any) => {
       return response.data;
     });
   }
-
+  
+  async createIssue(repoName: string, owner: string, title: string, body: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/issues`;
+    
+    return await axios.post(url, { title: title, body: body }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async modifyIssueTitle(repoName: string, owner: string, issueNumber: number, newTitle: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/issues/${issueNumber}`;
+    
+    return await axios.patch(url, { title: newTitle }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async modifyIssueBody(repoName: string, owner: string, issueNumber: number, newBody: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/issues/${issueNumber}`;
+    
+    return await axios.patch(url, { body: newBody }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    }).then((response: any) => {
+      return response.data;
+    });
+  }
+  
+  async closeIssue(repoName: string, owner: string, issueNumber: number): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/issues/${issueNumber}`;
+    
+    return await axios.patch(url, { state: 'closed' }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async createPullRequest(repoName: string, owner: string, title: string, body: string, head: string, base: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/pulls`;
+    
+    return await axios.post(url, { title: title, body: body, head: head, base: base }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async mergePullRequest(repoName: string, owner: string, pullNumber: number): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/pulls/${pullNumber}/merge`;
+    
+    return await axios.put(url, {}, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async closePullRequest(repoName: string, owner: string, pullNumber: number): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/pulls/${pullNumber}`;
+    
+    return await axios.patch(url, { state: 'closed' }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async createBranch(repoName: string, owner: string, branchName: string, sha: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/git/refs`;
+    
+    return await axios.post(url, { ref: `refs/heads/${branchName}`, sha: sha }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async deleteBranch(repoName: string, owner: string, branchName: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/repos/${owner}/${repoName}/git/refs/heads/${branchName}`;
+    
+    return await axios.delete(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async createGist(description: string, files: any): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/gists`;
+    
+    return await axios.post(url, { description: description, files: files }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async modifyGistDescription(gistId: string, newDescription: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/gists/${gistId}`;
+    
+    return await axios.patch(url, { description: newDescription }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+  async modifyGistName(gistId: string, newName: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/gists/${gistId}`;
+    
+    return await axios.patch(url, { files: { [newName]: null } }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
+  
+    async modifyGistContent(gistId: string, fileName: string, newContent: string): Promise<void> {
+    const access_token = await this.postToken();
+    const url = `https://api.github.com/gists/${gistId}`;
+    
+    return await axios.patch(url, { files: { [fileName]: { content: newContent } } }, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+    },
+    });
+  }
 }

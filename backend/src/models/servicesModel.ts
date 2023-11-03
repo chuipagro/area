@@ -174,7 +174,202 @@ const github = {
     blue: 0,
   },
   actions: [],
-  reactions: [],
+  reactions: [
+    {
+      name: "createRepo",
+      description: "create repo",
+      id: 1,
+      need: {
+        name: "repoName",
+        description: "repoDescription",
+        homepage: "homepage",
+        private: "boolean",
+      }
+    },
+    {
+      name: "modify repo name",
+      description: "modify repo name",
+      id: 2,
+      need: {
+        name: "repoName",
+        newName: "newRepoName",
+      }
+    },
+    {
+      name: "modify repo description",
+      description: "modify repo description",
+      id: 3,
+      need: {
+        name: "repoName",
+        description: "newRepoDescription",
+      }
+    },
+    {
+      name: "modify repo status",
+      description: "modify repo status",
+      id: 4,
+      need: {
+        name: "repoName",
+        private: "boolean",
+      }
+    },
+    {
+      name: "delete repo",
+      description: "delete repo",
+      id: 5,
+      need: {
+        name: "repoName",
+      }
+    },
+    {
+      name: "star repo",
+      description: "star repo",
+      id: 6,
+      need: {
+        name: "repoName",
+      }
+    },
+    {
+      name: "unstar repo",
+      description: "unstar repo",
+      id: 7,
+      need: {
+        name: "repoName",
+      }
+    },
+    {
+      name: "fork repo",
+      description: "fork repo",
+      id: 8,
+      need: {
+        name: "repoName",
+      }
+    },
+    {
+      name: "create issue",
+      description: "create issue",
+      id: 9,
+      need: {
+        name: "repoName",
+        title: "issueTitle",
+        body: "issueBody",
+      }
+    },
+    {
+      name: "modify issue title",
+      description: "modify issue title",
+      id: 10,
+      need: {
+        name: "repoName",
+        issueNumber: "issueNumber",
+        title: "newIssueTitle",
+      }
+    },
+    {
+      name: "modify issue body",
+      description: "modify issue body",
+      id: 11,
+      need: {
+        name: "repoName",
+        issueNumber: "issueNumber",
+        body: "newIssueBody",
+      }
+    },
+    {
+      name: "close issue",
+      description: "close issue",
+      id: 12,
+      need: {
+        name: "repoName",
+        issueNumber: "issueNumber",
+      }
+    },
+    {
+      name: "create pull request",
+      description: "create pull request",
+      id: 13,
+      need: {
+        name: "repoName",
+        title: "pullRequestTitle",
+        body: "pullRequestBody",
+        head: "head",
+        base: "base",
+      }
+    },
+    {
+      name: "merge pull request",
+      description: "merge pull request",
+      id: 14,
+      need: {
+        name: "repoName",
+        pullNumber: "pullNumber",
+      }
+    },
+    {
+      name: "close pull request",
+      description: "close pull request",
+      id: 15,
+      need: {
+        name: "repoName",
+        pullNumber: "pullNumber",
+      }
+    },
+    {
+      name: "create branch",
+      description: "create branch",
+      id: 16,
+      need: {
+        name: "repoName",
+        branchName: "branchName",
+        sha: "sha",
+      }
+    },
+    {
+      name: "delete branch",
+      description: "delete branch",
+      id: 17,
+      need: {
+        name: "repoName",
+        branchName: "branchName",
+      }
+    },
+    {
+      name: "create gist",
+      description: "create gist",
+      id: 18,
+      need: {
+        description: "gistDescription",
+        files: "gistFiles",
+      }
+    },
+    {
+      name: "modify gist description",
+      description: "modify gist description",
+      id: 19,
+      need: {
+        gistId: "gist id",
+        newDescription: "description",
+      }
+    },
+    {
+      name: "modify gist name",
+      description: "modify gist name",
+      id: 20,
+      need: {
+        gistId: "gist id",
+        newName: "name",
+      }
+    },
+    {
+      name: "modify gist content",
+      description: "modify gist content",
+      id: 21,
+      need: {
+        gistId: "gist id",
+        files: "files",
+      }
+    },
+  ],
 }
 
 const discord = {
@@ -187,7 +382,8 @@ const discord = {
     blue: 0,
   },
   actions: [],
-  reactions: [],
+  reactions: [
+  ],
 }
 
 const google = {
