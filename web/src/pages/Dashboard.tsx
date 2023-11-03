@@ -29,17 +29,21 @@ export const Dashboard = (): JSX.Element => {
         dateAtCreation: string;
     };
 
+    const token = localStorage.getItem("token");
+
     const [Areas, setAreas] = React.useState<Area[]>([]);
     const [SearchAreas, setSearchAreas] = React.useState<Area[]>([]);
 
     const fetchJsonData = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/area/getAllAreas');
-            if (response.status === 200) {
-                setAreas(response.data.areas);
-                setSearchAreas(response.data.areas);
-            } else {
-                console.error('Failed to fetch JSON data');
+            if (token != null) {
+                const response = await axios.get('http://localhost:8080/area/getUserAreas');
+                if (response.status === 200) {
+                    setAreas(response.data.areas);
+                    setSearchAreas(response.data.areas);
+                } else {
+                    console.error('Failed to fetch JSON data');
+                }
             }
         } catch (error) {
             console.error('Error fetching JSON data:', error);
