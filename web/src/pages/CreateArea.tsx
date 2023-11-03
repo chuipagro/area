@@ -184,11 +184,32 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         }
     };
 
+
+
+    const fetchJsonDataOA2 = async () => {
+        try {
+            console.log('Fetching JSON data...');
+            const response = await axios.get('http://localhost:8080/user/getUserInfo');
+            if (response.status === 200) {
+                console.log('list OA2 conn');
+                console.log(response.data)
+            } else {
+                setIsErrorReceived(true);
+                console.error('Failed to fetch JSON data');
+
+                navigate('/create');
+            }
+        } catch (error) {
+            console.error('Error fetching JSON data:', error);
+        }
+    };
+
     /**
      * called at the launch of the page to fetch the json data
      */
     React.useEffect(() => {
         fetchJsonData();
+        fetchJsonDataOA2();
     }, []);
 
 
