@@ -8,6 +8,8 @@ import { RiotService } from '../services/riot/riot.service';
 import { ServicesModel } from '../models/servicesModel';
 import { GithubService } from '../services/github/github.service';
 import { UserModel } from '../models/users.model';
+import { SpotifyService } from '../services/spotify/spotify.service';
+import { DiscordBotService } from '../services/discord/discord-bot.service';
 
 @Injectable()
 export class AreaService {
@@ -189,7 +191,26 @@ export class AreaService {
       return null;
     }
   }
+  
+  async launchSpotifyReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const spotifyService = new SpotifyService(configService);
+    
+    
+    return null;
+  }
+  
+  async launchDiscordReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const discordBotService = new DiscordBotService(configService);
+    
+    
+    return null;
+  }
 
+  
   async launchArea(area: IArea) {
     let actionData = null;
     switch (area.action.service) {
@@ -205,12 +226,18 @@ export class AreaService {
     console.log(actionData);
 
     switch (area.reaction.service) {
+      case 2:
+        await this.launchSpotifyReaction(area, actionData)
+        break;
       case 4:
         await this.launchGithubReaction(area, actionData)
         break;
-        default:
-            console.log("service not found");
-            break;
+      case 5:
+        await this.launchDiscordReaction(area, actionData)
+        break;
+      default:
+        console.log("service not found");
+        break;
     }
   }
 
@@ -220,11 +247,6 @@ export class AreaService {
     if (!allAreas) {
       throw new Error('Area not found');
     }
-    const configService = new ConfigService();
-    const githubService = new GithubService(configService,
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoibGFldGl0aWEuYm91c2NoQGVwaXRlY2guZXUiLCJpYXQiOjE2OTkwMzMyMzMsImV4cCI6MTY5OTAzNjgzM30.yBQpGCJiyCNFX6DW7gEX-wuL7Yf8_iAcfG2Hkc6USSM");
-    await githubService.initialiseAccessToken();
-    await githubService.deleteRepo("test", "b")
     
     allAreas.forEach(async (area) => {
         if (area.active)
