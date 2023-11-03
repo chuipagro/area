@@ -60,7 +60,8 @@ export const LoginWithService = (): JSX.Element => {
           if (!isBackendCalled.current) {
             axios.post('http://localhost:8080/auth/postToken', { code: code })
               .then(response => {
-                if (response.status === 200) {
+                if (response.status === 200 && response.data) {
+                  localStorage.setItem('token', response.data.token);
                   navigate('/home');
                 }
               })

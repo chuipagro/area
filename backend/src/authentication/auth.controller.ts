@@ -180,8 +180,7 @@ export class AuthController {
 
         const userEmails = await emailResponse.json();
         const mail = userEmails[0].email;
-        await this.authService.signOAuthGithub(mail, username, oauth, token);
-        return res.status(200).json({ message: 'User created' });
+        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth, token) });
       } else {
         return res.status(userResponse.status).json({ error: 'Failed to fetch user data' });
       }
@@ -235,7 +234,7 @@ export class AuthController {
         const accessToken = params.get('access_token');
         const token = String(accessToken);
         const oauth = "github";
-        await this.OAuth2(res, token, oauth);
+        return res.status(200).json({ token: await this.OAuth2(res, token, oauth) });
       } else {
         res.status(response.status).send('Erreur lors de la demande à GitHub');
       }
