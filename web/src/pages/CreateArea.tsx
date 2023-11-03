@@ -139,14 +139,13 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const [ReactionTitle, setReactionTitle] = React.useState("");
     const [reactionDesc, setReactionDesc] = React.useState("");
 
-    const [ServiceAId, setServiceAId] = React.useState(-1);
-    const [ServiceRId, setServiceRId] = React.useState(-1);
+    const [ASid, setASid] = React.useState(-1);
+    const [Aid, setAid] = React.useState(-1);
+    const [RSid, setRSid] = React.useState(-1);
+    const [Rid, setRid] = React.useState(-1);
 
 
-    //for debug purpose
-    React.useEffect(() => {
-        console.log(`name = ${name}`)
-    }, [name]);
+
 
 
     type Data = {
@@ -253,69 +252,35 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         PReactionsNeeds,
     ]);
 
-    // const jsonData: Data = {
-    //     "discord": {
-    //         "logo": "https://www.google.com/url?sa=i&url=https%3A%2F%2Frobots.net%2Ftech%2Fwhat-is-the-discord-logo%2F&psig=AOvVaw0Z3OAC_3iEb3nixFmhkj6P&ust=1696515419834000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCKiT2MnK3IEDFQAAAAAdAAAAABAI",
-    //         "color": {
-    //             "red": "114",
-    //             "green": "137",
-    //             "blue": "218"
-    //         },
-    //         "actions": {
-    //             "action1": "se faire ping",
-    //             "action2": "recevoir un message"
-    //         },
-    //         "reaction": {
-    //             "reaction1": "ping qq",
-    //             "reaction2": "envoyer un message"
-    //         }
-    //     },
-    //     "youtube": {
-    //         "logo": "https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.m.wikipedia.org%2Fwiki%2FFichier%3AYouTube_social_white_squircle.svg&psig=AOvVaw0qUR1L0bo8bsFZc-dejkU-&ust=1696515475048000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCPDb5-PK3IEDFQAAAAAdAAAAABAE",
-    //         "color": {
-    //             "red": "255",
-    //             "green": "0",
-    //             "blue": "0"
-    //         },
-    //         "actions": {
-    //             "action1": "qq poste une video",
-    //             "action2": "en gros y a une 2eme action"
-    //         },
-    //         "reaction": {
-    //             "reaction1": "poster une video",
-    //             "reaction2": "poster un commentaire qui dis first"
-    //         }
-    //     }
-    // };
-
     /**
      * This function call the api to create the AREA
      */
-    const callApi = async () => {
+    const callApiCreate = async () => {
         try {
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${storedUsername}`,
+                'Authorization': `Bearer ${storedUsername} `,
+            };
+
+            const actionObject = { type: Aid, service: ASid };
+            const reactionObject = { type: Rid, service: RSid };
+            const data = {
+                [defaultActionTitle]: NeedActions,
+                [defaultReactionTitle]: NeedReactions,
             };
 
             const requestBody = {
-                jsonAREA: jsonAREA,
+                title: name,
+                createdBy: token,
+                active: true,
+                action: actionObject,
+                reaction: reactionObject,
+                data: data,
             };
 
-            const response = await axios.post('http://localhost:8080/services/createArea',
-                {
-                    title: token,
-                    active: true,
-                    createdBy: storedUsername,
-                    reaction_type: {
-                        type: 0,
-                        service: 0
-                    },
-                    action_type: {
-                        type: 0,
-                        service: 0
-                    },
-                }
+
+
+            const response = await axios.post('http://localhost:3000/services/createArea', requestBody, { headers: headers }
             );
 
             console.log('Response:', response.data);
@@ -324,7 +289,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 navigate('/home');
             } else {
                 alert("AREA not created");
-                navigate('/home');
+                navigate('/create');
             }
 
             return response.data;
@@ -333,6 +298,23 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             throw error;
         }
     };
+
+    //for debug purpose
+    React.useEffect(() => {
+        console.log(`title = ${name}`)
+        console.log(`crated by = ${token}`)
+        console.log("active = true")
+        console.log(`action = { type: ${Aid} service: ${ASid} }`)
+        console.log(`reaction = { type: ${Rid} service: ${RSid} }`)
+        const data = {
+            [defaultActionTitle]: NeedActions,
+            [defaultReactionTitle]: NeedReactions,
+        };
+        console.log(`data = ${data}`);
+        console.log("now calling api");
+        // callApiCreate();
+        callApiCreate();
+    }, [name]);
 
     React.useEffect(() => {
         console.log(jsonAREA);
@@ -418,10 +400,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
      * This function is used in the reaction part.
      * it is called when the user click on a reaction and set the json of the reaction of the action or when a user set the needs of an action
      **/
-    function CallEndReactions({ reactionDescription }: { reactionDescription: string; }) {
+    function CallEndReactions({ reactionDescription, id }: { reactionDescription: string, id: number }) {
 
         setReactionJson(reactionDescription);
-        console.log(`title in call action = ${reactionDescription}`)
+        console.log(`title in call action = ${reactionDescription} `)
         handleReactionsVisibility();
         if (!reaction)
             setReaction(true);
@@ -431,6 +413,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
         setDefaultReactionDesc(reactionDescription);
         setDefaultReactionTitle(ReactionTitle);
+        setRid(id);
     }
 
     /**
@@ -442,7 +425,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setReactionDesc(reactionDescription);
     }
 
-    function DisplayReactionNeed({ need, reactionDescription }: { need: { [key: string]: { type: string; required: boolean } }, reactionDescription: string }) {
+    function DisplayReactionNeed({ need, reactionDescription, id }: { need: { [key: string]: { type: string; required: boolean } }, reactionDescription: string, id: number }) {
 
         const [inputs, setInputs] = React.useState<{ [key: string]: string }>({});
 
@@ -464,7 +447,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     }));
                 }
             }
-            CallEndReactions({ reactionDescription });
+            CallEndReactions({ reactionDescription, id });
         };
 
         return (
@@ -512,11 +495,14 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                         )
                     }
 
+                    //for debug purpose
                     console.log("la ca rentre dans la function")
-                    DisplayReactionNeed({ need, reactionDescription: desc });
+                    DisplayReactionNeed({ need, reactionDescription: desc, id: reactionObject.id });
+                    //-----------------
+
                     rows.push(
                         <VStack>
-                            <DisplayReactionNeed need={need} reactionDescription={desc} />
+                            <DisplayReactionNeed need={need} reactionDescription={desc} id={reactionObject.id} />
                         </VStack>
                     )
                     return (
@@ -547,24 +533,24 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     </Box>
                 );
             }
-            if (typeof reactionDescription === 'string') {
-                reactionBox = (
-                    <Box
-                        key={reactionKey}
-                        p={5}
-                        shadow="md"
-                        borderWidth="1px"
-                        borderRadius={30}
-                        boxSize={300}
-                        inlineSize={300}
-                        color={"#CCCCCC"}
-                        backgroundColor={color}
-                        onClick={() => CallEndReactions({ reactionDescription })}
-                    >
-                        <Heading fontSize="xl">{reactionDescription}</Heading>
-                    </Box>
-                );
-            }
+            // if (typeof reactionDescription === 'string') {
+            //     reactionBox = (
+            //         <Box
+            //             key={reactionKey}
+            //             p={5}
+            //             shadow="md"
+            //             borderWidth="1px"
+            //             borderRadius={30}
+            //             boxSize={300}
+            //             inlineSize={300}
+            //             color={"#CCCCCC"}
+            //             backgroundColor={color}
+            //             onClick={() => CallEndReactions({ reactionDescription })}
+            //         >
+            //             <Heading fontSize="xl">{reactionDescription}</Heading>
+            //         </Box>
+            //     );
+            // }
             if (reactionBox !== null)
                 reactionBoxes.push(reactionBox);
         });
@@ -591,13 +577,14 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         if (reactionJson.length != 0) {
             setReactionJson("");
         }
-        console.log(`title in call reaction = ${title}`)
+        console.log(`title in call reaction = ${title} `)
         handleReactionsVisibility();
         setServiceReactionJson(title);
         setReactionColor(color);
 
         setReactionTitle(title);
-        setServiceRId(id)
+        let nb: number = Number(id) + 1
+        setRSid(nb);
     }
 
     /**
@@ -676,7 +663,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 {dataArray.map((serviceObject, i) => (
                     <VStack key={i} display="inline-block">
                         <DisplayServiceReaction
-                            title={`${serviceObject.name}`}
+                            title={`${serviceObject.name} `}
                             desc=""
                             size={nb1}
                             data={serviceObject}
@@ -695,7 +682,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
      * This function is used in the action part.
      * it is called when the user click on a action and set the json of the action or when a user set the needs of an action
      **/
-    function CallEndActions({ actionDescription }: { actionDescription: string; }) {
+    function CallEndActions({ actionDescription, id }: { actionDescription: string, id: number }) {
 
         setActionJson(actionDescription);
 
@@ -709,8 +696,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
         setDefaultActionTitle(ActionTitle);
         setDefaultActionDesc(actionDescription);
+        setAid(id);
 
-        console.log(`title in call action = ${actionDescription}`)
+        console.log(`title in call action = ${actionDescription} `)
     }
 
 
@@ -726,7 +714,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     }
 
 
-    function DisplayActionNeed({ need, actionDescription }: { need: { [key: string]: { type: string; required: boolean } }, actionDescription: string }) {
+    function DisplayActionNeed({ need, actionDescription, id }: { need: { [key: string]: { type: string; required: boolean } }, actionDescription: string, id: number }) {
 
         const [inputs, setInputs] = React.useState<{ [key: string]: string }>({});
 
@@ -748,7 +736,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     }));
                 }
             }
-            CallEndActions({ actionDescription });
+            CallEndActions({ actionDescription, id });
         };
 
         return (
@@ -799,12 +787,14 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                             </VStack>
                         )
                     }
-
+                    //for debug purpose
                     console.log("la ca rentre dans la function")
-                    DisplayActionNeed({ need, actionDescription: desc });
+                    DisplayActionNeed({ need, actionDescription: desc, id: actionObject.id });
+                    //-----------------
+
                     rows.push(
                         <VStack>
-                            <DisplayActionNeed need={need} actionDescription={desc} />
+                            <DisplayActionNeed need={need} actionDescription={desc} id={actionObject.id} />
                         </VStack>
                     )
                     return (
@@ -836,24 +826,24 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     </Box>
                 );
             }
-            if (typeof actionDescription === 'string') {
-                actionBox = (
-                    <Box
-                        key={actionKey}
-                        p={5}
-                        shadow="md"
-                        borderWidth="1px"
-                        boxSize={300}
-                        inlineSize={300}
-                        borderRadius={30}
-                        color={"#CCCCCC"}
-                        backgroundColor={color}
-                        onClick={() => CallEndActions({ actionDescription })}
-                    >
-                        <Heading fontSize="xl">{actionDescription}</Heading>
-                    </Box>
-                );
-            }
+            // if (typeof actionDescription === 'string') {
+            //     actionBox = (
+            //         <Box
+            //             key={actionKey}
+            //             p={5}
+            //             shadow="md"
+            //             borderWidth="1px"
+            //             boxSize={300}
+            //             inlineSize={300}
+            //             borderRadius={30}
+            //             color={"#CCCCCC"}
+            //             backgroundColor={color}
+            //             onClick={() => CallEndActions({ actionDescription, Aid: actionObject.id })}
+            //         >
+            //             <Heading fontSize="xl">{actionDescription}</Heading>
+            //         </Box>
+            //     );
+            // }
 
             if (actionBox !== null) {
                 actionBoxes.push(actionBox);
@@ -882,7 +872,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
      * This function is used in the action part.
      * it is called when the user click on a service and set the json of the service
      **/
-    function CallActions({ title, color }: { title: string; color: string }) {
+    function CallActions({ title, color, Sid }: { title: string; color: string, Sid: number }) {
         if (actionJson.length != 0) {
             setActionJson("");
         }
@@ -891,7 +881,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setServiceActionJson(title);
         setActionColor(color);
         setActionTitle(title);
-        console.log(`title in call action = ${title}`)
+        let nb: number = Number(Sid) + 1
+        setASid(nb)
+        console.log(`title in call action = ${title} `)
     }
 
 
@@ -912,7 +904,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         if (data.actions.length === 0) {
             return (<VStack></VStack>)
         }
-        console.log(`data.actions = ${data.actions}`)
+        console.log(`data.actions = ${data.actions} `)
 
         if (serviceActionJson === title && actionJson.length === 0) {
             rows.push(
@@ -920,7 +912,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             )
         } else if (actionVisibility) {
             rows.push(
-                <Box onClick={() => CallActions({ title, color })} p={5}
+                <Box onClick={() => CallActions({ title, color, Sid: data.service_id })} p={5}
                     shadow='md'
                     borderRadius={30}
                     borderWidth='1px'
@@ -986,7 +978,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 {dataArray.map((serviceObject, i) => (
                     <VStack key={i} display="inline-block">
                         <DisplayService
-                            title={`${serviceObject.name}`}
+                            title={`${serviceObject.name} `}
                             desc=""
                             size={nb1}
                             data={serviceObject}
