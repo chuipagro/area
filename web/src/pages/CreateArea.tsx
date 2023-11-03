@@ -191,39 +191,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         fetchJsonData();
     }, []);
 
-    /**
-     * called at the launch of the page to check the arguments
-     */
-    React.useEffect(() => {
-
-        if (
-            PUpdate &&
-            PNameArea !== '' &&
-            PUsername !== '' &&
-            PServiceAType > 0 &&
-            PActionType > 0 &&
-            PServiceRType > 0 &&
-            PReactionType > 0 &&
-            Array.isArray(PActionsNeeds) &&
-            Array.isArray(PReactionsNeeds) &&
-            PActionsNeeds.length > 0 &&
-            PReactionsNeeds.length > 0
-        ) {
-            console.log('All values are filled');
-        } else {
-            console.log('All values are not filled');
-        }
-    }, [
-        PUpdate,
-        PNameArea,
-        PUsername,
-        PServiceAType,
-        PActionType,
-        PServiceRType,
-        PReactionType,
-        PActionsNeeds,
-        PReactionsNeeds,
-    ]);
 
     /**
      * This function call the api to create the AREA
@@ -242,7 +209,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 [test1]: NeedActions,
                 [test2]: NeedReactions,
             };
-            console.log("data =" + test1 + ".")
 
             const body = {
                 "title": name,
@@ -277,17 +243,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
      * the name variable is set when the user click on the button to create an area
      */
     React.useEffect(() => {
-        console.log(`title = ${name}`)
-        console.log(`crated by = ${token}`)
-        console.log("active = true")
-        console.log(`action = { type: ${Aid} service: ${ASid} }`)
-        console.log(`reaction = { type: ${Rid} service: ${RSid} }`)
-        const data = {
-            [defaultActionTitle]: NeedActions,
-            [defaultReactionTitle]: NeedReactions,
-        };
-        console.log(`data = ${data}`);
-        console.log("now calling api");
         if (name !== "")
             callApiCreate();
     }, [name]);
@@ -362,7 +317,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     function CallEndReactions({ reactionDescription, id }: { reactionDescription: string, id: number }) {
 
         setReactionJson(reactionDescription);
-        console.log(`title in call action = ${reactionDescription} `)
         handleReactionsVisibility();
         if (!reaction)
             setReaction(true);
@@ -401,7 +355,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         };
 
         const handleAddNeeds = () => {
-            console.log(inputs);
             for (const key in inputs) {
                 if (inputs.hasOwnProperty(key)) {
                     const element = inputs[key];
@@ -487,9 +440,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 }
                 const reactionObject = reactionDescription as ReactionObject;
                 const desc = reactionObject.description;
-                const need = reactionObject.need;
-                console.log("need = ")
-                console.log(need);
                 reactionBox = (
                     <Box
                         key={reactionKey}
@@ -533,7 +483,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         if (reactionJson.length != 0) {
             setReactionJson("");
         }
-        console.log(`title in call reaction = ${title} `)
         handleReactionsVisibility();
         setServiceReactionJson(title);
         setReactionColor(color);
@@ -560,7 +509,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         }
 
         if (serviceReactionJson === title && reactionJson.length === 0) {
-            console.log({ serviceReactionJson });
             rows.push(
                 <DisplayReactions title={title} reactions={data.reactions} color={color} />
             )
@@ -643,8 +591,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setDefaultActionDesc(actionDescription);
         setAid(id);
         setActionNeedDisplay(false)
-
-        console.log(`title in call action = ${actionDescription} `)
     }
 
 
@@ -673,7 +619,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         };
 
         const handleAddNeeds = () => {
-            console.log(inputs);
             for (const key in inputs) {
                 if (inputs.hasOwnProperty(key)) {
                     const element = inputs[key];
@@ -730,10 +675,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
         Object.keys(actions).forEach((actionKey) => {
             let actionBox: JSX.Element | null = null;
-            console.log("la");
             const actionDescription = actions[actionKey];
-            console.log("type = ")
-            console.log(typeof actionDescription);
             if (typeof actionDescription === 'object') {
                 if (actionNeedDisplay) {
                     const actionObject = actionDescription as ActionObject;
@@ -762,11 +704,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     )
                 }
                 const actionObject = actionDescription as ActionObject;
-                console.log(actionObject.description);
                 const desc = actionObject.description;
-                const need = actionObject.need;
-                console.log("need = ")
-                console.log(need);
                 actionBox = (
                     <Box
                         key={actionKey}
@@ -821,7 +759,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setActionTitle(title);
         let nb: number = Number(Sid) + 1
         setASid(nb)
-        console.log(`title in call action = ${title} `)
     }
 
 
@@ -842,7 +779,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         if (data.actions.length === 0) {
             return (<VStack></VStack>)
         }
-        console.log(`data.actions = ${data.actions} `)
 
         if (serviceActionJson === title && actionJson.length === 0) {
             rows.push(
@@ -934,7 +870,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                             {Object.keys(NeedActions).map((key) => (
                                 <li key={key}>
                                     {key}:   {NeedActions[key]}
-                                    {/* <Text mt={4}>{key}: {NeedActions[key]}  </Text> */}
                                 </li>
                             ))}
                         </Box>
@@ -948,7 +883,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                             {Object.keys(NeedReactions).map((key) => (
                                 <li key={key}>
                                     {key}:   {NeedReactions[key]}
-                                    {/* <Text mt={4}>{key}: {NeedActions[key]}  </Text> */}
                                 </li>
                             ))}
                         </Box>
@@ -1016,7 +950,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             height: 930, width: 1905
         }}>
             <Taskbar></Taskbar>
-            {/* <DisconnectButtun /> */}
             <Display></Display>
         </div>
     }
