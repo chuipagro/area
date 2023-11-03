@@ -51,7 +51,6 @@ import { AboutModule } from './about/about.module';
     RiotModule,
     SpotifyModule,
     DiscordBotModule,
-    CronjobsModule,
     MicrosoftModule,
     AboutModule,
   ],
