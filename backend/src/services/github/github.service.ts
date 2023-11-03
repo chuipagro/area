@@ -152,12 +152,11 @@ export class GithubService {
   }
   
   async starRepo(repoName: string, owner: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/user/starred/${owner}/${repoName}`;
     
     return await axios.put(url, {}, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     }).then((response: any) => {
@@ -166,12 +165,11 @@ export class GithubService {
   }
   
   async unstarRepo(repoName: string, owner: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/user/starred/${owner}/${repoName}`;
     
     return await axios.delete(url, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
@@ -183,7 +181,7 @@ export class GithubService {
     
     return await axios.post(url, {}, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     }).then((response: any) => {
@@ -197,7 +195,7 @@ export class GithubService {
     
     return await axios.post(url, { title: title, body: body }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     }).then((response: any) => {
@@ -220,12 +218,11 @@ export class GithubService {
   }
   
   async modifyIssueBody(repoName: string, owner: string, issueNumber: number, newBody: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/repos/${owner}/${repoName}/issues/${issueNumber}`;
     
     return await axios.patch(url, { body: newBody }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     }).then((response: any) => {
@@ -234,168 +231,154 @@ export class GithubService {
   }
   
   async closeIssue(repoName: string, owner: string, issueNumber: number): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/repos/${owner}/${repoName}/issues/${issueNumber}`;
     
     return await axios.patch(url, { state: 'closed' }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async createPullRequest(repoName: string, owner: string, title: string, body: string, head: string, base: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/repos/${owner}/${repoName}/pulls`;
     
     return await axios.post(url, { title: title, body: body, head: head, base: base }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async mergePullRequest(repoName: string, owner: string, pullNumber: number): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/repos/${owner}/${repoName}/pulls/${pullNumber}/merge`;
     
     return await axios.put(url, {}, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async closePullRequest(repoName: string, owner: string, pullNumber: number): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/repos/${owner}/${repoName}/pulls/${pullNumber}`;
     
     return await axios.patch(url, { state: 'closed' }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async createBranch(repoName: string, owner: string, branchName: string, sha: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/repos/${owner}/${repoName}/git/refs`;
     
     return await axios.post(url, { ref: `refs/heads/${branchName}`, sha: sha }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async deleteBranch(repoName: string, owner: string, branchName: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/repos/${owner}/${repoName}/git/refs/heads/${branchName}`;
     
     return await axios.delete(url, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async createGist(description: string, files: any): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/gists`;
     
     return await axios.post(url, { description: description, files: files }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async modifyGistDescription(gistId: string, newDescription: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/gists/${gistId}`;
     
     return await axios.patch(url, { description: newDescription }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async modifyGistName(gistId: string, newName: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/gists/${gistId}`;
     
     return await axios.patch(url, { files: { [newName]: null } }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
     async modifyGistContent(gistId: string, fileName: string, newContent: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/gists/${gistId}`;
     
     return await axios.patch(url, { files: { [fileName]: { content: newContent } } }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async createOrganization(name: string, description: string, billingEmail: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/orgs`;
     
     return await axios.post(url, { login: name, description: description, billing_email: billingEmail }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async modifyOrganization(name: string, description: string, billingEmail: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/orgs/${name}`;
     
     return await axios.patch(url, { description: description, billing_email: billingEmail }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async deleteOrganization(name: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/orgs/${name}`;
     
     return await axios.delete(url, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
   }
   
   async modifyUserName(newName: string): Promise<void> {
-    const access_token = await this.postToken();
     const url = `https://api.github.com/user`;
     
     return await axios.patch(url, { name: newName }, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${this.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
     },
     });
