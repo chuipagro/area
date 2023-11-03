@@ -16,30 +16,27 @@ client.on("guildCreate", async (guild) => {
   await deployCommands({ guildId: guild.id });
 });
 
-const CHANNEL_ID = "1161200916326789191";
-
 client.login(config.DISCORD_TOKEN);
 
 const app = express();
 
 app.use(express.json())
-app.post('/', (req, res) => {
-  client.channels.fetch(CHANNEL_ID).then((x) => {
-    res.send("Area Discord Bot Is Alive !");
-  });
+app.get('/', (req, res) => {
+  res.send("Area Discord Bot Is Alive !");
 })
 
-app.post('/spotify', (req, res) => {
-  client.channels.fetch(CHANNEL_ID).then((x) => {
-    if (x != null && req.body["action_service"] != 'spotify') {
-      x.send({content: `error`});
-    }
-    if (x != null && req.body["action_details"]["type_action"] == "Nouvelle Sortie") {
-      x.send({content: `Got request from an action \n${JSON.stringify(req.body["action_details"]["type_action"])}\n${JSON.stringify(req.body["action_details"]["data"]["albums"])}`});
-      console.log("Send");
-    }
-  });
+app.post('/sendMessage', (req, res) => {
 
+  client.channels.fetch(req.body["body"]['channel_id']).then((message) => {
+
+    if (message != null && req.body["body"]['message'] != undefined) {
+      message.send({content: `Got request from an action \n${req.body["body"]['message']}\n`});
+      console.log("Send");
+    } else {
+      console.log("Error !");
+    }
+
+  });
   res.send("success");
 })
 

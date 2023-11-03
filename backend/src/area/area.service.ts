@@ -7,6 +7,8 @@ import { RiotService } from '../services/riot/riot.service';
 import { MicrosoftService } from '../services/microsoft/microsoft.service';
 import { v4 as uuidv4 } from 'uuid';
 import { allServices, ServicesModel } from '../models/servicesModel';
+import { GithubService } from '../services/github/github.service';
+import { UserModel } from '../models/users.model';
 
 @Injectable()
 export class AreaService {
@@ -17,93 +19,159 @@ export class AreaService {
     });
   }
 
-  async launchRiotArea(area: IArea) : Promise<any>
+  async launchRiotAction(area: IArea) : Promise<any>
   {
     const configService = new ConfigService();
     const riotService = new RiotService(configService);
-    let puuid = null;
+    let account = null;
     let actionData;
     
 
     if ( area.data.riot && area.data.riot.summonerName != null) {
-      puuid = await riotService.getSummonerByName(area.data.riot.summonerName);
+      try {
+        account = await riotService.getSummonerByName(area.data.riot.summonerName);
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
     }
 
-    if ( puuid == null)
-      throw new Error('Summoner not found');
-
-
-    if ( puuid == null)
-      throw new Error('Summoner not found');
-
-
-    switch (area.action.type) {
-      case 1:
-        actionData = await riotService.waitForNewWin(puuid.puuid)
-        break;
-      case 2:
-        actionData = await riotService.waitForNewLose(puuid.puuid)
-        break;
-      case 3:
-        actionData = await riotService.checkPlayerLevel(puuid.puuid)
-        break;
-      case 4:
-        actionData = await riotService.getBasicMatchsInfo(puuid.puuid)
-        break;
-      case 5:
-        actionData = await riotService.getPlayerStartANewGame(puuid.puuid)
-        break;
-      case 6:
-        actionData = await riotService.waitForNewMatch(puuid.puuid)
-        break;
-      default:
-        console.log("action not found");
-        break;
+    if ( account == null)
+      return null;
+    const puuid = account.puuid;
+  
+    const allAction = [
+      await riotService.waitForNewWin(puuid),
+      await riotService.waitForNewLose(puuid),
+      await riotService.checkPlayerLevel(puuid),
+      await riotService.getBasicMatchsInfo(puuid),
+      await riotService.getPlayerStartANewGame(puuid),
+      await riotService.waitForNewMatch(puuid),
+      await riotService.getActiveGameBySummonerName(puuid),
+      await riotService.tftCheckPlayerLevel(puuid),
+      await riotService.tftCheckSummonerNewGame(puuid),
+      await riotService.tftCheckPlayerWin(puuid),
+      await riotService.tftCheckPlayerLose(puuid),
+    ]
+    
+    try {
+    actionData = await allAction[area.action.type - 1];
     }
-    return actionData;
-  }
-
-  async launchMicrosoftAction(area: IArea) : Promise<any>
-  {
-    const configService = new ConfigService();
-    const microsoftService = new MicrosoftService(configService);
-    let actionData
-    if (area.data.mail == null)
-      area.data.mail = {
-        from: "",
-        to: "",
-        subject: "",
-        text: ""
-      };
-
-    switch (area.action.type) {
-      case 1:
-        break;
-      default:
-        console.log("action not found");
-        break;
+    catch (error) {
+      console.log(error)
+      return null;
     }
     return actionData;
   }
-
-  async launchMicrosoftReaction(area: IArea, actionData : any) : Promise<any>
+  
+  async launchGithubReaction(area: IArea, actionData : any) : Promise<any>
   {
     const configService = new ConfigService();
-    const microsoftService = new MicrosoftService(configService);
-    if (area.data.mail == null)
-      area.data.mail = {
-        from: "pablo.levy@epitech.eu",
-        to: "self",
-        subject: "no mail",
-        text: "no mail"
-      };
-    switch (area.reaction.type) {
-      case 1:
-        if (area.data.mail.to != null && area.data.mail.subject != null && area.data.mail.text != null && area.data.mail.from != null)
-          await microsoftService.sendMail(area.data.mail.to, area.data.mail.subject, area.data.mail.text, area.data.mail.from);
-        break;
-      default:
-        console.log("action not found");
+    const githubService = new GithubService(configService);
+    const user = await UserModel.findOne({ token: area.createdBy }).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+    if (user.auth == undefined)
+      return null;
+    const authGithub = user.auth.find((auth) => auth.oauthName === 'github');
+    if (!authGithub) {
+      return null;
+    }
+    const githubToken = authGithub.token;
+    if (area.data.github == null)
+      return ;
+    
+    try {
+      switch (area.reaction.type) {
+        case 1:
+          if(area.data.github.repoName != null && area.data.github.description != null && area.data.github.privateRepo != null && area.data.github.homepage != null)
+            await githubService.createRepo(area.data.github.repoName, area.data.github.description, area.data.github.homepage, area.data.github.privateRepo);
+          break;
+        case 2:
+          if(area.data.github.repoName != null && area.data.github.newName != null)
+            await githubService.modifyRepoName(area.data.github.repoName, githubToken, area.data.github.newName);
+          break;
+        case 3:
+          if(area.data.github.repoName != null && area.data.github.newDescription != null)
+            await githubService.modifyRepoDescription(area.data.github.repoName, githubToken, area.data.github.newDescription);
+          break;
+        case 4:
+          if(area.data.github.repoName != null && area.data.github.privateRepo != null)
+            await githubService.modifyRepoStatus(area.data.github.repoName, githubToken, area.data.github.privateRepo);
+          break;
+        case 5:
+          if(area.data.github.repoName != null)
+            await githubService.deleteRepo(area.data.github.repoName, githubToken);
+          break;
+        case 6:
+          if(area.data.github.repoName != null)
+            await githubService.starRepo(area.data.github.repoName, githubToken);
+          break;
+        case 7:
+          if(area.data.github.repoName != null)
+            await githubService.unstarRepo(area.data.github.repoName, githubToken);
+          break;
+        case 8:
+          if(area.data.github.repoName)
+            await githubService.forkRepo(area.data.github.repoName, githubToken);
+          break;
+        case 9:
+          if(area.data.github.repoName != null && area.data.github.title != null && area.data.github.body != null)
+            await githubService.createIssue(area.data.github.repoName, githubToken, area.data.github.title, area.data.github.body);
+          break;
+        case 10:
+          if(area.data.github.repoName != null && area.data.github.issueNumber != null && area.data.github.newTitle != null)
+            await githubService.modifyIssueTitle(area.data.github.repoName, githubToken, area.data.github.issueNumber, area.data.github.newTitle);
+          break;
+        case 11:
+          if(area.data.github.repoName != null && area.data.github.issueNumber != null && area.data.github.newBody != null)
+            await githubService.modifyIssueBody(area.data.github.repoName, githubToken, area.data.github.issueNumber, area.data.github.newBody);
+          break;
+        case 12:
+          if(area.data.github.repoName != null && area.data.github.issueNumber != null)
+            await githubService.closeIssue(area.data.github.repoName, githubToken, area.data.github.issueNumber);
+          break;
+        case 13:
+          if(area.data.github.repoName != null && area.data.github.title != null && area.data.github.body != null && area.data.github.head != null && area.data.github.base != null)
+            await githubService.createPullRequest(area.data.github.repoName, githubToken, area.data.github.title, area.data.github.body, area.data.github.head, area.data.github.base);
+          break;
+        case 14:
+          if(area.data.github.repoName != null && area.data.github.pullNumber != null)
+            await githubService.mergePullRequest(area.data.github.repoName, githubToken, area.data.github.pullNumber);
+          break;
+        case 15:
+          if(area.data.github.repoName != null && area.data.github.pullNumber != null)
+            await githubService.closePullRequest(area.data.github.repoName, githubToken, area.data.github.pullNumber);
+          break;
+        case 16:
+          if(area.data.github.repoName != null && area.data.github.branchName != null && area.data.github.sha != null)
+            await githubService.createBranch(area.data.github.repoName, githubToken, area.data.github.branchName, area.data.github.sha);
+          break;
+        case 17:
+          if(area.data.github.repoName != null && area.data.github.branchName != null)
+            await githubService.deleteBranch(area.data.github.repoName, githubToken, area.data.github.branchName);
+          break;
+        case 18:
+          if(area.data.github.description != null && area.data.github.fileName != null)
+            await githubService.createGist(area.data.github.fileName, githubToken);
+          break;
+        case 19:
+          if(area.data.github.gistId != null && area.data.github.description != null)
+            await githubService.modifyGistDescription(area.data.github.gistId, area.data.github.description);
+          break;
+        case 20:
+          if(area.data.github.gistId != null && area.data.github.newName != null)
+            await githubService.modifyGistName(area.data.github.gistId, area.data.github.newName);
+          break;
+        case 21:
+          if(area.data.github.gistId != null && area.data.github.newContent != null && area.data.github.fileName != null)
+            await githubService.modifyGistContent(area.data.github.gistId, area.data.github.fileName, area.data.github.newContent);
+          break;
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   }
 
@@ -111,16 +179,19 @@ export class AreaService {
     let actionData = null;
     switch (area.action.service) {
       case 1:
-        actionData = await this.launchRiotArea(area)
+        actionData = await this.launchRiotAction(area)
         break;
       default:
         console.log("service not found");
         break
     }
+    if (actionData == null)
+      return null;
+    console.log(actionData);
 
     switch (area.reaction.service) {
-      case 3:
-        await this.launchMicrosoftReaction(area, actionData)
+      case 4:
+        await this.launchGithubReaction(area, actionData)
         break;
         default:
             console.log("service not found");
@@ -156,10 +227,10 @@ export class AreaService {
     return areas ? areas.map((area) => area.toObject() as IArea) : null;
   }
 
-  async createArea(title: string, active: boolean, createdBy: string, action: object, reaction: object, launchType: string, data: object): Promise<void> {
+  async createArea(title: string, active: boolean, createdBy: string, action: object, reaction: object, data: object): Promise<void> {
     const dateAtCreation = new Date().toLocaleDateString();
     const timeAtCreation = new Date().toLocaleTimeString();
-    const createdArea = new AreaModel({ title, active, createdBy, action, reaction, launchType, data, timeAtCreation, dateAtCreation });
+    const createdArea = new AreaModel({ title, active, createdBy, action, reaction, data, timeAtCreation, dateAtCreation });
     await createdArea.save();
     await this.launchAreaByName(createdArea.title, createdArea.createdBy);
   }
@@ -224,7 +295,6 @@ export class AreaService {
     if (!action || !reaction) {
       throw new Error('Action or reaction not found');
     }
-
     return { actionNeed: action.need, reactionNeed: reaction.need };
   }
 }
