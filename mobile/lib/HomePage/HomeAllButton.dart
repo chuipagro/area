@@ -8,12 +8,60 @@ import 'dart:convert';
 
 void homeButtonPress(Function setState) {
   setState(() {
+    needToReload = true;
     currentPageState = PageState.Areas;
   });
 }
 
+void mesServicesButtonPress(Function setState) {
+  setState(() {
+    currentPageState = PageState.MesServices;
+  });
+}
+
+void compteButtonPress(Function setState) {
+  setState(() {
+    currentPageState = PageState.Compte;
+  });
+}
+
+void changeArea(setState, CreatedArea area) {
+  setState(() {
+    indexForCreationPage[0] = area.areaIdOne;
+    indexForCreationPage[2] = area.areaIdTwo;
+    indexForCreationPage[1] = area.areaOneActionId;
+    indexForCreationPage[3] = area.areaTwoActionId;
+    nameInput.text = area.name;
+    currentPageState = PageState.ChangeArea;
+  });
+}
+
+void getAllNeeds() {
+  
+}
+
+void deleteArea(setState, areaName) async {
+  final reponse = await http.post(
+    Uri.parse('http://' + globals.IPpc + ':8080/area/deleteArea'),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      "title": areaName,
+    }),
+  );
+
+  if (reponse.statusCode == 200) {
+    setState(() {});
+  } else {
+    print('Échec de la suppression de la zone : ${reponse.statusCode}');
+  }
+}
+
 void addAreaPress(Function setState) {
   setState(() {
+    indexForCreationPage = [-1, -1, -1, -1];
+    nameInput.text = '';
     currentPageState = PageState.AddArea;
   });
 }
@@ -60,7 +108,8 @@ void setActionInCreationAreaPage(Function setState, int actionIndex, int service
   setState(() {
     indexForCreationPage[0] = serviceIndex + 1;
     indexForCreationPage[1] = actionIndex + 1;
-    currentPageState = PageState.AddArea;
+    needsList = elements[indexForCreationPage[0]].actions[indexForCreationPage[1]].needs;
+    currentPageState = PageState.GetAllNeeds;
   });
 }
 
@@ -68,8 +117,62 @@ void setReactionInCreationAreaPage(Function setState, int reactionIndex, int ser
   setState(() {
     indexForCreationPage[2] = serviceIndex + 1;
     indexForCreationPage[3] = reactionIndex + 1;
-    currentPageState = PageState.AddArea;
+    needsList = elements[indexForCreationPage[2]].reactions[indexForCreationPage[3]].needs;
+    currentPageState = PageState.GetAllNeeds;
   });
+}
+
+void setAllNeeds(String need, String input)
+{
+  switch (need) {
+    case "summonerName":
+      allNeedsList.riot_summonerName = input;
+      break;
+    case "puuid":
+      allNeedsList.riot_puuid = input;
+      break;
+    case "summonerId":
+      allNeedsList.riot_summonerId = input;
+      break;
+    case "matchId":
+      allNeedsList.riot_matchId = input;
+      break;
+    case "playlistId":
+      allNeedsList.spotify_playlistId = input;
+      break;
+    case "playlistName":
+      allNeedsList.spotify_playlistName = input;
+      break;
+    case "playlistDescription":
+      allNeedsList.spotify_playlistDescription = input;
+      break;
+    case "playlistPublic":
+      allNeedsList.spotify_playlistPublic = true;
+      break;
+    case "playlistCollaborative":
+      allNeedsList.spotify_playlistCollaborative = true;
+      break;
+    case "playlistTracksPosition":
+      allNeedsList.spotify_playlistTracksPosition = int.parse(input);
+      break;
+    case "playlistTracksUrisPosition":
+      allNeedsList.spotify_playlistTracksUrisPosition = int.parse(input);
+      break;
+    case "to":
+      allNeedsList.mail_to = input;
+      break;
+    case "from":
+      allNeedsList.mail_from = input;
+      break;
+    case "subject":
+      allNeedsList.mail_subject = input;
+      break;
+    case "text":
+      allNeedsList.mail_text = input;
+      break;
+    default:
+      break;
+  }
 }
 
 ///
@@ -78,21 +181,47 @@ void setReactionInCreationAreaPage(Function setState, int reactionIndex, int ser
 Future<void> addArea(String name, setState) async {
 
   final reponse = await http.post(
-    Uri.parse('http://' + globals.IPpc + ':3000//services/createArea'),
-    body: {
-      'title': name,
-      'active': true,
-      'createdBy': "Moi",
-      'action': {
-        'service': indexForCreationPage[0],
-        'type': indexForCreationPage[2],
-      },
-      'reaction': {
-        'service': indexForCreationPage[1],
-        'type': indexForCreationPage[3]
-      },
-      'data': {},
+    Uri.parse('http://' + globals.IPpc + ':8080//area//createArea'),
+    headers: {
+      'Content-Type': 'application/json',
     },
+    body: jsonEncode({
+      "title": name,
+      "active": true,
+      "createdBy": "Moi",
+      "action": {
+        "type": indexForCreationPage[2],
+        "service": indexForCreationPage[0],
+      },
+      "reaction": {
+        "type": indexForCreationPage[3],
+        "service": indexForCreationPage[1],
+      },
+      "data": {
+        "riot": {
+          "summonerName": allNeedsList.riot_summonerName,
+          "puuid": allNeedsList.riot_puuid,
+          "summonerId": allNeedsList.riot_summonerId,
+          "matchId": allNeedsList.riot_matchId,
+        },
+        "spotify": {
+          "playlistId": allNeedsList.spotify_playlistId,
+          "playlistName": allNeedsList.spotify_playlistName,
+          "playlistDescription": allNeedsList.spotify_playlistDescription,
+          "playlistPublic": allNeedsList.spotify_playlistPublic,
+          "playlistCollaborative": allNeedsList.spotify_playlistCollaborative,
+          "playlistTracksPosition": allNeedsList.spotify_playlistTracksPosition,
+          "playlistTracksUrisPosition": allNeedsList.spotify_playlistTracksUrisPosition,
+        },
+        "mail": {
+          "to": allNeedsList.mail_to,
+          "from": allNeedsList.mail_from,
+          "subject": allNeedsList.mail_subject,
+          "text": allNeedsList.mail_text,
+        }
+      }
+    }),
+    
   );
 
   if (reponse.statusCode == 200) {
@@ -108,7 +237,7 @@ Future<void> addArea(String name, setState) async {
 
 Future<void> onDeconectionTap(context) async {
   final response = await http.post(
-    Uri.parse('http://' + globals.IPpc + ':3000/user/disconnect'),
+    Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
   );
 
   if (response.statusCode == 200) {
@@ -127,16 +256,16 @@ Future<void> onDeconectionTap(context) async {
 
 Future<Map<String, dynamic>> callForAllServices() async {
   final reponse = await http.get(
-    Uri.parse('http://' + globals.IPpc + ':3000/services/getAllServices'),
+    Uri.parse('http://' + globals.IPpc + ':8080/services/getAllServices'),
   );
 
   if (reponse.statusCode == 200) {
     final Map<String, dynamic> jsonReponse = json.decode(reponse.body);
-    print("================================================================");
-    print("================================================================");
-    print(jsonReponse);
-    print("================================================================");
-    print("================================================================");
+    // print("================================================================");
+    // print("================================================================");
+    // print(jsonReponse);
+    // print("================================================================");
+    // print("================================================================");
     return jsonReponse;
   } else {
     throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
@@ -148,7 +277,7 @@ Future<Map<String, dynamic>> callForAllServices() async {
 ///
 Future<Map<String, dynamic>> callForAllAreas() async {
   final reponse = await http.get(
-    Uri.parse('http://' + globals.IPpc + ':3000/area/getAllAreas'),
+    Uri.parse('http://' + globals.IPpc + ':8080/area/getAllAreas'),
   );
 
   if (reponse.statusCode == 200) {
@@ -164,64 +293,66 @@ Future<Map<String, dynamic>> callForAllAreas() async {
   }
 }
 
-void createServiceList(Map<String, dynamic> json)
-{
-  final Map<String, dynamic> servicesData = json["services"];
-  servicesData.forEach((serviceName, serviceData) {
-    // print("================================================================");
-    // print("================================================================");
-    // print(serviceName);
-    // print("================================================================");
-    // print("================================================================");
-    if (serviceName != "_id") {
-      final String titre = serviceName;
-      final String iconPath = serviceData["logo"];
-      final int red = serviceData["color"]["red"];
-      final int green = serviceData["color"]["green"];
-      final int blue = serviceData["color"]["blue"];
-      final List<actionServices> actions = [];
-      if (serviceData["actions"] != null) {
-        serviceData["actions"].forEach((actionName, actionData) {
-          print(actionName);
-          final String description = actionData["description"];
-          final List<String> needs = (actionData["needs"] != null)
-              ? List<String>.from(actionData["needs"].values)
-              : [];
-          final actionServices action = actionServices(
-            name: actionName,
-            description: description,
-            needs: needs,
-          );
-          actions.add(action);
-        });
-      }
-      final List<actionServices> reactions = [];
-      if (serviceData["reactions"] != null) {
-        serviceData["reactions"].forEach((reactionName, reactionData) {
-          final String description = reactionData["description"];
-          final List<String> needs = (reactionData["needs"] != null)
-              ? List<String>.from(reactionData["needs"].values)
-              : [];
-          final actionServices reaction = actionServices(
-            name: reactionName,
-            description: description,
-            needs: needs,
-          );
-          reactions.add(reaction);
-        });
-      }
-      Service service = Service(
-        titre: titre,
-        iconPath: iconPath,
-        red: red,
-        green: green,
-        blue: blue,
-        actions: actions,
-        reactions: reactions,
-      );
+void createServiceList(Map<String, dynamic> json) {
+  final List<dynamic> servicesList = json["services"];
+  servicesList.forEach((serviceData) {
+    print("================================================================");
+    print("================================================================");
+    print(serviceData);
+    print("================================================================");
+    print("================================================================");
+    final String titre = serviceData["name"];
+    final String iconPath = serviceData["logo"];
+    final int red = serviceData["color"]["red"];
+    final int green = serviceData["color"]["green"];
+    final int blue = serviceData["color"]["blue"];
+    final List<actionServices> actions = [];
+    final List<actionServices> reactions = [];
 
-      elements.add(service);
+    if (serviceData["actions"] != null) {
+      serviceData["actions"].forEach((actionData) {
+        final String actionName = actionData["description"];
+        final List<String> needs = (actionData["need"] != null)
+            ? List<String>.from(actionData["need"].values)
+            : [];
+
+        final actionServices action = actionServices(
+          name: actionName,
+          description: actionName,
+          needs: needs,
+        );
+
+        actions.add(action);
+      });
     }
+    if (serviceData["reactions"] != null) {
+      serviceData["reactions"].forEach((reactionData) {
+        final String reactionName = reactionData["description"];
+        final List<String> needs = (reactionData["need"] != null)
+            ? List<String>.from(reactionData["need"].values)
+            : [];
+
+        final actionServices reaction = actionServices(
+          name: reactionName,
+          description: reactionName,
+          needs: needs,
+        );
+
+        reactions.add(reaction);
+      });
+    }
+
+    Service service = Service(
+      titre: titre,
+      iconPath: iconPath,
+      red: red,
+      green: green,
+      blue: blue,
+      actions: actions,
+      reactions: reactions,
+    );
+
+    elements.add(service);
   });
 }
 
@@ -230,18 +361,18 @@ void createAreaList(Map<String, dynamic> json)
   if (json.containsKey("areas")) {
     final List<dynamic> areas = json["areas"];
     for (var areaData in areas) {
-      print("================================================================");
-      print("================================================================");
-      print(areaData);
-      print("================================================================");
-      print("================================================================");
+      // print("================================================================");
+      // print("================================================================");
+      // print(areaData.toString());
+      // print("================================================================");
+      // print("================================================================");
       final String titre = areaData["title"];
       final bool isActive = areaData["active"];
       final String createdBy = areaData["createdBy"];
-      final int serviceIndexOne = areaData["action"]["service"] < 4 ? areaData["action"]["service"] : 3;
-      final int serviceIndexTwo = areaData["reaction"]["service"] < 4 ? areaData["reaction"]["service"] : 3;
-      final int actionIndexServiceOne = areaData["action"]["type"] < 4 ? areaData["action"]["type"] : 3;
-      final int actionIndexServiceTwo = areaData["reaction"]["type"] < 5 ? areaData["reaction"]["type"] : 3;
+      final int serviceIndexOne = areaData["action"]["service"];
+      final int serviceIndexTwo = areaData["reaction"]["service"];
+      final int actionIndexServiceOne = areaData["action"]["type"];
+      final int actionIndexServiceTwo = areaData["reaction"]["type"];
 
       CreatedArea area = CreatedArea(
         name: titre,
@@ -253,11 +384,6 @@ void createAreaList(Map<String, dynamic> json)
         areaTwoActionId: actionIndexServiceTwo,
       );
       createdAreas.add(area);
-      print("================================================================a");
-      print("================================================================a");
-      print(area);
-      print("================================================================a");
-      print("================================================================a");
     }
   }
 }
@@ -284,7 +410,7 @@ Future<void> loadAll(setState) async
 ///
 Future<bool> changeStatusOfArea(setState, int areaIndex, bool newValue) async {
   final reponse = await http.post(
-    Uri.parse('http://${globals.IPpc}:3000/user/areas/desactivate'),
+    Uri.parse('http://${globals.IPpc}:8080/user/areas/desactivate'),
     body: {
       'name': createdAreas[areaIndex].name,
       'isActive': newValue.toString(),

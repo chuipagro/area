@@ -10,6 +10,10 @@ import 'HomeServicesReactionList.dart';
 import 'HomeAddArea.dart';
 import 'HomeAreaList.dart';
 import 'HomeAllButton.dart';
+import 'HomeCompte.dart';
+import 'HomeMesServices.dart';
+import 'HomeChangeArea.dart';
+import 'HomeAskAllNeeds.dart';
 
 // {
 //   message: success, 
@@ -239,6 +243,19 @@ class _HomePageState extends State<HomePage> {
       case PageState.ReactionList:
         pageContent = buildReactionListContent(setState, context);
         break;
+      case PageState.Compte:
+        pageContent = buildCompte(setState, context);
+        break;
+      case PageState.MesServices:
+        pageContent = buildMesServices(setState, context);
+      case PageState.ChangeArea:
+        searchController = TextEditingController();
+        searchControllerReaction = TextEditingController();
+        pageContent = buildChangeAreaPageContent(nameInput, setState, context);
+        break;
+      case PageState.GetAllNeeds:
+        pageContent = buildAskAllNeeds(setState, context);
+        break;
     }
 
     return Scaffold(
@@ -295,5 +312,16 @@ class _HomePageState extends State<HomePage> {
       body: buildHomePageContent(setState, context),
     );
   }
+
+  Widget buildCompteSetting(BuildContext context) {
+    return Scaffold(
+      body: buildCompte(setState, context),
+    );
+  }
   
+  Widget buildMesServicesSetting(BuildContext context) {
+    return Scaffold(
+      body: buildMesServices(setState, context),
+    );
+  }
 }

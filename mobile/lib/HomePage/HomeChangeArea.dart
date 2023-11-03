@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'HomeGlobale.dart';
 import 'HomeAllButton.dart';
 
-Widget buildAddAreaPageContent(TextEditingController nameInput, setState, context) {
+Widget buildChangeAreaPageContent(TextEditingController nameInput, setState, context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final bool designedElementForAction = indexForCreationPage[0] >= 0;
@@ -214,34 +214,34 @@ Widget buildAddAreaPageContent(TextEditingController nameInput, setState, contex
                 ],
               ),
             ),
-            if (designedElementForReaction && designedElementForAction && areaNameIsNotEmpty)
-              Positioned(
-                left: screenWidth * 0.35,
-                top: screenHeight * 0.8,
-                child: GestureDetector(
-                  onTap: () {
-                    addArea(nameOfArea, setState);
-                  },
-                  child: Container(
-                    height: screenHeight * 0.07,
-                    width: screenWidth * 0.3,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 146, 247, 154),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Valider',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 0, 0),
-                        ),
+            Positioned(
+              left: screenWidth * 0.35,
+              top: screenHeight * 0.8,
+              child: GestureDetector(
+                onTap: () {
+                  deleteArea(setState, nameOfArea);
+                  addArea(nameOfArea, setState);
+                },
+                child: Container(
+                  height: screenHeight * 0.07,
+                  width: screenWidth * 0.3,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 146, 247, 154),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Modifier',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
                   ),
                 ),
               ),
+            ),
           ],
         ),
       ),
