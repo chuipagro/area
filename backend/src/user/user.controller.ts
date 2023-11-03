@@ -190,4 +190,29 @@ export class UserController {
 			await this.UserService.connectOAuth(token, oauthToken, mail, username, oauthName);
 			return res.status(200).send({ message: 'user connected' });
 	}
+	
+	@ApiBody({
+	  schema: {
+	    type: 'object',
+	    properties: {
+	      token: {
+	        type: 'string',
+	      },
+	    }
+	  }
+	})
+	
+	@ApiOkResponse({
+	  description: 'user info',
+	  type: String,
+	  status: 200,
+	})
+	
+	async getUserInfo(
+			@Res() res: Response,
+			@Body('token') token: string,
+	): Promise<Response> {
+		const user = await this.UserService.getUserInfo(token);
+		return res.status(200).send({ message: 'user info', user: user });
+	}
 }

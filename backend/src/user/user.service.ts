@@ -128,4 +128,9 @@ export class UserService {
     user.token = null;
     await user.save();
   }
+  
+  async getUserInfo(token: String): Promise<IUser | null> {
+    const user = await this.userModel.findOne({ token: token }).exec();
+    return user ? user.toObject() as IUser : null;
+  }
 }
