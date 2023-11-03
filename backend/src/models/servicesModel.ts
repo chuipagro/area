@@ -369,6 +369,40 @@ const github = {
         files: "files",
       }
     },
+    {
+      name: "create organization",
+      description: "create organization",
+      id: 22,
+      need: {
+        orgName: "orgName",
+        billingEmail: "billingEmail",
+      }
+    },
+    {
+      name: "modify organization",
+      description: "modify organization",
+      id: 23,
+      need: {
+        orgName: "orgName",
+        billingEmail: "billingEmail",
+      }
+    },
+    {
+      name: "delete organization",
+      description: "delete organization",
+      id: 24,
+      need: {
+        orgName: "orgName",
+      }
+    },
+    {
+      name:"modify user name",
+      description: "modify user name",
+      id: 25,
+      need: {
+        newName: "newName",
+      }
+    }
   ],
 }
 

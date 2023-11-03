@@ -49,6 +49,8 @@ export interface IData {
     homepage: string | null;
     newContent: string | null;
     fileName: string | null;
+    name: string | null;
+    billingEmail: string | null;
   } | null;
 
   cron: {
