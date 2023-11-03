@@ -31,12 +31,13 @@ export class AreaService {
       try {
         account = await riotService.getSummonerByName(area.data.riot.summonerName);
       } catch (error) {
-        throw new Error('Summoner not found or Api Key not valid');
+        console.log(error);
+        return null;
       }
     }
 
     if ( account == null)
-      throw new Error('Summoner not found');
+      return null;
     const puuid = account.puuid;
   
     const allAction = [
@@ -57,7 +58,8 @@ export class AreaService {
     actionData = await allAction[area.action.type - 1];
     }
     catch (error) {
-      throw new Error('Action not found or failed');
+      console.log(error)
+      return null;
     }
     return actionData;
   }
@@ -71,100 +73,105 @@ export class AreaService {
       throw new Error('User not found');
     }
     if (user.auth == undefined)
-      throw new Error('User auth not found');
+      return null;
     const authGithub = user.auth.find((auth) => auth.oauthName === 'github');
     if (!authGithub) {
-      throw new Error('Github auth not found');
+      return null;
     }
     const githubToken = authGithub.token;
     if (area.data.github == null)
-      throw new Error('Github data not found');
+      return ;
     
-    switch (area.reaction.type) {
-      case 1:
-        if (area.data.github.repoName != null && area.data.github.description != null && area.data.github.privateRepo != null && area.data.github.homepage != null)
-          await githubService.createRepo(area.data.github.repoName, area.data.github.description, area.data.github.homepage, area.data.github.privateRepo);
-        break;
-      case 2:
-        if (area.data.github.repoName != null && area.data.github.newName != null)
-          await githubService.modifyRepoName(area.data.github.repoName, githubToken, area.data.github.newName);
-        break;
-      case 3:
-        if (area.data.github.repoName != null && area.data.github.newDescription != null)
-          await githubService.modifyRepoDescription(area.data.github.repoName, githubToken, area.data.github.newDescription);
-        break;
-      case 4:
-        if (area.data.github.repoName != null && area.data.github.privateRepo != null)
-          await githubService.modifyRepoStatus(area.data.github.repoName, githubToken, area.data.github.privateRepo);
-        break;
-      case 5:
-        if (area.data.github.repoName != null)
-          await githubService.deleteRepo(area.data.github.repoName, githubToken);
-        break;
-      case 6:
-        if (area.data.github.repoName != null)
-          await githubService.starRepo(area.data.github.repoName, githubToken);
-        break;
-      case 7:
-        if (area.data.github.repoName != null)
-          await githubService.unstarRepo(area.data.github.repoName, githubToken);
-        break;
-      case 8:
-        if (area.data.github.repoName)
-          await githubService.forkRepo(area.data.github.repoName, githubToken);
-        break;
-      case 9:
-        if (area.data.github.repoName != null && area.data.github.title != null && area.data.github.body != null)
-          await githubService.createIssue(area.data.github.repoName, githubToken, area.data.github.title, area.data.github.body);
-        break;
-      case 10:
-        if (area.data.github.repoName != null && area.data.github.issueNumber != null && area.data.github.newTitle != null)
-          await githubService.modifyIssueTitle(area.data.github.repoName, githubToken, area.data.github.issueNumber, area.data.github.newTitle);
-        break;
-      case 11:
-        if (area.data.github.repoName != null && area.data.github.issueNumber != null && area.data.github.newBody != null)
-          await githubService.modifyIssueBody(area.data.github.repoName, githubToken, area.data.github.issueNumber, area.data.github.newBody);
-        break;
-      case 12:
-        if (area.data.github.repoName != null && area.data.github.issueNumber != null)
-          await githubService.closeIssue(area.data.github.repoName, githubToken, area.data.github.issueNumber);
-        break;
-      case 13:
-        if (area.data.github.repoName != null && area.data.github.title != null && area.data.github.body != null && area.data.github.head != null && area.data.github.base != null)
-          await githubService.createPullRequest(area.data.github.repoName, githubToken, area.data.github.title, area.data.github.body, area.data.github.head, area.data.github.base);
-        break;
-      case 14:
-        if (area.data.github.repoName != null && area.data.github.pullNumber != null)
-          await githubService.mergePullRequest(area.data.github.repoName, githubToken, area.data.github.pullNumber);
-        break;
-      case 15:
-        if (area.data.github.repoName != null && area.data.github.pullNumber != null)
-          await githubService.closePullRequest(area.data.github.repoName, githubToken, area.data.github.pullNumber);
-        break;
-      case 16:
-        if (area.data.github.repoName != null && area.data.github.branchName != null && area.data.github.sha != null)
-          await githubService.createBranch(area.data.github.repoName, githubToken, area.data.github.branchName, area.data.github.sha);
-        break;
-      case 17:
-        if (area.data.github.repoName != null && area.data.github.branchName != null)
-          await githubService.deleteBranch(area.data.github.repoName, githubToken, area.data.github.branchName);
-        break;
-      case 18:
-        if (area.data.github.description != null && area.data.github.fileName != null)
-          await githubService.createGist(area.data.github.fileName, githubToken);
-        break;
-      case 19:
-        if (area.data.github.gistId != null && area.data.github.description != null)
-          await githubService.modifyGistDescription(area.data.github.gistId, area.data.github.description);
-        break;
-      case 20:
-        if (area.data.github.gistId != null && area.data.github.newName != null)
-          await githubService.modifyGistName(area.data.github.gistId, area.data.github.newName);
-        break;
-      case 21:
-        if (area.data.github.gistId != null && area.data.github.newContent != null && area.data.github.fileName != null)
-          await githubService.modifyGistContent(area.data.github.gistId, area.data.github.fileName, area.data.github.newContent);
-        break;
+    try {
+      switch (area.reaction.type) {
+        case 1:
+          if(area.data.github.repoName != null && area.data.github.description != null && area.data.github.privateRepo != null && area.data.github.homepage != null)
+            await githubService.createRepo(area.data.github.repoName, area.data.github.description, area.data.github.homepage, area.data.github.privateRepo);
+          break;
+        case 2:
+          if(area.data.github.repoName != null && area.data.github.newName != null)
+            await githubService.modifyRepoName(area.data.github.repoName, githubToken, area.data.github.newName);
+          break;
+        case 3:
+          if(area.data.github.repoName != null && area.data.github.newDescription != null)
+            await githubService.modifyRepoDescription(area.data.github.repoName, githubToken, area.data.github.newDescription);
+          break;
+        case 4:
+          if(area.data.github.repoName != null && area.data.github.privateRepo != null)
+            await githubService.modifyRepoStatus(area.data.github.repoName, githubToken, area.data.github.privateRepo);
+          break;
+        case 5:
+          if(area.data.github.repoName != null)
+            await githubService.deleteRepo(area.data.github.repoName, githubToken);
+          break;
+        case 6:
+          if(area.data.github.repoName != null)
+            await githubService.starRepo(area.data.github.repoName, githubToken);
+          break;
+        case 7:
+          if(area.data.github.repoName != null)
+            await githubService.unstarRepo(area.data.github.repoName, githubToken);
+          break;
+        case 8:
+          if(area.data.github.repoName)
+            await githubService.forkRepo(area.data.github.repoName, githubToken);
+          break;
+        case 9:
+          if(area.data.github.repoName != null && area.data.github.title != null && area.data.github.body != null)
+            await githubService.createIssue(area.data.github.repoName, githubToken, area.data.github.title, area.data.github.body);
+          break;
+        case 10:
+          if(area.data.github.repoName != null && area.data.github.issueNumber != null && area.data.github.newTitle != null)
+            await githubService.modifyIssueTitle(area.data.github.repoName, githubToken, area.data.github.issueNumber, area.data.github.newTitle);
+          break;
+        case 11:
+          if(area.data.github.repoName != null && area.data.github.issueNumber != null && area.data.github.newBody != null)
+            await githubService.modifyIssueBody(area.data.github.repoName, githubToken, area.data.github.issueNumber, area.data.github.newBody);
+          break;
+        case 12:
+          if(area.data.github.repoName != null && area.data.github.issueNumber != null)
+            await githubService.closeIssue(area.data.github.repoName, githubToken, area.data.github.issueNumber);
+          break;
+        case 13:
+          if(area.data.github.repoName != null && area.data.github.title != null && area.data.github.body != null && area.data.github.head != null && area.data.github.base != null)
+            await githubService.createPullRequest(area.data.github.repoName, githubToken, area.data.github.title, area.data.github.body, area.data.github.head, area.data.github.base);
+          break;
+        case 14:
+          if(area.data.github.repoName != null && area.data.github.pullNumber != null)
+            await githubService.mergePullRequest(area.data.github.repoName, githubToken, area.data.github.pullNumber);
+          break;
+        case 15:
+          if(area.data.github.repoName != null && area.data.github.pullNumber != null)
+            await githubService.closePullRequest(area.data.github.repoName, githubToken, area.data.github.pullNumber);
+          break;
+        case 16:
+          if(area.data.github.repoName != null && area.data.github.branchName != null && area.data.github.sha != null)
+            await githubService.createBranch(area.data.github.repoName, githubToken, area.data.github.branchName, area.data.github.sha);
+          break;
+        case 17:
+          if(area.data.github.repoName != null && area.data.github.branchName != null)
+            await githubService.deleteBranch(area.data.github.repoName, githubToken, area.data.github.branchName);
+          break;
+        case 18:
+          if(area.data.github.description != null && area.data.github.fileName != null)
+            await githubService.createGist(area.data.github.fileName, githubToken);
+          break;
+        case 19:
+          if(area.data.github.gistId != null && area.data.github.description != null)
+            await githubService.modifyGistDescription(area.data.github.gistId, area.data.github.description);
+          break;
+        case 20:
+          if(area.data.github.gistId != null && area.data.github.newName != null)
+            await githubService.modifyGistName(area.data.github.gistId, area.data.github.newName);
+          break;
+        case 21:
+          if(area.data.github.gistId != null && area.data.github.newContent != null && area.data.github.fileName != null)
+            await githubService.modifyGistContent(area.data.github.gistId, area.data.github.fileName, area.data.github.newContent);
+          break;
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   }
 
@@ -178,6 +185,8 @@ export class AreaService {
         console.log("service not found");
         break
     }
+    if (actionData == null)
+      return null;
     console.log(actionData);
 
     switch (area.reaction.service) {
