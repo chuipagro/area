@@ -19,6 +19,7 @@ import { ServicesModule } from './services/services.module';
 import { MicrosoftController } from './services/microsoft/microsoftController';
 import { MicrosoftService } from './services/microsoft/microsoft.service';
 import { MicrosoftModule } from './services/microsoft/microsoftModule';
+import { DiscordBotModule } from './services/discord/discord-bot.module';
 import { AreaModel } from './models/area.model';
 import { AboutController } from './about/about.controller';
 import { AboutService } from './about/about.service';
@@ -49,6 +50,8 @@ import { AboutModule } from './about/about.module';
     ServicesModule,
     RiotModule,
     SpotifyModule,
+    DiscordBotModule,
+    CronjobsModule,
     MicrosoftModule,
     AboutModule,
   ],
