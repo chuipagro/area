@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Input, Text, HStack, VStack, Button, Box, Heading, Alert, Grid } from '@chakra-ui/react';
+import { Input, Text, HStack, VStack, Button, Box, Heading, Alert, Grid, Stack } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import leftArrow from '../app/leftArrow.png'
@@ -370,6 +370,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setDefaultReactionDesc(reactionDescription);
         setDefaultReactionTitle(ReactionTitle);
         setRid(id);
+        setReactionNeedDisplay(false)
     }
 
     /**
@@ -515,7 +516,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             )
         } else {
             return (
-                <Grid marginTop="90px" marginLeft="340px" templateColumns="repeat(4, 1fr)" gap={4}>
+                <Grid marginTop="90px" marginLeft={0} templateColumns="repeat(4, 1fr)" gap={4}>
                     {reactionBoxes}
                 </Grid>)
         }
@@ -638,6 +639,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setDefaultActionTitle(ActionTitle);
         setDefaultActionDesc(actionDescription);
         setAid(id);
+        setActionNeedDisplay(false)
 
         console.log(`title in call action = ${actionDescription} `)
     }
@@ -793,7 +795,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         } else {
             return (
                 <VStack>
-                    <Grid marginTop="90px" marginLeft={300} templateColumns="repeat(4, 1fr)" gap={4}>
+                    <Grid marginTop="90px" marginLeft={0} templateColumns="repeat(4, 1fr)" gap={4}>
                         {actionBoxes}
                     </Grid>
                 </VStack>
@@ -926,6 +928,12 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                         <Box onClick={handleAction} boxSize={370} blockSize={500} borderRadius='30' bg={defaultActionColor} color='white' px={4} h={8}>
                             <Heading fontSize='xl'>{defaultActionTitle}</Heading>
                             <Text mt={4}>{defaultActionDesc}</Text>
+                            {Object.keys(NeedActions).map((key) => (
+                                <li key={key}>
+                                    {key}:   {NeedActions[key]}
+                                    {/* <Text mt={4}>{key}: {NeedActions[key]}  </Text> */}
+                                </li>
+                            ))}
                         </Box>
                     </VStack>
                     <img src={ArrowArea} width={200} style={{ marginTop: '150px' }} ></img>
@@ -934,6 +942,12 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                         <Box onClick={handleReaction} boxSize={370} blockSize={500} borderRadius='30' bg={defaultReactionColor} color='white' px={4} h={8}>
                             <Heading fontSize='xl'>{defaultReactionTitle}</Heading>
                             <Text mt={4}>{defaultReactionDesc}</Text>
+                            {Object.keys(NeedReactions).map((key) => (
+                                <li key={key}>
+                                    {key}:   {NeedReactions[key]}
+                                    {/* <Text mt={4}>{key}: {NeedActions[key]}  </Text> */}
+                                </li>
+                            ))}
                         </Box>
                     </VStack>
                 </HStack>
@@ -941,18 +955,18 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         )
         else if (action) (
             rows.push(
-                <div>
-                    <img src={leftArrow} onClick={handleAction} width={30} style={{ marginRight: '1500px' }} ></img>
+                <Stack marginTop={20} >
+                    {/* <img src={leftArrow} onClick={handleAction} width={30} style={{ marginRight: '1500px' }} ></img> */}
                     <Services />
-                </div>
+                </Stack>
             )
         )
         else if (reaction) (
             rows.push(
-                <div>
-                    <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginRight: '1500px' }} ></img>
+                <Stack marginTop={20} >
+                    {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginRight: '1500px' }} ></img> */}
                     <ServicesReaction />
-                </div>
+                </Stack>
             )
         )
         if (serviceActionJson.length != 0 && serviceReactionJson.length != 0 && actionJson.length != 0 && reactionJson.length != 0 && !action && !reaction) (
@@ -999,7 +1013,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             height: 930, width: 1905
         }}>
             <Taskbar></Taskbar>
-            <DisconnectButtun />
+            {/* <DisconnectButtun /> */}
             <Display></Display>
         </div>
     }
