@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Button, Box, HStack, Link } from '@chakra-ui/react';
+import { Button, Box, HStack, Link, Text } from '@chakra-ui/react';
 
 import { useNavigate, useLocation } from "react-router-dom"
 import logo from '../app/logo.png'
@@ -45,6 +45,8 @@ export function Taskbar() {
                 onClick={() => navigate('/home')}>
 
             </Box>
+            <Text position="fixed" top="450"
+                left="26" color={"white"}>Home</Text>
             <Box
                 backgroundColor={isCreatePage ? "blue" : "white"}
                 px={6}
@@ -57,6 +59,8 @@ export function Taskbar() {
                 onClick={() => navigate('/create')}>
 
             </Box>
+            <Text position="fixed" top="550"
+                left="26" color={"white"}>Create</Text>
             <Box
                 backgroundColor={isProfilPage ? "blue" : "white"}
                 px={6}
@@ -69,5 +73,7 @@ export function Taskbar() {
                 onClick={() => navigate('/profil')}>
 
             </Box>
+            <Text position="fixed" top="650"
+                left="26" color={"white"}>Profile</Text>
         </Box>)
 }
