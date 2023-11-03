@@ -208,7 +208,7 @@ export class UserController {
 	  status: 200,
 	})
 	
-	@Get('getUserInfo')
+	@Post('getUserInfo')
 	async getUserInfo(
 			@Res() res: Response,
 			@Body('token') token: string,
