@@ -8,7 +8,9 @@ import ArrowArea from '../app/ArrowArea.png'
 import { Taskbar } from '../component/VerticalTaskbar';
 import { DisconnectButtun } from '../component/disconnect';
 
-
+/**
+ * interface for the props of the create area page
+ */
 interface CreateAreaProps {
     PUpdate: boolean;
     PNameArea: string;
@@ -74,21 +76,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const [NeedReactions, setNeedReactions] = React.useState<{ [key: string]: string }>({});
 
 
-    /**
-     * This function update the jsonAREA with the services and the actions/reactions
-     */
-    const updateJsonAREA = () => {
-        setJsonAREA({
-            title: token,
-            active: "true",
-            createdBy: storedUsername,
-            reaction_type: reactionJson,
-            action_type: actionJson,
-        });
-    };
-
-
-
 
     //for the colors
     const [ActionColor, setActionColor] = React.useState("");
@@ -97,7 +84,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const [defaultActionColor, setDefaultActionColor] = React.useState("grey");
     const [defaultReactionColor, setDefaultReactionColor] = React.useState("grey");
 
-    //for the title and description
+    //for the title and description of the services
     const [defaultActionTitle, setDefaultActionTitle] = React.useState("click here to choose an action");
     const [defaultReactionTitle, setDefaultReactionTitle] = React.useState("click here to choose a reaction");
     const [defaultActionDesc, setDefaultActionDesc] = React.useState("");
@@ -109,6 +96,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const [ReactionTitle, setReactionTitle] = React.useState("");
     const [reactionDesc, setReactionDesc] = React.useState("");
 
+    //for the id of the services of the actions/reactions
     const [ASid, setASid] = React.useState(-1);
     const [Aid, setAid] = React.useState(-1);
     const [RSid, setRSid] = React.useState(-1);
@@ -116,8 +104,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
 
 
-
-
+    /**
+     * Types use to parse the json received from the server (services/getAllServices call)
+     */
     type Data = {
         [key: string]: {
             name: string;
@@ -135,10 +124,17 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             };
         };
     };
-
+    /**
+     * Types use in type Data which is used to parse the json received from the server (services/getAllServices call)
+     */
     type ActionData = string | ActionObject;
+    /**
+     * Types use in type Data which is used to parse the json received from the server (services/getAllServices call)
+     */
     type ReactionData = string | ReactionObject;
-
+    /**
+     * Types use in type Data which is used to parse the json received from the server (services/getAllServices call)
+    */
     type ActionObject = {
         description: string;
         id: number;
@@ -149,7 +145,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             };
         };
     };
-
+    /**
+     * Types use in type Data which is used to parse the json received from the server (services/getAllServices call)
+    */
     type ReactionObject = {
         description: string;
         id: number;
@@ -186,11 +184,16 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         }
     };
 
+    /**
+     * called at the launch of the page to fetch the json data
+     */
     React.useEffect(() => {
         fetchJsonData();
     }, []);
 
-
+    /**
+     * called at the launch of the page to check the arguments
+     */
     React.useEffect(() => {
 
         if (
@@ -268,6 +271,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         }
     };
 
+    /**
+     * the name variable is set when the user click on the button to create an area
+     */
     React.useEffect(() => {
         console.log(`title = ${name}`)
         console.log(`crated by = ${token}`)
@@ -375,6 +381,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setReactionDesc(reactionDescription);
     }
 
+    /**
+     * This function is used in the reaction part.
+     * it display the needs available for a reaction
+     */
     function DisplayReactionNeed({ need, reactionDescription, id, color }: { need: { [key: string]: { type: string; required: boolean } }, reactionDescription: string, id: number, color: string }) {
 
         const [inputs, setInputs] = React.useState<{ [key: string]: string }>({});
@@ -642,7 +652,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setActionDesc(actionDescription);
     }
 
-
+    /**
+     * This function is used in the action part.
+     * it display the needs available for a action
+     */
     function DisplayActionNeed({ need, actionDescription, id, color }: { need: { [key: string]: { type: string; required: boolean } }, actionDescription: string, id: number, color: string }) {
 
         const [inputs, setInputs] = React.useState<{ [key: string]: string }>({});
