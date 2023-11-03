@@ -279,7 +279,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             };
 
 
-            const response = await axios.post('http://localhost:3000/services/createArea', requestBody, { headers: headers }
+            const response = await axios.post('http://localhost:8000/area/createArea', requestBody, { headers: headers }
             );
 
             console.log('Response:', response.data);
@@ -312,7 +312,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         console.log(`data = ${data}`);
         console.log("now calling api");
         // callApiCreate();
-        callApiCreate();
+        // callApiCreate();
     }, [name]);
 
     React.useEffect(() => {
@@ -424,7 +424,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         setReactionDesc(reactionDescription);
     }
 
-    function DisplayReactionNeed({ need, reactionDescription, id }: { need: { [key: string]: { type: string; required: boolean } }, reactionDescription: string, id: number }) {
+    function DisplayReactionNeed({ need, reactionDescription, id, color }: { need: { [key: string]: { type: string; required: boolean } }, reactionDescription: string, id: number, color: string }) {
 
         const [inputs, setInputs] = React.useState<{ [key: string]: string }>({});
 
@@ -448,6 +448,37 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             }
             CallEndReactions({ reactionDescription, id });
         };
+        return (
+            <div>
+                <Box p={5}
+                    shadow='md'
+                    borderRadius={30}
+                    borderWidth='1px'
+                    boxSize={800}
+                    marginLeft={150}
+                    inlineSize={1000}
+                    color={'#CCCCCC'}
+                    backgroundColor={color}>
+                    {Object.keys(need).map((key) => (
+                        <div key={key}>
+                            <Input
+                                marginTop={15}
+                                type="text"
+                                color="black"
+                                backgroundColor={"white"}
+                                borderColor={"black"}
+                                placeholder={key}
+                                value={inputs[key] || ''}
+                                onChange={(e) => handleInputChange(key, e.target.value)}
+                            />
+                        </div>
+                    ))}
+                    <Button onClick={handleAddNeeds} marginTop={100} marginLeft={"30%"} boxSize={370} blockSize={50} borderColor={"black"} borderRadius='md' bg='white' color='black' px={4} h={8}>
+                        <Heading fontSize='xl'>Add Needs</Heading>
+                    </Button>
+                </Box>
+            </div>
+        );
 
         return (
             <div>
@@ -495,13 +526,13 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     }
 
                     //for debug purpose
-                    console.log("la ca rentre dans la function")
-                    DisplayReactionNeed({ need, reactionDescription: desc, id: reactionObject.id });
+                    // console.log("la ca rentre dans la function")
+                    // DisplayReactionNeed({ need, reactionDescription: desc, id: reactionObject.id });
                     //-----------------
 
                     rows.push(
                         <VStack>
-                            <DisplayReactionNeed need={need} reactionDescription={desc} id={reactionObject.id} />
+                            <DisplayReactionNeed need={need} reactionDescription={desc} id={reactionObject.id} color={color} />
                         </VStack>
                     )
                     return (
@@ -713,7 +744,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     }
 
 
-    function DisplayActionNeed({ need, actionDescription, id }: { need: { [key: string]: { type: string; required: boolean } }, actionDescription: string, id: number }) {
+    function DisplayActionNeed({ need, actionDescription, id, color }: { need: { [key: string]: { type: string; required: boolean } }, actionDescription: string, id: number, color: string }) {
 
         const [inputs, setInputs] = React.useState<{ [key: string]: string }>({});
 
@@ -740,17 +771,33 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
         return (
             <div>
-                {Object.keys(need).map((key) => (
-                    <div key={key}>
-                        <input
-                            type="text"
-                            placeholder={key}
-                            value={inputs[key] || ''}
-                            onChange={(e) => handleInputChange(key, e.target.value)}
-                        />
-                    </div>
-                ))}
-                <button onClick={handleAddNeeds}>Add Needs</button>
+                <Box p={5}
+                    shadow='md'
+                    borderRadius={30}
+                    borderWidth='1px'
+                    boxSize={800}
+                    marginLeft={150}
+                    inlineSize={1000}
+                    color={'#CCCCCC'}
+                    backgroundColor={color}>
+                    {Object.keys(need).map((key) => (
+                        <div key={key}>
+                            <Input
+                                marginTop={15}
+                                type="text"
+                                color="black"
+                                backgroundColor={"white"}
+                                borderColor={"black"}
+                                placeholder={key}
+                                value={inputs[key] || ''}
+                                onChange={(e) => handleInputChange(key, e.target.value)}
+                            />
+                        </div>
+                    ))}
+                    <Button onClick={handleAddNeeds} marginTop={100} marginLeft={"30%"} boxSize={370} blockSize={50} borderColor={"black"} borderRadius='md' bg='white' color='black' px={4} h={8}>
+                        <Heading fontSize='xl'>Add Needs</Heading>
+                    </Button>
+                </Box>
             </div>
         );
     }
@@ -787,13 +834,13 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                         )
                     }
                     //for debug purpose
-                    console.log("la ca rentre dans la function")
-                    DisplayActionNeed({ need, actionDescription: desc, id: actionObject.id });
+                    // console.log("la ca rentre dans la function")
+                    // DisplayActionNeed({ need, actionDescription: desc, id: actionObject.id });
                     //-----------------
 
                     rows.push(
                         <VStack>
-                            <DisplayActionNeed need={need} actionDescription={desc} id={actionObject.id} />
+                            <DisplayActionNeed need={need} actionDescription={desc} id={actionObject.id} color={color} />
                         </VStack>
                     )
                     return (
@@ -825,25 +872,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     </Box>
                 );
             }
-            // if (typeof actionDescription === 'string') {
-            //     actionBox = (
-            //         <Box
-            //             key={actionKey}
-            //             p={5}
-            //             shadow="md"
-            //             borderWidth="1px"
-            //             boxSize={300}
-            //             inlineSize={300}
-            //             borderRadius={30}
-            //             color={"#CCCCCC"}
-            //             backgroundColor={color}
-            //             onClick={() => CallEndActions({ actionDescription, Aid: actionObject.id })}
-            //         >
-            //             <Heading fontSize="xl">{actionDescription}</Heading>
-            //         </Box>
-            //     );
-            // }
-
             if (actionBox !== null) {
                 actionBoxes.push(actionBox);
             }
