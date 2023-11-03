@@ -234,7 +234,8 @@ export class AuthController {
         const accessToken = params.get('access_token');
         const token = String(accessToken);
         const oauth = "github";
-        return res.status(200).json({ token: await this.OAuth2(res, token, oauth) });
+        const result = await this.OAuth2(res, token, oauth);
+        return result;
       } else {
         res.status(response.status).send('Erreur lors de la demande à GitHub');
       }

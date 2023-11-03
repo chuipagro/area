@@ -21,7 +21,7 @@ import { SpotifyAuthRedirect } from "../pages/SpotifyAuthRedirect";
 const App = (): JSX.Element => (
   <Router>
     <Routes>
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Dashboard />} />

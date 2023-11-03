@@ -33,7 +33,7 @@ export const LoginWithService = (): JSX.Element => {
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
 
-  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}`;
+  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}&scope=repo repo:status repo_deployment public_repo admin:repo_hook write:repo_hook admin:org gist notifications user`;
   const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
   const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=profile email&access_type=online`;
 
