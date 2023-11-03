@@ -199,7 +199,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const fetchJsonData = async () => {
         try {
             console.log('Fetching JSON data...');
-            const response = await axios.get('http://localhost:3000/services/getAllServices');
+            const response = await axios.get('http://localhost:8080/services/getAllServices');
             if (response.status === 200) {
                 console.log('list service json');
                 console.log(response.data.services)
@@ -277,7 +277,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 reaction: reactionObject,
                 data: data,
             };
-
 
 
             const response = await axios.post('http://localhost:3000/services/createArea', requestBody, { headers: headers }

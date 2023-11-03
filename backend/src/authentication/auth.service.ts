@@ -41,7 +41,8 @@ export class AuthService {
   async signOAuthGithub(
     mail: string,
     username: string,
-    oauth: string):
+    oauth: string,
+    tokenOauth: string):
     Promise<string | null> {
       const user = await this.usersService.findByMail(mail);
       if (user) {
@@ -49,6 +50,7 @@ export class AuthService {
           return null;
         const payload: JwtPayload = { mail: mail };
         const token = this.jwtService.sign(payload);
+        this.usersService.connectOAuth(token, tokenOauth, mail, oauth);
         await this.usersService.updateUserToken(mail, token);
         return token;
       } else {
@@ -59,6 +61,7 @@ export class AuthService {
             return null;
           const payload: JwtPayload = { mail: mail };
           const token = this.jwtService.sign(payload);
+          this.usersService.connectOAuth(token, tokenOauth, mail, oauth);
           await this.usersService.updateUserToken(mail, token);
           return token;
         }

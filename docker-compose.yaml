@@ -5,8 +5,7 @@ services:
         build: 'backend/'
         ports:
             - '${BACK_PORT}:3000'
-        networks:
-            - backend
+        restart: always
 
     backend_discord_service:
         build: 'backend_discord_service/'
@@ -14,8 +13,7 @@ services:
             - '${DISCORD_BOT_PORT}:3000'
         depends_on:
             - backend
-        networks:
-            - backend_discord_service
+        restart: always
 
     web:
         build: 'web/'
@@ -25,16 +23,13 @@ services:
             - backend
             - mobile
         volumes:
-            - apk:/mobile/
+            - apk:/mobile_app/
+        restart: always
 
     mobile:
         build: 'mobile/'
         volumes:
-            - apk:/mobile/
+            - apk:/mobile_app/
 
-
-networks:
-    backend:
-    backend_discord_service:
 volumes:
     apk:
