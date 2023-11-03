@@ -47,8 +47,6 @@ export class SpotifyService {
     });
   };
 
-  // https://api.spotify.com/v1/browse/new-releases
-
   async getNewReleases(country: string, limit: number, offset: number): Promise<any> {
     const access_token = await this.postTokenSpotify();
     const url = `https://api.spotify.com/v1/browse/new-releases?country=${country}&limit=${limit}&offset=${offset}`;

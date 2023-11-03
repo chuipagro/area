@@ -126,10 +126,9 @@ export class AreaController {
       @Body('createdBy') user: string,
       @Body('action') action: object,
       @Body('reaction') reaction: object,
-      @Body('launchType') launchType: string,
       @Body('data') data: object,
   ): Promise<Response> {
-    await this.areaService.createArea(title, active, user, action, reaction, launchType, data);
+    await this.areaService.createArea(title, active, user, action, reaction, data);
     return res.status(200).send({ message: 'success' });
   }
 
@@ -165,7 +164,7 @@ export class AreaController {
   @ApiBody(
       {
         schema: {
-          type: 'token',
+          type: 'object',
           properties: {
             token: { type: 'string' },
           }
@@ -173,18 +172,74 @@ export class AreaController {
       })
 
   @ApiOkResponse ({
-    description: 'success',
-    type: String,
-    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        active: { type: 'boolean' },
+        createdBy: { type: 'string' },
+        action: {
+          type: 'object',
+          properties: {
+            type: { type: "integer"},
+            service: { type: "integer"},
+          }
+        },
+        reaction: {
+          type: 'object',
+          properties: {
+            type: { type: "integer"},
+            service: { type: "integer"},
+          }
+        },
+        data: {
+          type: 'object',
+          properties: {
+            riot: {
+              type: 'object',
+              properties: {
+                summonerName: { type: "string"},
+                puuid: { type: "string"},
+                summonerId: { type: "string"},
+                matchId: { type: "string"},
+              },
+            },
+            spotify: {
+              type: 'object',
+              properties: {
+                playlistId: { type: "string"},
+                playlistName: { type: "string"},
+                playlistDescription: { type: "string"},
+                playlistPublic: { type: "boolean"},
+                playlistCollaborative: { type: "boolean"},
+                playlistTracks: { type: "array"},
+                playlistTracksPosition: { type: "integer"},
+                playlistTracksUris: { type: "array"},
+                playlistTracksUrisPosition: { type: "integer"},
+              },
+            },
+            mail: {
+              type: 'object',
+              properties: {
+                to: { type: "string"},
+                from: { type: "string"},
+                subject: { type: "string"},
+                text: { type: "string"},
+              }
+            }
+          }
+        }
+      }
+    },
   })
 
-  @Post('getUserAreas')
+  @Get('getUserAreas')
   async getUserAreas(
       @Res() res: Response,
       @Body('token') token: string,
   ): Promise<Response> {
-    await this.areaService.getUserAreas(token);
-    return res.status(200).send({ message: 'success' });
+    const areas = await this.areaService.getUserAreas(token);
+    return res.status(200).send({ message: 'success', areas: areas });
   }
 
   @ApiBody(

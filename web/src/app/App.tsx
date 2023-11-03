@@ -12,6 +12,8 @@ import { GetStarted } from "../pages/GetStarted"
 import { CreateArea } from "../pages/CreateArea";
 import { GithubAuthRedirect } from "../pages/GithubAuthRedirect"
 import { GoogleAuthRedirect } from "../pages/GoogleAuthRedirect";
+import { Profil } from "../pages/profil"
+import { SpotifyAuthRedirect } from "../pages/SpotifyAuthRedirect";
 
 /**
  * This function display the app
@@ -31,6 +33,7 @@ const App = (): JSX.Element => (
       <Route path="/explore" element={<Explore />} />
       <Route path="/oauthgithub" element={<GithubAuthRedirect />} />
       <Route path="/oauthgoogle" element={<GoogleAuthRedirect />} />
+      <Route path="/oauthspotify" element={<SpotifyAuthRedirect />} />
       <Route
         path="/create"
         element={
@@ -40,6 +43,7 @@ const App = (): JSX.Element => (
           />
         }
       />
+      <Route path="/profil" element={<Profil />} />
     </Routes>
   </Router >
 );

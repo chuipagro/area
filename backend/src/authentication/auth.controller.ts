@@ -180,8 +180,7 @@ export class AuthController {
 
         const userEmails = await emailResponse.json();
         const mail = userEmails[0].email;
-        await this.authService.signOAuthGithub(mail, username, oauth);
-        return res.status(200).json({ message: 'User created' });
+        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth, token) });
       } else {
         return res.status(userResponse.status).json({ error: 'Failed to fetch user data' });
       }
@@ -215,7 +214,6 @@ export class AuthController {
     const clientIdGithub = '46d5db5635abf205e5fb';
     const clientSecretGithub = 'c7e2fffd378ec39098fbbce38a3b6adcd4756fc0';
 
-    console.log("123456789");
     try {
       const response = await fetch("https://github.com/login/oauth/access_token", {
         method: "POST",
@@ -229,7 +227,6 @@ export class AuthController {
         }),
       });
   
-      console.log(response);
       if (response.ok) {
         const textData = await response.text();
         const params = new URLSearchParams(textData);
@@ -237,9 +234,8 @@ export class AuthController {
         const accessToken = params.get('access_token');
         const token = String(accessToken);
         const oauth = "github";
-        console.log("WIN1!!!!!!");
-        console.log(token);
-        await this.OAuth2(res, token, oauth);
+        const result = await this.OAuth2(res, token, oauth);
+        return result;
       } else {
         res.status(response.status).send('Erreur lors de la demande à GitHub');
       }
@@ -285,13 +281,60 @@ export class AuthController {
         const Susername = params.name;
         const mail = String(Smail);
         const username = String(Susername);
-        const oauth = "Google";
-        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth) });
+        const oauth = "google";
+        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth, token) });
       } else {
         res.status(response.status).send('Erreur lors de la demande à Google');
       }
     } catch (error) {
       console.error('Erreur lors de la demande à Google:', error);
+      res.status(500).send('Erreur interne du serveur');
+    }
+  }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'Token',
+    type: String,
+    status: 200,
+  })
+
+  @Post('postSpotify')
+  async postSpotify(
+    @Res() res: Response,
+    @Body('token') token: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const textData = await response.text();
+        const params = JSON.parse(textData);
+        const Smail = params.email;
+        const Susername = params.display_name;
+        const mail = String(Smail);
+        const username = String(Susername);
+        const oauth = "spotify";
+        return res.status(200).json({ token: await this.authService.signOAuthGithub(mail, username, oauth, token) });
+      } else {
+        res.status(response.status).send('Erreur lors de la demande à Spotify');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la demande à Spotify:', error);
       res.status(500).send('Erreur interne du serveur');
     }
   }
