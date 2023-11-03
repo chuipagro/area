@@ -26,6 +26,30 @@ export interface IData {
     subject: string | null;
     text: string | null;
   } | null;
+  
+  github: {
+    repoName: string | null;
+    repoDescription: string | null;
+    privateRepo: boolean | null;
+    gistId: string | null;
+    description: string | null;
+    newDescription: string | null;
+    branchName: string | null;
+    sha: string | null;
+    pullNumber: number | null;
+    title: string | null;
+    body: string | null;
+    head: string | null;
+    base: string | null;
+    issueNumber: number | null;
+    newBody: string | null;
+    newTitle: string | null;
+    newStatus: string | null;
+    newName: string | null;
+    homepage: string | null;
+    newContent: string | null;
+    fileName: string | null;
+  } | null;
 
   cron: {
     time: string | "s50";
