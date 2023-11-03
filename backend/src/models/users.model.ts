@@ -4,6 +4,8 @@ interface IAuth {
   oauthName: string;
   token: string;
   refreshToken: string | null;
+  username: string;
+  mail: string;
 }
 
 export interface IUser {

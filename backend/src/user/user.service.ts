@@ -23,7 +23,7 @@ export class UserService {
   async create(mail: string, username: string, password: string): Promise<typeof UserModel> {
     const uid = uuidv4();
     console.log("uid:", uid, "microsoft:", mail, "username:", username, "password:", password)
-    const createdUser = new this.userModel({ uid, mail, username, password, token: null });
+    const createdUser = new this.userModel({ uid, mail, username, oauthName: "yolo", token: null});
 
     try {
       return await createdUser.save();
@@ -79,7 +79,7 @@ export class UserService {
     await user.save();
   }
 
-  async connectOAuth(token:string, oauthToken: String, mail: String, oauthName: string): Promise<void>
+  async connectOAuth(token:string, oauthToken: String, mail: String, username: string, oauthName: string): Promise<void>
   {
     const user = await UserModel.findOne({ token: token }).exec();
 
@@ -88,7 +88,15 @@ export class UserService {
     }
     if (user.auth == undefined)
       user.auth = []
-    user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null });
+    for (let i = 0; i < user.auth.length; i++) {
+      if (user.auth[i].oauthName == oauthName)
+      {
+        user.auth[i].token = oauthToken.toString();
+        await user.save();
+        return ;
+      }
+    }
+    user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null, username: username.toString(), mail: mail.toString() });
     await user.save();
   }
 
@@ -119,5 +127,10 @@ export class UserService {
     }
     user.token = null;
     await user.save();
+  }
+  
+  async getUserInfo(token: String): Promise<IUser | null> {
+    const user = await this.userModel.findOne({ token: token }).exec();
+    return user ? user.toObject() as IUser : null;
   }
 }

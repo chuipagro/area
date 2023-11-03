@@ -184,9 +184,35 @@ export class UserController {
 		@Body('token') token: string,
 		@Body('oauthToken') oauthToken: string,
 		@Body('mail') mail: string,
+		@Body('username') username: string,
 		@Body('oauthName') oauthName: string,
 	): Promise<Response> {
-			await this.UserService.connectOAuth(token, oauthToken, mail, oauthName);
+			await this.UserService.connectOAuth(token, oauthToken, mail, username, oauthName);
 			return res.status(200).send({ message: 'user connected' });
+	}
+	
+	@ApiBody({
+	  schema: {
+	    type: 'object',
+	    properties: {
+	      token: {
+	        type: 'string',
+	      },
+	    }
+	  }
+	})
+	
+	@ApiOkResponse({
+	  description: 'user info',
+	  type: String,
+	  status: 200,
+	})
+	
+	async getUserInfo(
+			@Res() res: Response,
+			@Body('token') token: string,
+	): Promise<Response> {
+		const user = await this.UserService.getUserInfo(token);
+		return res.status(200).send({ message: 'user info', user: user });
 	}
 }

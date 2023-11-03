@@ -50,8 +50,8 @@ export class AuthService {
           return null;
         const payload: JwtPayload = { mail: mail };
         const token = this.jwtService.sign(payload);
-        await this.usersService.updateUserToken(user.mail, token);
-        this.usersService.connectOAuth(token, tokenOauth, mail, oauth);
+        await this.usersService.connectOAuth(token, tokenOauth, mail, username, oauth);
+        await this.usersService.updateUserToken(mail, token);
         return token;
       } else {
         await this.usersService.createOAuthGithub( mail, username, oauth);
@@ -61,7 +61,7 @@ export class AuthService {
             return null;
           const payload: JwtPayload = { mail: mail };
           const token = this.jwtService.sign(payload);
-          this.usersService.connectOAuth(token, tokenOauth, mail, oauth);
+          await this.usersService.connectOAuth(token, tokenOauth, mail, username, oauth);
           await this.usersService.updateUserToken(mail, token);
           return token;
         }
