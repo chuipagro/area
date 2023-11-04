@@ -15,6 +15,7 @@ import { AreaModule } from './area/area.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
+import { SteamModule } from './services/steam/steam.module';
 import { ServicesModule } from './services/services.module';
 import { MicrosoftController } from './services/microsoft/microsoftController';
 import { MicrosoftService } from './services/microsoft/microsoft.service';
@@ -50,6 +51,7 @@ import { AboutModule } from './about/about.module';
     ServicesModule,
     RiotModule,
     SpotifyModule,
+    SteamModule,
     DiscordBotModule,
     MicrosoftModule,
     AboutModule,
