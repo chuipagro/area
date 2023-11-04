@@ -70,7 +70,7 @@ export function Taskbar() {
                 top="600"
                 left="26"
                 boxShadow="md"
-                onClick={() => navigate('/profil')}>
+                onClick={() => navigate('/profile')}>
 
             </Box>
             <Text position="fixed" top="650"

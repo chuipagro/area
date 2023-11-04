@@ -10,7 +10,7 @@ import { DisconnectButtun } from '../component/disconnect';
 function Title() {
     return (
         <VStack marginTop={30} spacing="0px">
-            <Text color="black" fontSize={{ base: '50px' }}>profil</Text>
+            <Text color="black" fontSize={{ base: '50px' }}>profile</Text>
         </VStack>
     )
 }
@@ -20,7 +20,7 @@ function Title() {
  * This function display a page with the title and the taskbar
  * the function is to be completed
  */
-export const Profil = (): JSX.Element => {
+export const Profile = (): JSX.Element => {
 
     function Account() {
         return (
