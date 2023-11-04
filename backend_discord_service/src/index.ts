@@ -1,15 +1,12 @@
-import { Client } from "discord.js";
+import { Client, GatewayIntentBits, TextChannel } from 'discord.js';
 import { config } from "./config";
 import { deployCommands } from "./deploy-commands";
 import express from "express";
 
-export const client = new Client({
-  intents: ["Guilds", "GuildMessages", "DirectMessages"],
-});
+const client = new Client({ intents: [GatewayIntentBits.GuildMessages] });
 
 client.once("ready", () => {
   console.log("Discord bot is ready.");
-
 });
 
 client.on("guildCreate", async (guild) => {
@@ -26,18 +23,19 @@ app.get('/', (req, res) => {
 })
 
 app.post('/sendMessage', (req, res) => {
+  console.log(req.body)
+  client.channels.fetch(req.body['channel_id']).then((channel) => {
 
-  client.channels.fetch(req.body["body"]['channel_id']).then((message) => {
-
-    if (message != null && req.body["body"]['message'] != undefined) {
-      message.send({content: `Got request from an action \n${req.body["body"]['message']}\n`});
+    if (channel != null && req.body['message'] != undefined) {
+      channel.send({content: `Got request from an action \n${req.body['message']}\n`});
       console.log("Send");
+      res.send("success");
     } else {
       console.log("Error !");
+      res.send("FAIL");
     }
 
   });
-  res.send("success");
 })
 
 app.listen(9999, () => {
