@@ -43,6 +43,18 @@ void changeArea(setState, CreatedArea area) {
   });
 }
 
+void setUpOAuth2(String serviceName)
+{
+  switch (serviceName) {
+    case ("spotify"):
+      break;
+    case ("google"):
+      break;
+    case ("github"):
+      break;
+  }
+}
+
 void getAllNeeds(setState) {
   needsIterate++;
   needsInput.text = '';
@@ -236,6 +248,7 @@ Future<void> addArea(String name, setState) async {
     setState(() {
       nameInput.text = '';
       indexForCreationPage = [-1, -1, -1, -1];
+      needToReload = true;
       currentPageState = PageState.Areas;
     });
   } else {

@@ -130,20 +130,21 @@ Widget buildServicesActionsContent(TextEditingController searchController, setSt
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                Positioned(
-                                    top: 10.0,
-                                    right: 10.0,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        addAreaPress(setState);
-                                      },
-                                      child: Image.asset(
-                                        'assets/images/parameter.png',
-                                        width: 24.0,
-                                        height: 24.0,
+                                if (element1.titre == "spotify" || element1.titre == "github" ||element1.titre == "google")
+                                  Positioned(
+                                      top: 10.0,
+                                      right: 10.0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setUpOAuth2(element1.titre);
+                                        },
+                                        child: Image.asset(
+                                          'assets/images/parameter.png',
+                                          width: 24.0,
+                                          height: 24.0,
+                                        ),
                                       ),
                                     ),
-                                  ),
                                 Positioned(
                                   top: screenHeight * 0.07,
                                   left: !showElement2 ? screenWidth * 0.25 : screenWidth * 0.05,
@@ -175,20 +176,21 @@ Widget buildServicesActionsContent(TextEditingController searchController, setSt
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                Positioned(
-                                    top: 10.0,
-                                    right: 10.0,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        addAreaPress(setState);
-                                      },
-                                      child: Image.asset(
-                                        'assets/images/parameter.png',
-                                        width: 24.0,
-                                        height: 24.0,
+                                if (element2.titre == "spotify" || element2.titre == "github" ||element2.titre == "google")
+                                  Positioned(
+                                      top: 10.0,
+                                      right: 10.0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setUpOAuth2(element2.titre);
+                                        },
+                                        child: Image.asset(
+                                          'assets/images/parameter.png',
+                                          width: 24.0,
+                                          height: 24.0,
+                                        ),
                                       ),
                                     ),
-                                  ),
                                 Positioned(
                                   top: screenHeight * 0.07,
                                   left: !showElement1 ? screenWidth * 0.25 : screenWidth * 0.05,
