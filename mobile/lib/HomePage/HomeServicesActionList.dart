@@ -130,20 +130,20 @@ Widget buildServicesActionsContent(TextEditingController searchController, setSt
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                // Positioned(
-                                //   top: 10.0,
-                                //   right: 10.0,
-                                //   child: GestureDetector(
-                                //     onTap: () {
-                                //         onActionList(startIndex);
-                                //       },
-                                //     child: Image.asset(
-                                //       'assets/images/parameter.png',
-                                //       width: 24.0,
-                                //       height: 24.0,
-                                //     ),
-                                //   ),
-                                // ),
+                                Positioned(
+                                    top: 10.0,
+                                    right: 10.0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        addAreaPress(setState);
+                                      },
+                                      child: Image.asset(
+                                        'assets/images/parameter.png',
+                                        width: 24.0,
+                                        height: 24.0,
+                                      ),
+                                    ),
+                                  ),
                                 Positioned(
                                   top: screenHeight * 0.07,
                                   left: !showElement2 ? screenWidth * 0.25 : screenWidth * 0.05,
@@ -175,18 +175,20 @@ Widget buildServicesActionsContent(TextEditingController searchController, setSt
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                // Positioned(
-                                //   top: 10.0,
-                                //   right: 10.0,
-                                //   child: GestureDetector(
-                                //     onTap: onElementTap,
-                                //     child: Image.asset(
-                                //       'assets/images/parameter.png',
-                                //       width: 24.0,
-                                //       height: 24.0,
-                                //     ),
-                                //   ),
-                                // ),
+                                Positioned(
+                                    top: 10.0,
+                                    right: 10.0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        addAreaPress(setState);
+                                      },
+                                      child: Image.asset(
+                                        'assets/images/parameter.png',
+                                        width: 24.0,
+                                        height: 24.0,
+                                      ),
+                                    ),
+                                  ),
                                 Positioned(
                                   top: screenHeight * 0.07,
                                   left: !showElement1 ? screenWidth * 0.25 : screenWidth * 0.05,

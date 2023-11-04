@@ -189,12 +189,6 @@ void setAllNeeds(String need, String input)
 }
 
 Future<void> addArea(String name, setState) async {
-
-  print("==========================================");
-  print("==========================================");
-  print("1: ${indexForCreationPage[0]}, 2: ${indexForCreationPage[1]}, 3: ${indexForCreationPage[2]}, 4: ${indexForCreationPage[3]}");
-  print("==========================================");
-  print("==========================================");
   final reponse = await http.post(
     Uri.parse('http://' + globals.IPpc + ':8080/area/createArea'),
     headers: {
@@ -288,11 +282,6 @@ Future<Map<String, dynamic>> callForAllAreas() async {
   );
 
   if (reponse.statusCode == 200) {
-    print("==========================================");
-    print("==========================================");
-    print(reponse.body);
-    print("==========================================");
-    print("==========================================");
     final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
     return jsonResponse;
   } else {

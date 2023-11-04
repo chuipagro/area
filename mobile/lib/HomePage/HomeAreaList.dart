@@ -117,17 +117,6 @@ Widget buildHomePageContent(setState, context) {
                 ),
               ),
             ),
-            // Positioned(
-            //   top: screenHeight * 0.15,
-            //   left: screenWidth * 0.15,
-            //   child: Text(
-            //     elements.length.toString() + "   "  + createdAreas.length.toString(),
-            //     style: TextStyle(
-            //       fontSize: 20,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
             Positioned(
               left: screenWidth * 0.05,
               top: screenHeight * 0.15,
