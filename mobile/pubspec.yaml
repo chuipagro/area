@@ -67,10 +67,13 @@ flutter:
     - assets/images/barreHorizontale.png
     - assets/images/TimeLogo.png
     - assets/images/parameter.png
-    - assets/images/fuckGoBack.png
+    - assets/images/goBackButton.png
     - assets/images/resherchBarre.png
-    - assets/images/GithubLogo.png
-    - assets/images/MicrosoftLogo.png
+    - assets/images/riotLogo.png
+    - assets/images/spotifyLogo.png
+    - assets/images/mailLogo.png
+    - assets/images/githubLogo.png
+    - assets/images/microsoftLogo.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
