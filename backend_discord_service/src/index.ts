@@ -40,6 +40,6 @@ app.post('/sendMessage', (req, res) => {
   res.send("success");
 })
 
-app.listen(3000, () => {
+app.listen(9999, () => {
   console.log(`Server listening`);
 });

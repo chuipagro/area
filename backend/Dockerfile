@@ -5,6 +5,6 @@ WORKDIR /app
 
 RUN npm install
 
-EXPOSE 8080
+EXPOSE $PORT
 
 CMD ["npm", "run", "start"]

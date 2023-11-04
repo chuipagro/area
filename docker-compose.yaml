@@ -3,33 +3,39 @@ version: '3.8'
 services:
     backend:
         build: 'backend/'
+        environment:
+            - PORT=${BACK_PORT}
         ports:
-            - '${BACK_PORT}:3000'
+            - '${BACK_PORT}:${BACK_PORT}'
         restart: always
 
     backend_discord_service:
         build: 'backend_discord_service/'
+        environment:
+            - PORT=${DISCORD_BOT_PORT}
         ports:
-            - '${DISCORD_BOT_PORT}:3000'
+            - '${DISCORD_BOT_PORT}:${DISCORD_BOT_PORT}'
         depends_on:
             - backend
         restart: always
 
     web:
         build: 'web/'
+        environment:
+            - PORT=${FRONT_PORT}
         ports:
-            - '${FRONT_PORT}:3000'
+            - '${FRONT_PORT}:${FRONT_PORT}'
         depends_on:
             - backend
             - mobile
         volumes:
-            - apk:/mobile_app/
+            - apk:/application/
         restart: always
 
     mobile:
         build: 'mobile/'
         volumes:
-            - apk:/mobile_app/
+            - apk:/application/
 
 volumes:
     apk:
