@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Text, VStack, Input, Button, Heading } from '@chakra-ui/react';
+import { Text, VStack, Input, Button, Heading, Stack } from '@chakra-ui/react';
 import { Taskbar } from '../component/VerticalTaskbar';
 import { DisconnectButtun } from '../component/disconnect';
 
@@ -23,42 +23,54 @@ function Title() {
 export const Profile = (): JSX.Element => {
 
     function Account() {
+
+        const inputStyle = {
+            width: '30%', // Adjust the width as needed
+        };
+
         return (
             <div>
-                <Heading size="lg" color="black" marginTop={30} marginLeft={30}>Account</Heading>
-                <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={30}>Username</Text>
-                <Input
-                    key="unique-key"
-                    type="text"
-                    color="black"
-                    placeholder="Enter your AREA name"
-                />
-                <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={30}>Email</Text>
-                <Input
-                    key="unique-key"
-                    type="text"
-                    color="black"
-                    placeholder="Enter your AREA name"
-                />
-                <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={30}>Change Your Password</Text>
-                <Input
-                    key="unique-key"
-                    type="text"
-                    color="black"
-                    placeholder="Enter your AREA name"
-                />
+                <VStack marginLeft={1} marginTop={30} spacing="0px">
+                    <Heading size="lg" color="black" marginTop={30} marginLeft={30}>Account</Heading>
+                    <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>Username</Text>
+                    <Input
+                        key="unique-key"
+                        type="text"
+                        color="black"
+                        placeholder="Enter your AREA name"
+                        style={inputStyle}
+                    />
+                    <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={30}>Email</Text>
+                    <Input
+                        key="unique-key"
+                        type="text"
+                        color="black"
+                        placeholder="Enter your AREA name"
+                        style={inputStyle}
+                    />
+                    <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={30}>Change Your Password</Text>
+                    <Input
+                        key="unique-key"
+                        type="text"
+                        color="black"
+                        placeholder="Enter your AREA name"
+                        style={inputStyle}
+                    />
+                </VStack>
             </div>
         );
     }
 
     function Display() {
         return (
-            <VStack marginLeft={1} marginTop={30} spacing="0px">
-                <Taskbar></Taskbar>
-                <DisconnectButtun />
-                <Title></Title>
+            <div>
+                <VStack marginLeft={1} marginTop={30} spacing="0px">
+                    <Taskbar></Taskbar>
+                    <DisconnectButtun />
+                    <Title></Title>
+                </VStack>
                 <Account />
-            </VStack>
+            </div>
 
         );
     }
