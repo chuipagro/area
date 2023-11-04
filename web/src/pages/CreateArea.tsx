@@ -189,7 +189,12 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const fetchJsonDataOA2 = async () => {
         try {
             console.log('Fetching JSON data...');
-            const response = await axios.get('http://localhost:8080/user/getUserInfo');
+
+            const body = {
+                "token": token
+            }
+
+            const response = await axios.post('http://localhost:8080/user/getUserInfo', body);
             if (response.status === 200) {
                 console.log('list OA2 conn');
                 console.log(response.data)
