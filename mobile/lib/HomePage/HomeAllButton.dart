@@ -257,24 +257,48 @@ Future<void> addArea(String name, setState) async {
 }
 
 Future<void> onDeconectionTap(setState, context) async {
-  final response = await http.post(
-    Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
-  );
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirmation"),
+        content: Text("Êtes-vous sûr de vouloir vous déconnecter?"),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Annuler"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text("Déconnexion"),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final response = await http.post(
+                Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
+              );
 
-  if (response.statusCode == 200) {
-    currentPageState = PageState.Areas;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Échec de la déconnexion'),
-      ),
-    );
-  }
+              if (response.statusCode == 200) {
+                currentPageState = PageState.Areas;
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Échec de la déconnexion'),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
+
 
 Future<Map<String, dynamic>> callForAllServices() async {
   final reponse = await http.get(
