@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Text, VStack, Input, Button, Heading, Stack } from '@chakra-ui/react';
+import { Text, VStack, Input, Button, Heading, Stack, HStack } from '@chakra-ui/react';
 import { Taskbar } from '../component/VerticalTaskbar';
 import { DisconnectButtun } from '../component/disconnect';
 
@@ -25,38 +25,50 @@ export const Profile = (): JSX.Element => {
     function Account() {
 
         const inputStyle = {
-            width: '30%', // Adjust the width as needed
+            width: '50%', // Adjust the width as needed
         };
 
         return (
             <div>
-                <VStack marginLeft={1} marginTop={30} spacing="0px">
-                    <Heading size="lg" color="black" marginTop={30} marginLeft={30}>Account</Heading>
-                    <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>Username</Text>
+                <Stack marginLeft={500} marginTop={30} spacing="0px">
+                    <Heading size="lg" color="black" marginTop={30} >Account</Heading>
+                    <HStack marginLeft={1} marginTop={0} spacing="0px">
+                        <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>Change Your Email</Text>
+                        <Button color="black" backgroundColor="white" borderColor="black" variant='outline' size="s" marginTop={30} marginLeft={"27%"} onClick={() => { }}>Click To Update</Button>
+                    </HStack>
                     <Input
+                        marginLeft={"2%"}
                         key="unique-key"
                         type="text"
                         color="black"
                         placeholder="Enter your AREA name"
                         style={inputStyle}
                     />
-                    <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={30}>Email</Text>
+                    <HStack marginLeft={1} marginTop={0} spacing="0px">
+                        <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>Change Your Email</Text>
+                        <Button color="black" backgroundColor="white" borderColor="black" variant='outline' size="s" marginTop={30} marginLeft={"27%"} onClick={() => { }}>Click To Update</Button>
+                    </HStack>
                     <Input
+                        marginLeft={"2%"}
                         key="unique-key"
                         type="text"
                         color="black"
                         placeholder="Enter your AREA name"
                         style={inputStyle}
                     />
-                    <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={30}>Change Your Password</Text>
+                    <HStack marginLeft={1} marginTop={0} spacing="0px">
+                        <Text color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>Change Your Email</Text>
+                        <Button color="black" backgroundColor="white" borderColor="black" variant='outline' size="s" marginTop={30} marginLeft={"27%"} onClick={() => { }}>Click To Update</Button>
+                    </HStack>
                     <Input
+                        marginLeft={"2%"}
                         key="unique-key"
                         type="text"
                         color="black"
                         placeholder="Enter your AREA name"
                         style={inputStyle}
                     />
-                </VStack>
+                </Stack>
             </div>
         );
     }
