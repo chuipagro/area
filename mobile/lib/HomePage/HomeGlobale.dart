@@ -28,6 +28,7 @@ import 'HomeElementList.dart';
     mail_to: ""
   );
   List<String> needsList = [];
+  int needsIterate = -1;
 
   TextEditingController nameInput = TextEditingController();
   TextEditingController searchController = TextEditingController();

@@ -5,6 +5,7 @@ import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/GetStartedPage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/Globals.dart' as globals;
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
     final String title;
@@ -33,6 +34,8 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         if (response.statusCode == 200) {
+          final Map<String, dynamic> jsonResponse = json.decode(response.body);
+          globals.Token = jsonResponse['token'];
            Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),

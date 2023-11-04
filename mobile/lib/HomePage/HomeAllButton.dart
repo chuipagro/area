@@ -25,6 +25,13 @@ void compteButtonPress(Function setState) {
   });
 }
 
+void returnToAddArea(Function setState) {
+  setState(() {
+    needsIterate = -1;
+    currentPageState = PageState.AddArea;
+  });
+}
+
 void changeArea(setState, CreatedArea area) {
   setState(() {
     indexForCreationPage[0] = area.areaIdOne;
@@ -36,8 +43,12 @@ void changeArea(setState, CreatedArea area) {
   });
 }
 
-void getAllNeeds() {
-  
+void getAllNeeds(setState) {
+  needsIterate++;
+  needsInput.text = '';
+  setState(() {
+    currentPageState = PageState.GetAllNeeds;
+  });
 }
 
 void deleteArea(setState, areaName) async {
@@ -48,6 +59,7 @@ void deleteArea(setState, areaName) async {
     },
     body: jsonEncode({
       "title": areaName,
+      "token": globals.Token,
     }),
   );
 
@@ -108,8 +120,8 @@ void setActionInCreationAreaPage(Function setState, int actionIndex, int service
   setState(() {
     indexForCreationPage[0] = serviceIndex + 1;
     indexForCreationPage[1] = actionIndex + 1;
-    needsList = elements[indexForCreationPage[0]].actions[indexForCreationPage[1]].needs;
-    currentPageState = PageState.GetAllNeeds;
+    needsList = elements[indexForCreationPage[0] - 1].actions[indexForCreationPage[1] - 1].needs;
+    getAllNeeds(setState);
   });
 }
 
@@ -117,8 +129,8 @@ void setReactionInCreationAreaPage(Function setState, int reactionIndex, int ser
   setState(() {
     indexForCreationPage[2] = serviceIndex + 1;
     indexForCreationPage[3] = reactionIndex + 1;
-    needsList = elements[indexForCreationPage[2]].reactions[indexForCreationPage[3]].needs;
-    currentPageState = PageState.GetAllNeeds;
+    needsList = elements[indexForCreationPage[2] - 1].reactions[indexForCreationPage[3] - 1].needs;
+    getAllNeeds(setState);
   });
 }
 
@@ -171,31 +183,34 @@ void setAllNeeds(String need, String input)
       allNeedsList.mail_text = input;
       break;
     default:
+      print("Error in setAllNeeds: ${need} does not exist");
       break;
   }
 }
 
-///
-/// [@var		object	async]
-///
 Future<void> addArea(String name, setState) async {
 
+  print("==========================================");
+  print("==========================================");
+  print("1: ${indexForCreationPage[0]}, 2: ${indexForCreationPage[1]}, 3: ${indexForCreationPage[2]}, 4: ${indexForCreationPage[3]}");
+  print("==========================================");
+  print("==========================================");
   final reponse = await http.post(
-    Uri.parse('http://' + globals.IPpc + ':8080//area//createArea'),
+    Uri.parse('http://' + globals.IPpc + ':8080/area/createArea'),
     headers: {
       'Content-Type': 'application/json',
     },
     body: jsonEncode({
       "title": name,
       "active": true,
-      "createdBy": "Moi",
+      "createdBy": globals.Token,
       "action": {
-        "type": indexForCreationPage[2],
-        "service": indexForCreationPage[0],
+        "type": indexForCreationPage[1] - 1,
+        "service": indexForCreationPage[0] - 1,
       },
       "reaction": {
-        "type": indexForCreationPage[3],
-        "service": indexForCreationPage[1],
+        "type": indexForCreationPage[3] - 1,
+        "service": indexForCreationPage[2] - 1,
       },
       "data": {
         "riot": {
@@ -220,8 +235,7 @@ Future<void> addArea(String name, setState) async {
           "text": allNeedsList.mail_text,
         }
       }
-    }),
-    
+    }),  
   );
 
   if (reponse.statusCode == 200) {
@@ -235,12 +249,13 @@ Future<void> addArea(String name, setState) async {
   }
 }
 
-Future<void> onDeconectionTap(context) async {
+Future<void> onDeconectionTap(setState, context) async {
   final response = await http.post(
     Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
   );
 
   if (response.statusCode == 200) {
+    currentPageState = PageState.Areas;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
@@ -261,32 +276,24 @@ Future<Map<String, dynamic>> callForAllServices() async {
 
   if (reponse.statusCode == 200) {
     final Map<String, dynamic> jsonReponse = json.decode(reponse.body);
-    // print("================================================================");
-    // print("================================================================");
-    // print(jsonReponse);
-    // print("================================================================");
-    // print("================================================================");
     return jsonReponse;
   } else {
     throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
   }
 }
 
-///
-/// [@var		object	async]
-///
 Future<Map<String, dynamic>> callForAllAreas() async {
   final reponse = await http.get(
-    Uri.parse('http://' + globals.IPpc + ':8080/area/getAllAreas'),
+    Uri.parse('http://' + globals.IPpc + ':8080/area/getUserAreas'),
   );
 
   if (reponse.statusCode == 200) {
+    print("==========================================");
+    print("==========================================");
+    print(reponse.body);
+    print("==========================================");
+    print("==========================================");
     final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
-    // print("================================================================");
-    // print("================================================================");
-    // print(jsonResponse);
-    // print("================================================================");
-    // print("================================================================");
     return jsonResponse;
   } else {
     throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
@@ -294,13 +301,9 @@ Future<Map<String, dynamic>> callForAllAreas() async {
 }
 
 void createServiceList(Map<String, dynamic> json) {
+  elements.clear();
   final List<dynamic> servicesList = json["services"];
   servicesList.forEach((serviceData) {
-    print("================================================================");
-    print("================================================================");
-    print(serviceData);
-    print("================================================================");
-    print("================================================================");
     final String titre = serviceData["name"];
     final String iconPath = serviceData["logo"];
     final int red = serviceData["color"]["red"];
@@ -358,14 +361,10 @@ void createServiceList(Map<String, dynamic> json) {
 
 void createAreaList(Map<String, dynamic> json)
 {
+  createdAreas.clear();
   if (json.containsKey("areas")) {
     final List<dynamic> areas = json["areas"];
     for (var areaData in areas) {
-      // print("================================================================");
-      // print("================================================================");
-      // print(areaData.toString());
-      // print("================================================================");
-      // print("================================================================");
       final String titre = areaData["title"];
       final bool isActive = areaData["active"];
       final String createdBy = areaData["createdBy"];
@@ -388,13 +387,8 @@ void createAreaList(Map<String, dynamic> json)
   }
 }
 
-///
-/// [@var		mixed	async]
-///
 Future<void> loadAll(setState) async
 {
-  createdAreas.clear();
-  elements.clear();
   final Map<String, dynamic> jsonResultServices = await callForAllServices();
   final Map<String, dynamic> jsonResultArea = await callForAllAreas();
   setState(() {
@@ -403,17 +397,13 @@ Future<void> loadAll(setState) async
   });
 }
 
-///
-/// [@var		mixed	areaIndex]
-//////
-/// [@var		object	async]
-///
 Future<bool> changeStatusOfArea(setState, int areaIndex, bool newValue) async {
   final reponse = await http.post(
-    Uri.parse('http://${globals.IPpc}:8080/user/areas/desactivate'),
+    Uri.parse('http://${globals.IPpc}:8080/area/changeAreaStatus'),
     body: {
-      'name': createdAreas[areaIndex].name,
-      'isActive': newValue.toString(),
+      'title': createdAreas[areaIndex].name,
+      'token': globals.Token,
+      'active': newValue,
     },
   );
 

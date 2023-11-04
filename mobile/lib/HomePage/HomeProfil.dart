@@ -126,7 +126,7 @@ Widget buildProfilPageContent(setState, context) {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    onDeconectionTap(context);
+                    onDeconectionTap(setState, context);
                   });
                 },
                 child: Container(
