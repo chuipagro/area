@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
@@ -208,6 +208,7 @@ export class UserController {
 	  status: 200,
 	})
 	
+	@Post('getUserInfo')
 	async getUserInfo(
 			@Res() res: Response,
 			@Body('token') token: string,

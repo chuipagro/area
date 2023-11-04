@@ -32,10 +32,86 @@ export const LoginWithService = (): JSX.Element => {
 
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
+  
+  const githubScope = [
+    'repo',
+    'repo:status',
+    'repo_deployment',
+    'public_repo',
+    'admin:repo_hook',
+    'write:repo_hook',
+    'admin:org',
+    'gist',
+    'notifications',
+    'user',
+    'delete_repo',
+    'write:discussion',
+    'write:packages',
+    'read:packages',
+    'delete:packages',
+    'admin:gpg_key',
+    'admin:org_hook',
+    'admin:repo',
+    'admin:enterprise',
+    'read:user',
+    'read:discussion',
+    'read:enterprise',
+    'read:org',
+  ]
+  
+  const googleScope = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/youtube',
+    'https://www.googleapis.com/auth/contacts',
+    'https://www.googleapis.com/auth/photoslibrary',
+    'https://www.googleapis.com/auth/gmail.readonly',
+    'https://www.googleapis.com/auth/youtube.upload',
+    'https://www.googleapis.com/auth/youtube.force-ssl',
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/documents',
+    'https://www.googleapis.com/auth/cloud-platform',
+    'https://www.googleapis.com/auth/firebase',
+    'https://www.googleapis.com/auth/games',
+    'https://www.googleapis.com/auth/fitness.activity.read',
+    'https://www.googleapis.com/auth/adsense',
+    'https://www.googleapis.com/auth/adsense.readonly',
+    'https://www.googleapis.com/auth/cloud-platform.read-only',
+    'https://www.googleapis.com/auth/cloud-platform.read-write',
+    'https://www.googleapis.com/auth/webmasters.readonly',
+    'https://www.googleapis.com/auth/webmasters',
+    'https://www.googleapis.com/auth/webmasters.verify_first_party',
+    'https://www.googleapis.com/auth/webmasters.currents',
+    'https://www.googleapis.com/auth/webmasters.currents.readonly',
+    'https://www.googleapis.com/auth/books',
+    'https://www.googleapis.com/auth/books.readonly',
+    'https://www.googleapis.com/auth/apps.licensing',
+    'https://www.googleapis.com/auth/classroom.courses',
+    'https://www.googleapis.com/auth/classroom.rosters',
+    'https://www.googleapis.com/auth/classroom.announcements',
+    'https://www.googleapis.com/auth/classroom.coursework.me',
+    'https://www.googleapis.com/auth/classroom.coursework.students',
+    'https://www.googleapis.com/auth/tasks',
+    'https://www.googleapis.com/auth/sheets',
+    'https://www.googleapis.com/auth/translate',
+    'https://www.googleapis.com/auth/translate.readonly',
+    'https://www.googleapis.com/auth/plus.me',
+    'https://www.googleapis.com/auth/plus.login',
+    'https://www.googleapis.com/auth/ads.data',
+    'https://www.googleapis.com/auth/adwords',
+    'https://www.googleapis.com/auth/adwords.readonly',
+    'https://www.googleapis.com/auth/alerts',
+    'https://www.googleapis.com/auth/analytics',
+    'https://www.googleapis.com/auth/analytics.edit',
+    'https://www.googleapis.com/auth/analytics.readonly',
+    'https://www.googleapis.com/auth/androidpublisher',
+  ];
 
-  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}`;
+  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}&scope=${encodeURIComponent(githubScope.join(' '))}`;
   const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
-  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=profile email&access_type=online`;
+  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
 
   const navigate = useNavigate();
 
@@ -60,7 +136,8 @@ export const LoginWithService = (): JSX.Element => {
           if (!isBackendCalled.current) {
             axios.post('http://localhost:8080/auth/postToken', { code: code })
               .then(response => {
-                if (response.status === 200) {
+                if (response.status === 200 && response.data) {
+                  localStorage.setItem('token', response.data.token);
                   navigate('/home');
                 }
               })

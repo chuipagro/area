@@ -23,7 +23,7 @@ export class UserService {
   async create(mail: string, username: string, password: string): Promise<typeof UserModel> {
     const uid = uuidv4();
     console.log("uid:", uid, "microsoft:", mail, "username:", username, "password:", password)
-    const createdUser = new this.userModel({ uid, mail, username, oauthName: "yolo", token: null});
+    const createdUser = new this.userModel({ uid, mail, username, oauthName: "yolo", token: null, password: password});
 
     try {
       return await createdUser.save();
