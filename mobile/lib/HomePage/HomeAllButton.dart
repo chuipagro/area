@@ -176,6 +176,8 @@ void setAllNeeds(String need, String input)
     case "playlistCollaborative":
       allNeedsList.spotify_playlistCollaborative = true;
       break;
+    case "playlistTracks":
+      break;
     case "playlistTracksPosition":
       allNeedsList.spotify_playlistTracksPosition = int.parse(input);
       break;

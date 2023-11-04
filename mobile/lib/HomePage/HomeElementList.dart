@@ -19,6 +19,7 @@ class allNeeds {
   String riot_summonerId;
   String riot_matchId;
   String spotify_playlistId;
+  String spotify_playlistTracks;
   String spotify_playlistName;
   String spotify_playlistDescription;
   bool spotify_playlistPublic;
@@ -36,6 +37,7 @@ class allNeeds {
     required this.riot_summonerId,
     required this.riot_matchId,
     required this.spotify_playlistId,
+    required this.spotify_playlistTracks,
     required this.spotify_playlistName,
     required this.spotify_playlistDescription,
     required this.spotify_playlistPublic,

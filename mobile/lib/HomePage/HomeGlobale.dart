@@ -18,6 +18,7 @@ import 'HomeElementList.dart';
     spotify_playlistCollaborative: false, 
     spotify_playlistDescription: "", 
     spotify_playlistId: "", 
+    spotify_playlistTracks: "",
     spotify_playlistName: "", 
     spotify_playlistPublic: false, 
     spotify_playlistTracksPosition: 0, 
