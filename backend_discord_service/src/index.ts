@@ -23,7 +23,6 @@ app.get('/', (req, res) => {
 })
 
 app.post('/sendMessage', (req, res) => {
-  console.log(req.body)
   client.channels.fetch(req.body['channel_id']).then((channel) => {
 
     if (channel != null && req.body['message'] != undefined) {
