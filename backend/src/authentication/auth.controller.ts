@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { Response } from 'express';
 import queryString from 'query-string';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import { UserModel } from '../models/users.model';
 
 @Controller('auth')
 export class AuthController {
@@ -34,10 +35,13 @@ export class AuthController {
     @Body('mail') mail: string,
     @Body('password') password: string)
   : Promise<any> {
+    // find user by mail
     const token = await this.authService.signIn(mail, password);
+    
     if (!token) {
       throw new Error('User not found or wrong password');
     }
+    
     return res.status(200).send({ token: token });
   }
 
@@ -71,7 +75,6 @@ export class AuthController {
     @Body('username') username: string,
     @Body('password') password: string)
     : Promise<any> {
-    console.log("dorain");
     if (!username || !password || !mail) {
       throw new Error('no empty field allowed');
     }
