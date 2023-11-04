@@ -13,7 +13,7 @@ export class GithubService {
   private baseUrl = `https://api.github.com/user`;
   private accessToken: string;
 
-  constructor(private configService: ConfigService, private token: string) {
+  constructor(private configService: ConfigService) {
     this.clientID = this.configService.get<string>('GITHUB_CLIENT_ID');
     this.clientSECRET = this.configService.get<string>('GITHUB_CLIENT_SECRET');
     this.callbackURL = this.configService.get<string>('GITHUB_CALLBACK_URL');
@@ -23,12 +23,9 @@ export class GithubService {
     if (!this.clientSECRET) {
       throw new Error('GITHUB_CLIENT_SECRET is undefined');
     }
-    //const queryString = window.location.search;
-    //const urlParams = new URLSearchParams(queryString);
-    //this.code = urlParams.get("code");
   }
-  async initialiseAccessToken() {
-    this.accessToken = await this.getAccessToken(this.token);
+  async initialiseAccessToken(token: string) {
+    this.accessToken = await this.getAccessToken(token);
   }
   
   async getAccessToken(token: string): Promise<string> {
@@ -82,7 +79,7 @@ export class GithubService {
     const url = `https://api.github.com/user/repos`;
     
     const body = {
-      org: "Chasfory",
+      org: "pablo0675",
       name: name,
       description: description,
       homepage: homepage,

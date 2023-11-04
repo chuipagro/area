@@ -56,6 +56,16 @@ export interface IData {
   cron: {
     time: string | "s50";
   } | null;
+  
+  google: {
+    message: string | null;
+    name: string | null;
+    description: string | null;
+    id: string | null;
+    question: string | null;
+    type: string | null;
+    content: string | null;
+  }
 }
 
 export interface IArea {

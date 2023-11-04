@@ -60,7 +60,7 @@ const riot = {
     },
     {
       name: "tftCheckPlayerLevel",
-      description: "check player level",
+      description: "check player  tft",
       id: 7,
       need: {
         summonerName: "summonerName",
@@ -68,7 +68,7 @@ const riot = {
     },
     {
       name: "tftCheckSummonerNewGame",
-      description: "check if a player started a new game",
+      description: "check if a player started a new game tft",
       id: 8,
       need: {
         summonerName: "summonerName",
@@ -76,7 +76,7 @@ const riot = {
     },
     {
       name: "tftCheckSummonerNewWin",
-      description: "check if a player won",
+      description: "check if a player won tft",
       id: 9,
       need: {
         summonerName: "summonerName",
@@ -84,7 +84,7 @@ const riot = {
     },
     {
       name: "tftCheckSummonerNewLose",
-      description: "check if a player lost",
+      description: "check if a player lost tft",
       id: 10,
       need: {
         summonerName: "summonerName",
@@ -169,9 +169,9 @@ const github = {
   name: "github",
   logo: "assets/images/githubLogo.png",
   color: {
-    red: 0,
-    green: 0,
-    blue: 0,
+    red: 169,
+    green: 183,
+    blue: 184,
   },
   actions: [],
   reactions: [
@@ -429,8 +429,185 @@ const google = {
     green: 0,
     blue: 0,
   },
-  actions: [],
-  reactions: [],
+  actions: [
+    {
+      name: "checkNewMail",
+      description: "check if new mail",
+      id: 1,
+      need: {}
+    }
+  ],
+  reactions: [
+    {
+      name: "sendMail",
+      description: "send mail",
+      id: 1,
+      need: {
+        from: "from if null send from user mail",
+        subject: "subject if null send default subject",
+        text: "text if null send actionData text",
+      }
+    },
+    {
+      name: "createForm",
+      description: "create form",
+      id: 2,
+      need: {
+        name: "name",
+        description: "description",
+      }
+    },
+    {
+      name: "createQuestion",
+      description: "create question",
+      id: 3,
+      need: {
+        id: "formId",
+        question: "question",
+        type: "questionType",
+      }
+    },
+    {
+      name: "deleteForm",
+      description: "delete form",
+      id: 4,
+      need: {
+        id: "formId",
+      }
+    },
+    {
+      name: "create Sheet",
+      description: "create sheet",
+      id: 5,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete Sheet",
+      description: "delete sheet",
+      id: 6,
+      need: {
+        id: "sheetId",
+      }
+    },
+    {
+      name: "create Doc",
+      description: "create doc",
+      id: 7,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete Doc",
+      description: "delete doc",
+      id: 8,
+      need: {
+        id: "docId",
+      }
+    },
+    {
+      name: "modify Doc",
+      description: "modify doc",
+      id: 9,
+      need: {
+        id: "docId",
+        content: "content",
+      }
+    },
+    {
+      name: "create Slide",
+      description: "create slide",
+      id: 10,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete Slide",
+      description: "delete slide",
+      id: 11,
+      need: {
+        id: "slideId",
+      }
+    },
+    {
+      name: "modify Slide",
+      description: "modify slide",
+      id: 12,
+      need: {
+        id: "slideId",
+        content: "content",
+      }
+    },
+    {
+      name: "create Calendar",
+      description: "create calendar",
+      id: 13,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete Calendar",
+      description: "delete calendar",
+      id: 14,
+      need: {
+        id: "calendarId",
+      }
+    },
+    {
+      name: "modify Calendar",
+      description: "modify calendar",
+      id: 15,
+      need: {
+        id: "calendarId",
+        name: "name",
+      }
+    },
+    {
+      name: "create site",
+      description: "create site",
+      id: 16,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete site",
+      description: "delete site",
+      id: 17,
+      need: {
+        id: "siteId",
+      }
+    },
+    {
+      name: "modify site",
+      description: "modify site",
+      id: 18,
+      need: {
+        id: "siteId",
+        name: "name",
+      }
+    },
+    {
+      name: "create drawing",
+      description: "create drawing",
+      id: 19,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete drawing",
+      description: "delete drawing",
+      id: 20,
+      need: {
+        id: "drawingId",
+      }
+    }
+  ],
 }
 
 export const allServices = [riot, spotify, Microsoft, github, discord, google];
