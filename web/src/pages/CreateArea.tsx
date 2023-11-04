@@ -190,9 +190,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         }
     }, [jsonDataUser]);
 
-    React.useEffect(() => {
-        console.log('oauthNames:', oauthNames);
-    }, [oauthNames]);
 
     /**
      * This function fetch the json data from the server in order to display the services and the actions/reactions available
@@ -229,8 +226,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
             const response = await axios.post('http://localhost:8080/user/getUserInfo', body);
             if (response.status === 200) {
-                console.log('list OA2 conn');
-                console.log(response.data.user)
                 setJsonDataUser(response.data.user);
             } else {
                 setIsErrorReceived(true);
@@ -268,10 +263,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
             let data: { [key: string]: string | { [key: string]: string } } = {};
 
-            console.log("size =" + Object.keys(NeedActions).length)
-
             if (Object.keys(NeedActions).length !== 0) {
-                console.log("need action aaaaaaaaaaaaaaaaaaa = " + NeedActions)
                 data[test1] = NeedActions;
             }
             if (Object.keys(NeedReactions).length > 0) {
@@ -282,12 +274,8 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             for (const action in NeedActions) {
                 if (NeedActions.hasOwnProperty(action)) {
                     const element = NeedActions[action];
-                    console.log("element = " + element)
                 }
             }
-            // console.log("need action = " + NeedActions)
-            // console.log("need reaction = " + NeedReactions)
-
 
             const body = {
                 "title": name,
@@ -298,19 +286,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 "launchType": "manual",
                 "data": data
             };
-
-            console.log("title = " + name)
-            console.log("active = " + true)
-            console.log("createdBy = " + token)
-            console.log("action = " + Aid)
-            console.log("reaction = " + Rid)
-            console.log("service action = " + ASid)
-            console.log("service reaction = " + RSid)
-            console.log("launchType = " + "manual")
-            console.log("data = " + data)
-
-
-            console.log("body = " + body)
 
             const response = await axios.post('http://localhost:8080/area/createArea', body
             );
@@ -498,6 +473,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     function DisplayReactions({ title, reactions, color }: { title: string; reactions: { [reactionKey: string]: string }; color: string }) {
         const rows: JSX.Element[] = [];
         const reactionBoxes: JSX.Element[] = [];
+        title = title.trim()
 
         if (oauthNames.indexOf(title) === -1 && needOA2.indexOf(title) !== -1)
             return (
@@ -803,14 +779,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         const rows: JSX.Element[] = [];
         title = title.trim()
 
-
-        console.log("title = " + title + ".")
-        console.log("1aaaaaaaaaaaaaaaa:" + needOA2)
-
-        console.log("2aaaaaaaaaaaaaaaa:" + needOA2.indexOf(title))
-        console.log("3aaaaaaaaaaaaaaaa:" + (needOA2.indexOf(title) !== -1))
-
-
         if (oauthNames.indexOf(title) === -1 && needOA2.indexOf(title) !== -1)
             return (
                 <div>
@@ -838,7 +806,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 const actionObject = actionDescription as ActionObject;
                 const desc = actionObject.description;
                 const need = actionObject.need;
-                console.log("needs = " + need)
 
                 if (actionNeedDisplay && need !== undefined) {
                     // const actionObject = actionDescription as ActionObject;
