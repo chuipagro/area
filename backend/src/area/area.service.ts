@@ -4,11 +4,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { RiotService } from '../services/riot/riot.service';
-import { MicrosoftService } from '../services/microsoft/microsoft.service';
-import { v4 as uuidv4 } from 'uuid';
-import { allServices, ServicesModel } from '../models/servicesModel';
+
+import { ServicesModel } from '../models/servicesModel';
 import { GithubService } from '../services/github/github.service';
 import { UserModel } from '../models/users.model';
+import { SpotifyService } from '../services/spotify/spotify.service';
+import { DiscordBotService } from '../services/discord/discord-bot.service';
 
 @Injectable()
 export class AreaService {
@@ -67,7 +68,7 @@ export class AreaService {
   async launchGithubReaction(area: IArea, actionData : any) : Promise<any>
   {
     const configService = new ConfigService();
-    const githubService = new GithubService(configService);
+    const githubService = new GithubService(configService, area.createdBy);
     const user = await UserModel.findOne({ token: area.createdBy }).exec();
     if (!user) {
       throw new Error('User not found');
@@ -168,13 +169,48 @@ export class AreaService {
           if(area.data.github.gistId != null && area.data.github.newContent != null && area.data.github.fileName != null)
             await githubService.modifyGistContent(area.data.github.gistId, area.data.github.fileName, area.data.github.newContent);
           break;
+        case 22:
+          if (area.data.github.name != null && area.data.github.billingEmail != null && area.data.github.description != null)
+            await githubService.createOrganization(area.data.github.name, area.data.github.description, area.data.github.billingEmail);
+          break;
+        case 23:
+          if (area.data.github.name != null && area.data.github.billingEmail != null && area.data.github.description != null)
+            await githubService.modifyOrganization(area.data.github.name, area.data.github.description, area.data.github.billingEmail);
+          break;
+        case 24:
+          if (area.data.github.name != null)
+            await githubService.deleteOrganization(area.data.github.name);
+          break;
+        case 25:
+          if (area.data.github.newName != null)
+            await githubService.modifyUserName(area.data.github.newName);
+            
       }
     } catch (error) {
       console.log(error);
       return null;
     }
   }
+  
+  async launchSpotifyReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const spotifyService = new SpotifyService(configService);
+    
+    
+    return null;
+  }
+  
+  async launchDiscordReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const discordBotService = new DiscordBotService(configService);
+    
+    
+    return null;
+  }
 
+  
   async launchArea(area: IArea) {
     let actionData = null;
     switch (area.action.service) {
@@ -190,12 +226,18 @@ export class AreaService {
     console.log(actionData);
 
     switch (area.reaction.service) {
+      case 2:
+        await this.launchSpotifyReaction(area, actionData)
+        break;
       case 4:
         await this.launchGithubReaction(area, actionData)
         break;
-        default:
-            console.log("service not found");
-            break;
+      case 5:
+        await this.launchDiscordReaction(area, actionData)
+        break;
+      default:
+        console.log("service not found");
+        break;
     }
   }
 
@@ -205,7 +247,7 @@ export class AreaService {
     if (!allAreas) {
       throw new Error('Area not found');
     }
-
+    
     allAreas.forEach(async (area) => {
         if (area.active)
             await this.launchArea(area);
@@ -242,6 +284,7 @@ export class AreaService {
 
   async getUserAreas(userToken: string): Promise<any> {
     const areas = await AreaModel.find({ createdBy: userToken }).exec();
+    console.log(areas);
     return areas;
   }
 
