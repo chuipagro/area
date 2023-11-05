@@ -158,6 +158,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         };
     };
 
+    /**
+     * Types use to parse the json received from the server (user/getUserInfo call)
+     */
     type User = {
         auth: {
             oauthName: string;
@@ -182,6 +185,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const needOA2 = ["google", "github", "spotify"]
 
 
+    /**
+     * This function is used to set the name of each service the user  is connected with oa2
+     */
     React.useEffect(() => {
         if (jsonDataUser !== null) {
             setOauthNames(jsonDataUser.auth.map((authItem) => authItem.oauthName));
@@ -213,7 +219,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     };
 
 
-
+    /**
+     * This function fetch the json data from the server in order to display the services and the actions/reactions available
+     */
     const fetchJsonDataOA2 = async () => {
         try {
             console.log('Fetching JSON data...');
