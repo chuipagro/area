@@ -75,6 +75,12 @@ flutter:
     - assets/images/githubLogo.png
     - assets/images/microsoftLogo.png
     - assets/images/trash-can.png
+    - assets/images/steamLogo.png
+    - assets/images/weatherLogo.png
+    - assets/images/nasaLogo.png
+    - assets/images/minecraftLogo.png
+
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
