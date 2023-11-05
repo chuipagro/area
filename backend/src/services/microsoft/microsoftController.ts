@@ -40,7 +40,7 @@ export class MicrosoftController {
     @Body('name') name: string,
     @Body('message') message: string,
   ): Promise<Response> {
-    const result = await sendEmail(email, from, name, message);
+    const result = await sendEmail(email, name, message);
     return res.status(200).send(result);
   }
 }
