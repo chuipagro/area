@@ -1,10 +1,43 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import '../app/App.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Text, Box, Heading } from '@chakra-ui/react';
 import { Taskbar } from '../component/VerticalTaskbar';
 import { FiSearch } from 'react-icons/fi';
-import { DisconnectButtun } from '../component/disconnect';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+
+const MySwitch = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => {
+    return (
+      <Switch checked={checked} onChange={onChange} />
+    );
+};
+
+const theme = createTheme({
+    components: {
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            '&.MuiSwitch-switchBase.Mui-checked': {
+              color: '#000000',
+            },
+            '& + .MuiSwitch-track': {
+              backgroundColor: '#6F625F',
+            },
+          },
+        },
+      },
+    },
+});
+
+const BoutonActive = ({ isActive, onToggle }: { isActive: boolean; onToggle: () => void }): JSX.Element => {
+    return (
+      <ThemeProvider theme={theme}>
+        <MySwitch checked={isActive} onChange={onToggle} />
+      </ThemeProvider>
+    );
+};
 
 export const Dashboard = (): JSX.Element => {
 
@@ -12,44 +45,70 @@ export const Dashboard = (): JSX.Element => {
         title: string;
         active: boolean;
         createdBy: string;
-        action: [
-            {
-                type: number;
-                service: number
-            }
-        ];
-        reaction: [
-            {
-                type: number;
-                service: number
-            }
-        ];
+        action: {
+            type: number;
+            service: number
+        };
+        reaction: {
+            type: number;
+            service: number
+        };
         data: {};
         timeAtCreation: string;
         dateAtCreation: string;
+    };
+
+    type Actions = {
+        description: string;
+        id: number;
+        need: {
+            summonerName: string;
+            _id: string;
+        };
+    };
+
+    type Service = {
+        color: {
+            red: number;
+            green: number;
+            blue: number;
+        };
+        _id: string;
+        id: number;
+        name: string;
+        logo: string;
+        actions: Actions[];
+        reactions: Actions[];
+        __v: number;
     };
 
     const token = localStorage.getItem("token");
 
     const [Areas, setAreas] = React.useState<Area[]>([]);
     const [SearchAreas, setSearchAreas] = React.useState<Area[]>([]);
+    const [AllServices, setAllServices] = React.useState<Service[]>([]);
 
     const fetchJsonData = async () => {
         try {
-            if (token != null) {
-                const body = {
-                    "token": token,
-                };
-
-                console.log(token);
-                const response = await axios.post('http://localhost:8080/area/getUserAreas', body);
-                console.log(response.data);
-                if (response.status === 200) {
-                    setAreas(response.data.areas);
-                    setSearchAreas(response.data.areas);
-                } else {
-                    console.error('Failed to fetch JSON data');
+            const response = await axios.get('http://localhost:8080/services/getAllServices');
+            if (response.status === 200) {
+                setAllServices(response.data.services)
+                console.log(response.data.services);
+                if (token != null) {
+                    const body = {
+                        "token": token,
+                    };
+    
+                    const res = await axios.post('http://localhost:8080/area/getUserAreas', body);
+                    if (res.status === 200) {
+                        setAreas(res.data.areas);
+                        setSearchAreas(res.data.areas);
+                    } else {
+                        console.error('Failed to fetch JSON data');
+                    }
                 }
+            } else {
+                console.error('Failed to fetch JSON data');
             }
         } catch (error) {
             console.error('Error fetching JSON data:', error);
@@ -68,11 +127,47 @@ export const Dashboard = (): JSX.Element => {
         setSearchAreas(filteredAreas);
     };
 
-    React.useEffect(() => {
-        console.log(SearchAreas[0]);
-    }, [SearchAreas]);
-
     const searchRef = useRef<HTMLInputElement>(null);
+
+    const navigate = useNavigate();
+
+    const handleToggle = async (index: number) => {
+        const updatedAreas = [...SearchAreas];
+        updatedAreas[index].active = !updatedAreas[index].active;
+        setSearchAreas(updatedAreas);
+    
+        try {
+            const areaToUpdate = Areas.find(area => area.title === updatedAreas[index].title);
+            if (areaToUpdate) {
+                const bodyBoutton = {
+                    "title": areaToUpdate.title,
+                    "token": token,
+                    updateData: {
+                        "active": updatedAreas[index].active,
+                    }
+                };
+
+                const response = await axios.post('http://localhost:8080/area/updateArea', bodyBoutton);    
+                if (response.status === 200) {
+                    if (token != null) {
+                        const body = {
+                            "token": token,
+                        };
+                        const res = await axios.post('http://localhost:8080/area/getUserAreas', body);
+                        if (res.status === 200) {
+                            setAreas(res.data.areas);
+                        } else {
+                            console.error('Failed to fetch JSON data');
+                        }
+                    }
+                } else {
+                    console.error('Failed to update the area');
+                }
+            }
+        } catch (error) {
+            console.error('Error updating area:', error);
+        }
+    };
 
     const calculateBlocksInRow = () => {
         if (searchRef.current) {
@@ -115,7 +210,15 @@ export const Dashboard = (): JSX.Element => {
         return [];
     };
 
+    const handleSettingButtonClick = (area: Area, action: Service, reaction: Service) => {
+        navigate('/settingAreas', { state: { area, action, reaction } });
+    };
+
     const blocksInRow = calculateBlocksInRow();
+
+    React.useEffect(() => {
+        console.log(AllServices);
+    }, [AllServices]);
 
     return (
         <div
@@ -138,7 +241,6 @@ export const Dashboard = (): JSX.Element => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     marginTop: 50,
-                    marginLeft: "35%",
                     width: '80%',
                 }}
             >
@@ -170,9 +272,6 @@ export const Dashboard = (): JSX.Element => {
                         ref={searchRef}
                     />
                 </div>
-                <div style={{ marginLeft: 'auto', marginRight: '15%'}}>
-                    <DisconnectButtun />
-                </div>
             </div>
             <div
                 style={{
@@ -184,7 +283,7 @@ export const Dashboard = (): JSX.Element => {
                 }}
             >
                 <Heading as="h2" size="2xl" fontWeight="bold" marginBottom="1em" marginTop={10}>
-                    Listes des Areas créer
+                    Liste de vos Areas
                 </Heading>
                 {blocksInRow.map((blockCounts, index) => (
                     <div
@@ -203,50 +302,104 @@ export const Dashboard = (): JSX.Element => {
                             shadow="md"
                             borderWidth="1px"
                             width={'34%'}
-                            height="200px"
+                            height="300px"
                             color="#CCCCCC"
-                            backgroundColor={`rgb(${Math.random() * 255} ${Math.random() * 255} ${Math.random() * 255})`}
+                            backgroundColor={`rgb(${AllServices[SearchAreas[index].action.type - 1].color.red}, ${AllServices[SearchAreas[index].action.type - 1].color.green}, ${AllServices[SearchAreas[index].action.type - 1].color.blue})`}
                             margin={5}
                             borderRadius="xl"
                             boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            position="relative"
                         >
-                            <Heading fontSize="xl">{SearchAreas[(index * 2)].title}</Heading>
-                            <Text mt={4}>{SearchAreas[(index * 2)].createdBy}</Text>
-                            <Text mt={4}>{SearchAreas[(index * 2)].title}</Text>
+                            <Box position="absolute" top="5px" right="5px">
+                                <button onClick={() => handleSettingButtonClick(SearchAreas[index], AllServices[SearchAreas[index].action.service - 1], AllServices[SearchAreas[index].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
+                                    <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
+                                </button>
+                            </Box>
+                            <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                                <img src={AllServices[SearchAreas[index].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].action.service - 1].actions[SearchAreas[index].action.type - 1].description}</Text>
+                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].reaction.service - 1].reactions[SearchAreas[index].reaction.type - 1].description}</Text>
+                            </Box>
+                            <Box
+                                position="absolute"
+                                bottom={5}
+                                right={5}
+                            >
+                                <BoutonActive isActive={SearchAreas[index].active} onToggle={() => handleToggle(index)} />
+                            </Box>
                         </Box>
                         <Box
                             p={5}
                             shadow="md"
                             borderWidth="1px"
                             width={'34%'}
-                            height="200px"
+                            height="300px"
                             color="#CCCCCC"
-                            backgroundColor={`rgb(${Math.random() * 255} ${Math.random() * 255} ${Math.random() * 255})`}
+                            backgroundColor={`rgb(${AllServices[SearchAreas[index + 1].action.type - 1].color.red}, ${AllServices[SearchAreas[index + 1].action.type - 1].color.green}, ${AllServices[SearchAreas[index + 1].action.type - 1].color.blue})`}
                             margin={5}
                             borderRadius="xl"
                             boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            position="relative"
                         >
-                            <Heading fontSize="xl">{SearchAreas[(index * 2) + 1].title}</Heading>
-                            <Text mt={4}>{SearchAreas[(index * 2) + 1].createdBy}</Text>
-                            <Text mt={4}>{SearchAreas[(index * 2) + 1].title}</Text>
+                            <Box position="absolute" top="5px" right="5px">
+                                <button onClick={() => handleSettingButtonClick(SearchAreas[index + 1], AllServices[SearchAreas[index + 1].action.service - 1], AllServices[SearchAreas[index + 1].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
+                                    <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
+                                </button>
+                            </Box>
+                            <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                                <img src={AllServices[SearchAreas[index + 1].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index + 1].action.service - 1].actions[SearchAreas[index + 1].action.type - 1].description}</Text>
+                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index + 1].reaction.service - 1].reactions[SearchAreas[index + 1].reaction.type - 1].description}</Text>
+                            </Box>
+                            <Box
+                                position="absolute"
+                                bottom={5}
+                                right={5}
+                            >
+                                <BoutonActive isActive={SearchAreas[index + 1].active} onToggle={() => handleToggle(index + 1)} />
+                            </Box>
                         </Box>
                         </>
                         ) : (
-                        <Box
+                            <Box
                             p={5}
                             shadow="md"
                             borderWidth="1px"
                             width={'70%'}
-                            height="200px"
+                            height="300px"
                             color="#CCCCCC"
-                            backgroundColor={`rgb(${Math.random() * 255} ${Math.random() * 255} ${Math.random() * 255})`}
+                            backgroundColor={`rgb(${AllServices[SearchAreas[index].action.type - 1].color.red}, ${AllServices[SearchAreas[index].action.type - 1].color.green}, ${AllServices[SearchAreas[index].action.type - 1].color.blue})`}
                             margin={5}
                             borderRadius="xl"
                             boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            position="relative"
                         >
-                            <Heading fontSize="xl">{SearchAreas[index].title}</Heading>
-                            <Text mt={4}>{SearchAreas[index].createdBy}</Text>
-                            <Text mt={4}>{SearchAreas[index].title}</Text>
+                            <Box position="absolute" top="5px" right="5px">
+                                <button onClick={() => handleSettingButtonClick(SearchAreas[index], AllServices[SearchAreas[index].action.service - 1], AllServices[SearchAreas[index].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
+                                    <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
+                                </button>
+                            </Box>
+                            <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                                <img src={AllServices[SearchAreas[index].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].action.service - 1].actions[SearchAreas[index].action.type - 1].description}</Text>
+                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].reaction.service - 1].reactions[SearchAreas[index].reaction.type - 1].description}</Text>
+                            </Box>
+                            <Box
+                                position="absolute"
+                                bottom={5}
+                                right={5}
+                            >
+                                <BoutonActive isActive={SearchAreas[index].active} onToggle={() => handleToggle(index)} />
+                            </Box>
                         </Box>
                         )}
                     </div>

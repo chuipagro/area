@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import '../app/App.css';
 import { Text, VStack } from '@chakra-ui/react';
 import GithubLogo from "../images/GithubLogo.png";
-import MicrosoftLogo from "../images/MicrosoftLogo.png";
 import SpotifyLogo from "../images/SpotifyLogo.png";
 import GoogleLogo from "../images/GoogleLogo.png";
 import { Taskbar } from '../component/Taskbar';
-import querystring from 'query-string';
 import axios from 'axios';
 
 /**
