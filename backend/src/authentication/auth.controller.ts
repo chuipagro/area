@@ -2,12 +2,22 @@ import { Controller, Post, Body, Res, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import queryString from 'query-string';
+import { ConfigService } from '@nestjs/config';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { UserModel } from '../models/users.model';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  private client_id_github_login: string | undefined;
+  private client_secret_github_login: string | undefined;
+  private client_id_github_area: string | undefined;
+  private client_secret_github_area: string | undefined;
+  constructor(private readonly authService: AuthService, private configService: ConfigService) {
+    const client_id_github_login = this.configService.get<string>('CLIENT_ID_GITHUB_LOGIN');
+    const client_secret_github_login = this.configService.get<string>('CLIENT_SECRET_GITHUB_LOGIN');
+    const client_id_github_area = this.configService.get<string>('CLIENT_ID_GITHUB_AREA');
+    const client_secret_github_area = this.configService.get<string>('CLIENT_SECRET_GITHUB_AREA');
+  }
 
   @ApiBody({
     schema: {
@@ -214,8 +224,8 @@ export class AuthController {
     @Res() res: Response,
     @Body('code') code: string,
   ): Promise<any> {
-    const clientIdGithub = '46d5db5635abf205e5fb';
-    const clientSecretGithub = 'c7e2fffd378ec39098fbbce38a3b6adcd4756fc0';
+    const clientIdGithub = this.client_id_github_login;
+    const clientSecretGithub = this.client_secret_github_login;
 
     try {
       const response = await fetch("https://github.com/login/oauth/access_token", {
@@ -437,8 +447,8 @@ export class AuthController {
     @Body('code') code: string,
     @Body('tokenUser') tokenUser: string,
   ): Promise<any> {
-    const clientIdGithub = '09cafad7406607dc0632';
-    const clientSecretGithub = '7c6e9d0e2af83aa1a6cce2578f7e153a37e56908';
+    const clientIdGithub = this.client_id_github_area;
+    const clientSecretGithub = this.client_secret_github_area;
 
     try {
       console.log(tokenUser)
