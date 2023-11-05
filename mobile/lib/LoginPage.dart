@@ -274,27 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                     children: <TextSpan>[
                                         TextSpan(
-                                            text: 'Google',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                            ),
-                                            recognizer: TapGestureRecognizer()
-                                                ..onTap = () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(builder: (context) => GetStartedPage(title: 'GetStartedPage')),
-                                                    );
-                                                    setState(() {
-                                                        isPasswordForgotten = false;
-                                                        isEmailForgotten = false;
-                                                    });
-                                                },
-                                        ),
-                                        TextSpan(
-                                            text: ' or ',
-                                        ),
-                                        TextSpan(
-                                            text: 'Facebook',
+                                            text: 'Github',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                             ),

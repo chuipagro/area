@@ -130,7 +130,7 @@ export const Login = (): JSX.Element => {
             </Button >
 
             <Link color='black' href='/login-with-service'>
-                Continue with Google, Facebook or apple
+                Continue with Google, Github or Spotify
             </Link>
             <Button colorScheme='black' variant='outline' >
                 <Link color='black' href={'/client.apk'} download>
