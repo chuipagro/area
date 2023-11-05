@@ -167,4 +167,30 @@ export class SteamController {
     return res.status(200).send(result);
   }
 
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        steamID: {
+          type: 'string'
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Post('getRecentlyPlayedGames')
+  async getRecentlyPlayedGames(
+    @Res() res: Response,
+    @Body('steamID') steamID: string,
+    ): Promise<Response> {
+    const result = await this.SteamService.getRecentlyPlayedGames(steamID);
+    return res.status(200).send(result);
+  }
+
 }
