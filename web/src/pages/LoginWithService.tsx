@@ -30,11 +30,6 @@ function Title() {
  */
 export const LoginWithService = (): JSX.Element => {
 
-  const clientIdGitHubCreateArea: string = process.env.CLIENT_ID_GITHUB_CREATE_AREA || '';
-  const clientIdGitHubLogin: string = process.env.CLIENT_ID_GITHUB_LOGIN || '';
-  const clientIdGoogleCreateArea: string = process.env.CLIENT_ID_GOOGLE_CREATE_AREA || '';
-  const clientIdSpotifyCreateArea: string = process.env.CLIENT_ID_SPOTIFY_CREATE_AREA || '';
-
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
 
