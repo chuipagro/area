@@ -166,7 +166,6 @@ export class GoogleService {
 								'Authorization': `Bearer ${accessToken}`,
 						},
 				}).then((response: any) => {
-						console.log(response.data);
 						return response.data;
 				});
 		}

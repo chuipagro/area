@@ -101,7 +101,6 @@ export class UserService {
       }
     }
     user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null, username: username.toString(), mail: mail.toString() });
-    console.log(user.auth)
     await user.save();
   }
 
