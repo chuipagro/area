@@ -61,7 +61,7 @@ Widget buildAskAllNeeds(setState, context) {
             ),
           ),
           Positioned(
-            left: screenWidth * 0.35,
+            left: needsIterate > 0 ? screenWidth * 0.53 : screenWidth * 0.33,
             top: screenHeight * 0.8,
             child: GestureDetector(
               onTap: () {
@@ -88,6 +88,35 @@ Widget buildAskAllNeeds(setState, context) {
               ),
             ),
           ),
+          if (needsIterate > 0)
+            Positioned(
+              left: screenWidth * 0.18,
+              top: screenHeight * 0.8,
+              child: GestureDetector(
+                onTap: () {
+                  getAllNeeds(setState);
+                  needsIterate -= 2;
+                },
+                child: Container(
+                  height: screenHeight * 0.07,
+                  width: screenWidth * 0.3,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 126, 136, 126),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Precedent',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     ),
