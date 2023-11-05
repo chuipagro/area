@@ -39,7 +39,7 @@ Widget buildMesServices(setState, context) {
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 0,0,0),
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
             ),
@@ -57,53 +57,57 @@ Widget buildMesServices(setState, context) {
                   if (elements.isNotEmpty) {
                     if (index < elements.length) {
                       final element = elements[index];
-                      return GestureDetector(
-                        onTap: () {
-                          // Action à effectuer lorsque le bouton est cliqué
-                          // Vous pouvez ajouter ici le code pour gérer le clic
-                        },
-                        child: Container(
-                          height: screenHeight * 0.15,
-                          width: screenWidth * 0.8,
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 150, 97, 97),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                              ),
-                              Positioned(
-                                top: 10,
-                                left: 10.0,
-                                width: screenWidth * 0.12,
-                                height: screenHeight * 0.12,
-                                child: Image.asset(
-                                  element.iconPath,
-                                ),
-                              ),
-                              Positioned(
-                                top: 35,
-                                left: 150.0,
-                                child: Text(
-                                  element.titre,
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 0, 0, 0),
+                      if (element.titre == "spotify" ||
+                          element.titre == "github" ||
+                          element.titre == "google") {
+                        return GestureDetector(
+                          onTap: () {
+                            setUpOAuth2(element.titre);
+                          },
+                          child: Container(
+                            height: screenHeight * 0.15,
+                            width: screenWidth * 0.8,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 150, 97, 97),
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  top: 10,
+                                  left: 10.0,
+                                  width: screenWidth * 0.12,
+                                  height: screenHeight * 0.12,
+                                  child: Image.asset(
+                                    element.iconPath,
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 35,
+                                  left: 150.0,
+                                  child: Text(
+                                    element.titre,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     }
                   }
+                  return SizedBox.shrink();
                 },
               ),
             ),
-          ),
+          )
         ],
       ),
     ),
