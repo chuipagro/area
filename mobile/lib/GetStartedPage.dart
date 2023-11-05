@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
+import 'package:mobile/config.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobile/HomePage/HomePage.dart';
@@ -24,8 +25,9 @@ class _GetStartedPageState extends State<GetStartedPage> {
   final clientIdGithub = 'ecd75a418bce2c16c3f5';
 
   Future<void> _authenticateWithGitHub() async {
+    print(Config.clientIdGithubLogin);
     final authUrl = 'https://github.com/login/oauth/authorize?'
-        'client_id=$clientIdGithub&'
+        'client_id=${Config.clientIdGithubLogin}&'
         'scope=user';
 
     final result = await FlutterWebAuth2.authenticate(
@@ -42,8 +44,8 @@ class _GetStartedPageState extends State<GetStartedPage> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'client_id': clientIdGithub,
-          'client_secret': 'c25bb753d702882f8634068356cabf8ce4c4ef8a',
+          'client_id': Config.clientIdGithubLogin,
+          'client_secret': Config.clientSecretGithubLogin,
           'code': codeParam,
         }),
     );
@@ -128,7 +130,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                         children: <Widget>[
                                             const SizedBox(width: 20.0),
                                             Image.asset(
-                                                'assets/images/GithubLogo.png',
+                                                'assets/images/githubLogo.png',
                                                 width: 35.0,
                                                 height: 35.0,
                                             ),
