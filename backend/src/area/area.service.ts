@@ -19,7 +19,7 @@ export class AreaService {
 
   constructor(@InjectModel('Area') private areaModel: Model<IArea>) {
     this.launchAreas().then(() => {
-        console.log("Areas launched");
+        console.log('Areas launched');
     });
   }
 
@@ -35,7 +35,7 @@ export class AreaService {
       try {
         account = await riotService.getSummonerByName(area.data.riot.summonerName);
       } catch (error) {
-        console.log("connection error");
+        console.log('connection error');
         return null;
       }
     }
@@ -56,15 +56,17 @@ export class AreaService {
       await riotService.tftCheckSummonerNewGame(puuid),
       await riotService.tftCheckPlayerWin(puuid),
       await riotService.tftCheckPlayerLose(puuid),
-    ]
+    ];
     
     try {
     actionData = await allAction[area.action.type - 1];
     }
     catch (error) {
-      console.log("error")
+      console.log('error');
       return null;
     }
+    if (actionData == null)
+      return "no data";
     return actionData;
   }
   
@@ -74,6 +76,7 @@ export class AreaService {
     const githubService = new GithubService(configService);
     await githubService.initialiseAccessToken(area.createdBy);
     const user = await UserModel.findOne({ token: area.createdBy }).exec();
+    let reactionData;
     if (!user) {
       throw new Error('User not found');
     }
@@ -87,75 +90,78 @@ export class AreaService {
     if (area.data.github == null)
       return ;
     
+    console.log(area.data.github, area.reaction.type);
     try {
       switch (area.reaction.type) {
         case 1:
-          if(area.data.github.repoName != null && actionData != null && area.data.github.privateRepo != null && area.data.github.homepage != null)
-            await githubService.createRepo(area.data.github.repoName, actionData, area.data.github.homepage, area.data.github.privateRepo);
+          if(area.data.github.name != null && area.data.github.private != null && area.data.github.homepage != null) {
+            console.log('create repo');
+            await githubService.createRepo(area.data.github.name, actionData, area.data.github.homepage, area.data.github.private);
+          }
           break;
         case 2:
-          if(area.data.github.repoName != null && area.data.github.newName != null)
-            await githubService.modifyRepoName(area.data.github.repoName, githubToken, area.data.github.newName);
+          if(area.data.github.name != null && area.data.github.newName != null)
+            await githubService.modifyRepoName(area.data.github.name, githubToken, area.data.github.newName);
           break;
         case 3:
-          if(area.data.github.repoName != null && area.data.github.newDescription != null)
-            await githubService.modifyRepoDescription(area.data.github.repoName, githubToken, area.data.github.newDescription);
+          if(area.data.github.name != null && area.data.github.newDescription != null)
+            await githubService.modifyRepoDescription(area.data.github.name, githubToken, area.data.github.newDescription);
           break;
         case 4:
-          if(area.data.github.repoName != null && area.data.github.privateRepo != null)
-            await githubService.modifyRepoStatus(area.data.github.repoName, githubToken, area.data.github.privateRepo);
+          if(area.data.github.name != null && area.data.github.private != null)
+            await githubService.modifyRepoStatus(area.data.github.name, githubToken, area.data.github.private);
           break;
         case 5:
-          if(area.data.github.repoName != null)
-            await githubService.deleteRepo(area.data.github.repoName, githubToken);
+          if(area.data.github.name != null)
+            await githubService.deleteRepo(area.data.github.name, githubToken);
           break;
         case 6:
-          if(area.data.github.repoName != null)
-            await githubService.starRepo(area.data.github.repoName, githubToken);
+          if(area.data.github.name != null)
+            await githubService.starRepo(area.data.github.name, githubToken);
           break;
         case 7:
-          if(area.data.github.repoName != null)
-            await githubService.unstarRepo(area.data.github.repoName, githubToken);
+          if(area.data.github.name != null)
+            await githubService.unstarRepo(area.data.github.name, githubToken);
           break;
         case 8:
-          if(area.data.github.repoName)
-            await githubService.forkRepo(area.data.github.repoName, githubToken);
+          if(area.data.github.name)
+            await githubService.forkRepo(area.data.github.name, githubToken);
           break;
         case 9:
-          if(area.data.github.repoName != null && area.data.github.title != null && area.data.github.body != null)
-            await githubService.createIssue(area.data.github.repoName, githubToken, area.data.github.title, area.data.github.body);
+          if(area.data.github.name != null && area.data.github.title != null && area.data.github.body != null)
+            await githubService.createIssue(area.data.github.name, githubToken, area.data.github.title, area.data.github.body);
           break;
         case 10:
-          if(area.data.github.repoName != null && area.data.github.issueNumber != null && area.data.github.newTitle != null)
-            await githubService.modifyIssueTitle(area.data.github.repoName, githubToken, area.data.github.issueNumber, area.data.github.newTitle);
+          if(area.data.github.name != null && area.data.github.issueNumber != null && area.data.github.newTitle != null)
+            await githubService.modifyIssueTitle(area.data.github.name, githubToken, area.data.github.issueNumber, area.data.github.newTitle);
           break;
         case 11:
-          if(area.data.github.repoName != null && area.data.github.issueNumber != null && area.data.github.newBody != null)
-            await githubService.modifyIssueBody(area.data.github.repoName, githubToken, area.data.github.issueNumber, area.data.github.newBody);
+          if(area.data.github.name != null && area.data.github.issueNumber != null && area.data.github.newBody != null)
+            await githubService.modifyIssueBody(area.data.github.name, githubToken, area.data.github.issueNumber, area.data.github.newBody);
           break;
         case 12:
-          if(area.data.github.repoName != null && area.data.github.issueNumber != null)
-            await githubService.closeIssue(area.data.github.repoName, githubToken, area.data.github.issueNumber);
+          if(area.data.github.name != null && area.data.github.issueNumber != null)
+            await githubService.closeIssue(area.data.github.name, githubToken, area.data.github.issueNumber);
           break;
         case 13:
-          if(area.data.github.repoName != null && area.data.github.title != null && area.data.github.body != null && area.data.github.head != null && area.data.github.base != null)
-            await githubService.createPullRequest(area.data.github.repoName, githubToken, area.data.github.title, area.data.github.body, area.data.github.head, area.data.github.base);
+          if(area.data.github.name != null && area.data.github.title != null && area.data.github.body != null && area.data.github.head != null && area.data.github.base != null)
+            await githubService.createPullRequest(area.data.github.name, githubToken, area.data.github.title, area.data.github.body, area.data.github.head, area.data.github.base);
           break;
         case 14:
-          if(area.data.github.repoName != null && area.data.github.pullNumber != null)
-            await githubService.mergePullRequest(area.data.github.repoName, githubToken, area.data.github.pullNumber);
+          if(area.data.github.name != null && area.data.github.pullNumber != null)
+            await githubService.mergePullRequest(area.data.github.name, githubToken, area.data.github.pullNumber);
           break;
         case 15:
-          if(area.data.github.repoName != null && area.data.github.pullNumber != null)
-            await githubService.closePullRequest(area.data.github.repoName, githubToken, area.data.github.pullNumber);
+          if(area.data.github.name != null && area.data.github.pullNumber != null)
+            await githubService.closePullRequest(area.data.github.name, githubToken, area.data.github.pullNumber);
           break;
         case 16:
-          if(area.data.github.repoName != null && area.data.github.branchName != null && area.data.github.sha != null)
-            await githubService.createBranch(area.data.github.repoName, githubToken, area.data.github.branchName, area.data.github.sha);
+          if(area.data.github.name != null && area.data.github.branchName != null && area.data.github.sha != null)
+            await githubService.createBranch(area.data.github.name, githubToken, area.data.github.branchName, area.data.github.sha);
           break;
         case 17:
-          if(area.data.github.repoName != null && area.data.github.branchName != null)
-            await githubService.deleteBranch(area.data.github.repoName, githubToken, area.data.github.branchName);
+          if(area.data.github.name != null && area.data.github.branchName != null)
+            await githubService.deleteBranch(area.data.github.name, githubToken, area.data.github.branchName);
           break;
         case 18:
           if(area.data.github.description != null && area.data.github.fileName != null)
@@ -188,11 +194,10 @@ export class AreaService {
         case 25:
           if (area.data.github.newName != null)
             await githubService.modifyUserName(area.data.github.newName);
-            
       }
     } catch (error) {
       console.log(error);
-      return null;
+      return "error";
     }
   }
   
@@ -216,9 +221,11 @@ export class AreaService {
           break;
       }
     } catch (error) {
-      console.log("connection error");
+      console.log('connection error');
       return null;
     }
+    if (actionData == null)
+      return "no data";
     return actionData;
   }
   
@@ -261,17 +268,19 @@ export class AreaService {
     const configService = new ConfigService();
     const microsoftService = new MicrosoftService(configService);
     
-    if (area.data.microsoft == null)
+    if (area.data.microsoft == null) {
       return null;
-    
-    if (area.data.microsoft.text == null)
+      
+    }
+    if (area.data.microsoft.text == null && actionData != null) {
       area.data.microsoft.text = actionData.toString();
+    }
     
     try {
       if (area.data.microsoft.to != null && area.data.microsoft.from != null && area.data.microsoft.subject != null && area.data.microsoft.text != null)
-        await microsoftService.sendMail(area.data.microsoft.to, area.data.microsoft.from, area.data.microsoft.subject, area.data.microsoft.text);
+        await microsoftService.sendMail(area.data.microsoft.to, area.data.microsoft.subject, area.data.microsoft.text);
     } catch (error) {
-      console.log(error);
+      console.log(error, 'error');
       return null;
     }
     return null;
@@ -371,7 +380,7 @@ export class AreaService {
             await googleService.deleteGoogleDrawing(area.data.google.id);
           break;
         default:
-          console.log("service not found");
+          console.log('service not found');
       }
     } catch (error) {
       console.log(error);
@@ -389,21 +398,20 @@ export class AreaService {
     try {
       actionData = await googleService.checkNewMail();
     } catch (error) {
-      console.log("connection error");
+      console.log('connection error');
       return null;
     }
     if (actionData == null)
-      return null;
+      return "no mail";
     return actionData;
   }
   
-  async launchClockAction(area: IArea) : Promise<any>
+  async launchClockAction(area: IArea) : Promise<string>
   {
     const clockService = new ClockService();
     
     if (area.data.clock == null)
-      return null;
-    
+      return "no data";
     try {
       switch (area.action.type) {
         case 1:
@@ -411,8 +419,9 @@ export class AreaService {
             await clockService.launchReactionEveryDayAtGivenTime(area.data.clock.time);
             break;
         case 2:
-          if (area.data.clock.time != null)
+          if (area.data.clock.time != null) {
             await clockService.launchReactionEveryX(area.data.clock.time);
+          }
             break;
         case 3:
           if (area.data.clock.date != null)
@@ -420,57 +429,55 @@ export class AreaService {
             break;
       }
     } catch (error) {
-      console.log("connection error");
-      return null;
+      throw new Error(error);
     }
-    return "it's time";
+    return 'it\'s time';
   }
   
   async launchArea(area: IArea) {
     let actionData = null;
+    let reactionData = null;
     
-    console.log(area.data);
     switch (area.action.service) {
       case 1:
-        actionData = await this.launchRiotAction(area)
+        actionData = await this.launchRiotAction(area);
         break;
       case 2:
-        actionData = await this.launchSpotifyAction(area)
+        actionData = await this.launchSpotifyAction(area);
         break;
       case 6:
-        actionData = await this.launchGoogleAction(area)
+        actionData = await this.launchGoogleAction(area);
         break;
       case 7:
-        actionData = await this.launchClockAction(area)
+        actionData = await this.launchClockAction(area);
         break;
       default:
-        console.log("service not found");
-        break
+        console.log('service not found');
+        break;
     }
-    if (actionData == null)
-      return null;
-    console.log(actionData);
 
     switch (area.reaction.service) {
       case 2:
-        await this.launchSpotifyReaction(area, actionData)
+        reactionData = await this.launchSpotifyReaction(area, actionData);
         break;
       case 3:
-        await this.launchMicrosoftReaction(area, actionData)
+        reactionData = await this.launchMicrosoftReaction(area, actionData);
         break;
       case 4:
-        await this.launchGithubReaction(area, actionData)
+        reactionData = await this.launchGithubReaction(area, actionData);
         break;
       case 5:
-        await this.launchDiscordReaction(area, actionData)
+        reactionData = await this.launchDiscordReaction(area, actionData);
         break;
       case 6:
-        await this.launchGoogleReaction(area, actionData)
+        reactionData = await this.launchGoogleReaction(area, actionData);
         break;
       default:
-        console.log("service not found");
+        console.log('service not found');
         break;
     }
+    if (actionData != null && reactionData != null)
+      await this.launchAreaByName(area.title, area.createdBy);
   }
 
   async launchAreas(): Promise<void>
@@ -504,7 +511,7 @@ export class AreaService {
   async createArea(title: string, active: boolean, createdBy: string, action: object, reaction: object, data: object): Promise<void> {
     const dateAtCreation = new Date().toLocaleDateString();
     const timeAtCreation = new Date().toLocaleTimeString();
-    const createdArea = new AreaModel({ title, active, createdBy, action, reaction, data, timeAtCreation, dateAtCreation });
+    const createdArea = new AreaModel({ title, active, createdBy, action, reaction, data: data, timeAtCreation, dateAtCreation });
     await createdArea.save();
     await this.launchAreaByName(createdArea.title, createdArea.createdBy);
   }

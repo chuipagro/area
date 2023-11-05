@@ -8,8 +8,7 @@ import { allServices, ServicesModel } from '../models/servicesModel';
 export class ServicesService
 {
     constructor()
-    {
-    }
+    {}
 
     async saveService(): Promise<void> {
         const services = new ServicesModel(allServices);
