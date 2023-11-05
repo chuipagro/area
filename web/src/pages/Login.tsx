@@ -113,11 +113,11 @@ export const Login = (): JSX.Element => {
         <Title></Title>
 
         <VStack marginTop={10} marginLeft={550} boxSize={800} spacing="5px">
-            <InputText setValue={setMail} placeHolder="mail" type="email" color={'blue'} />
+            <InputText setValue={setMail} placeHolder="mail" type="email" color={'black'} />
             <Center height='50px'>
                 <Divider orientation='vertical' />
             </Center>
-            <InputText setValue={setPassword} placeHolder="password" type="password" color={'blue'} />
+            <InputText setValue={setPassword} placeHolder="password" type="password" color={'black'} />
         </VStack>
 
 
