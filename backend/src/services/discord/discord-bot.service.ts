@@ -10,7 +10,7 @@ export class DiscordBotService {
   }
 
   async getBotAlive(): Promise<any> {
-    const url = `http://backend_discord_service:9999/`;
+    const url = `http://backend_discord_service:3000/`;
 
     return await axios.get(url, {
     }).then((response: any) => {
@@ -19,7 +19,7 @@ export class DiscordBotService {
   };
 
   async postSendMessage(channel_id: string, message: string): Promise<any> {
-    const url = `http://backend_discord_service:9999/sendMessage`;
+    const url = `http://backend_discord_service:3000/sendMessage`;
 
     return await axios.post(url, {
       'channel_id':channel_id,

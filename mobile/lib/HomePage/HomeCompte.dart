@@ -39,7 +39,7 @@ Widget buildCompte(setState, context) {
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 0,0,0),
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
             ),
@@ -52,7 +52,7 @@ Widget buildCompte(setState, context) {
                 'UserName',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Color.fromARGB(255, 0,0,0),
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
             ),
@@ -89,7 +89,7 @@ Widget buildCompte(setState, context) {
                 'Mot de passe',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Color.fromARGB(255, 0,0,0),
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
             ),
@@ -109,7 +109,7 @@ Widget buildCompte(setState, context) {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
-                  profilUser.password,
+                  '**************',
                   style: TextStyle(
                     fontSize: 20,
                     color: Color.fromARGB(255, 0, 0, 0),
@@ -126,7 +126,7 @@ Widget buildCompte(setState, context) {
                 'Adresse mail',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Color.fromARGB(255, 0,0,0),
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
             ),

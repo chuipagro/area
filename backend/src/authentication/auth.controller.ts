@@ -12,6 +12,8 @@ export class AuthController {
   private client_secret_github_login = this.configService.get<string>('CLIENT_SECRET_GITHUB_LOGIN');
   private client_id_github_area = this.configService.get<string>('CLIENT_ID_GITHUB_AREA');
   private client_secret_github_area = this.configService.get<string>('CLIENT_SECRET_GITHUB_AREA');
+  private client_id_github_profil = this.configService.get<string>('CLIENT_ID_GITHUB_PROFIL');
+  private client_secret_github_profil = this.configService.get<string>('CLIENT_SECRET_GITHUB_PROFIL');
   constructor(private readonly authService: AuthService, private configService: ConfigService) {
   }
 
@@ -442,6 +444,68 @@ export class AuthController {
   ): Promise<any> {
     const clientIdGithub = this.client_id_github_area;
     const clientSecretGithub = this.client_secret_github_area;
+
+    try {
+      const response = await fetch("https://github.com/login/oauth/access_token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          'client_id': clientIdGithub,
+          'client_secret': clientSecretGithub,
+          'code': code,
+        }),
+      });
+  
+      if (response.ok) {
+        const textData = await response.text();
+        const params = new URLSearchParams(textData);
+
+        console.log(params.get('access_token'))
+        const accessToken = params.get('access_token');
+        const token = String(accessToken);
+        const oauth = "github";
+        console.log(token)
+        const result = await this.OAuth2Area(res, token, oauth, tokenUser);
+        return result;
+      } else {
+        res.status(response.status).send('Erreur lors de la demande à GitHub');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la demande à GitHub:', error);
+      res.status(500).send('Erreur interne du serveur');
+    }
+  }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+        },
+        tokenUser: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'is connected',
+    type: Boolean,
+    status: 200,
+  })
+
+  @Post('postTokenProfil')
+  async postTokenProfil(
+    @Res() res: Response,
+    @Body('code') code: string,
+    @Body('tokenUser') tokenUser: string,
+  ): Promise<any> {
+    const clientIdGithub = this.client_id_github_profil;
+    const clientSecretGithub = this.client_secret_github_profil;
 
     try {
       const response = await fetch("https://github.com/login/oauth/access_token", {

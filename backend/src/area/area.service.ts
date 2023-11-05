@@ -13,6 +13,10 @@ import { DiscordBotService } from '../services/discord/discord-bot.service';
 import { GoogleService } from '../services/google/google.service';
 import { MicrosoftService } from '../services/microsoft/microsoft.service';
 import { ClockService } from '../services/clock/clock.service';
+import { SteamService } from '../services/steam/steam.service';
+import { WeatherService } from '../services/weather/weather.service';
+import { MinecraftService } from '../services/minecraft/minecraft.service';
+import { NasaService } from '../services/nasa/nasa.service';
 
 @Injectable()
 export class AreaService {
@@ -435,6 +439,114 @@ export class AreaService {
     return 'it\'s time';
   }
   
+  async launchWeatherAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const weatherService = new WeatherService(configService);
+    
+    if (area.data.weather == null)
+      return "no data";
+    try {
+      switch (area.action.type) {
+        case 1:
+          if (area.data.weather.city != null)
+            await weatherService.waitForNewWeather(area.data.weather.city);
+            break;
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+    return 'it\'s time';
+  }
+  
+  async launchSteamAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const steamService = new SteamService(configService);
+    
+    if (area.data.steam == null)
+      return "no data";
+    
+    try {
+      switch (area.action.type) {
+        case 3:
+          if (area.data.steam.steamID != null)
+            await steamService.getNewsForApp(area.data.steam.steamID);
+            break;
+        case 1:
+          if (area.data.steam.steamID != null)
+            await steamService.waitForNewFriendAdd(area.data.steam.steamID);
+            break;
+        case 2:
+          if (area.data.steam.steamID != null)
+            await steamService.waitForNewGamePlay(area.data.steam.steamID);
+            break;
+        default:
+          console.log('service not found');
+          return null;
+      }
+    } catch (error) {
+      return null;
+    }
+    return "success";
+  }
+  
+  async launchMinecraftAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const minecraftService = new MinecraftService(configService);
+    
+    if (area.data.minecraft == null)
+      return "no data";
+    
+    try {
+      switch (area.action.type) {
+        case 1:
+          if (area.data.minecraft.serverIP != null)
+            await minecraftService.waitForNewConnection(area.data.minecraft.serverIP);
+            break;
+        case 2:
+          if (area.data.minecraft.serverIP != null)
+            await minecraftService.waitForNewDisconnection(area.data.minecraft.serverIP);
+            break;
+        case 3:
+          if (area.data.minecraft.serverIP != null)
+            await minecraftService.waitForNewVersion(area.data.minecraft.serverIP);
+            break;
+        default:
+          console.log('service not found');
+      }
+    } catch (error) {
+      return null;
+    }
+    return "success";
+  }
+  
+  async launchNasaAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const nasaService = new NasaService(configService);
+    
+    if (area.data.nasa == null)
+      return "no data";
+    
+    try {
+      switch (area.action.type) {
+        case 1:
+          await nasaService.waitForNextWeatherInfoMars();
+          break;
+        case 2:
+          await nasaService.waitForNewAstronomyPictureOfTheDay();
+          break;
+        default:
+          console.log('service not found');
+      }
+    } catch (error) {
+      return null;
+    }
+    return "success";
+  }
+  
   async launchArea(area: IArea) {
     let actionData = null;
     let reactionData = null;
@@ -452,6 +564,18 @@ export class AreaService {
       case 7:
         actionData = await this.launchClockAction(area);
         break;
+      case 8:
+        actionData = await this.launchSteamAction(area);
+        break;
+      case 9:
+          actionData = await this.launchWeatherAction(area);
+          break;
+      case 11:
+          actionData = await this.launchMinecraftAction(area);
+          break;
+      case 10:
+          actionData = await this.launchNasaAction(area);
+          break;
       default:
         console.log('service not found');
         break;

@@ -4,6 +4,8 @@ import 'HomeGlobale.dart';
 import 'package:http/http.dart' as http;
 import '../Globals.dart' as globals;
 import 'package:mobile/LoginPage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'dart:convert';
 
 void homeButtonPress(Function setState) {
@@ -33,14 +35,110 @@ void returnToAddArea(Function setState) {
 }
 
 void changeArea(setState, CreatedArea area) {
+  print(area.areaIdOne);
+  print(area.areaIdTwo);
+  print(area.areaOneActionId);
+  print(area.areaTwoActionId);
+
   setState(() {
-    indexForCreationPage[0] = area.areaIdOne;
-    indexForCreationPage[2] = area.areaIdTwo;
-    indexForCreationPage[1] = area.areaOneActionId;
-    indexForCreationPage[3] = area.areaTwoActionId;
+    indexForCreationPage[0] = area.areaIdOne + 1;
+    indexForCreationPage[2] = area.areaIdTwo + 1;
+    indexForCreationPage[1] = area.areaOneActionId + 1;
+    indexForCreationPage[3] = area.areaTwoActionId + 1;
     nameInput.text = area.name;
     currentPageState = PageState.ChangeArea;
   });
+}
+
+Future<void> _authenticateWithGitHub() async {
+  final clientIdGithub = 'ecd75a418bce2c16c3f5';
+
+  final authUrl = 'https://github.com/login/oauth/authorize?'
+      'client_id=$clientIdGithub&'
+      'scope=user';
+
+  final result = await FlutterWebAuth2.authenticate(
+    url: authUrl,
+    callbackUrlScheme: 'area',
+  );
+
+  String? codeParam = Uri.parse(result).queryParameters['code'];
+
+  final response = await http.post(
+    Uri.parse('https://github.com/login/oauth/access_token'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'client_id': clientIdGithub,
+      'client_secret': 'c25bb753d702882f8634068356cabf8ce4c4ef8a',
+      'code': codeParam,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    List<String> parts = response.body.split('&');
+    String accessToken = parts[0].split('=')[1];
+    final res = await http.post(
+      Uri.parse('http://' + globals.IPpc + ':8080/auth/OAuth2Area'),
+      body: {
+        'token': accessToken,
+        'oauth': 'github',
+        'tokenUser': globals.Token,
+      },
+    );
+    if (res.statusCode == 200) {
+      print('Connexion good Github!');
+    } else {
+      print('Connexion failed Github!');
+    }
+  } else {
+    print(
+        'Erreur lors de l\'obtention du jeton d\'accès : ${response.reasonPhrase}');
+  }
+}
+
+Future<void> _authenticateWithGoogle() async {
+  final _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+
+  try {
+    final googleUser = await _googleSignIn.signIn();
+    if (googleUser != null) {
+      final googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+
+      final res = await http.post(
+          Uri.parse('http://' + globals.IPpc + ':8080/auth/postGoogleArea'),
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'token': accessToken,
+            'oauth': 'google',
+            'tokenUser': globals.Token,
+          }));
+      if (res.statusCode == 200) {
+        print('Connexion good Google!');
+      } else {
+        print('Connexion failed Google!');
+      }
+    }
+  } catch (error) {
+    print("Erreur lors de la connexion: $error");
+  }
+}
+
+void setUpOAuth2(String serviceName) {
+  switch (serviceName) {
+    case ("spotify"):
+      break;
+    case ("google"):
+      _authenticateWithGoogle();
+      break;
+    case ("github"):
+      _authenticateWithGitHub();
+      break;
+  }
 }
 
 void getAllNeeds(setState) {
@@ -64,7 +162,10 @@ void deleteArea(setState, areaName) async {
   );
 
   if (reponse.statusCode == 200) {
-    setState(() {});
+    setState(() {
+      currentPageState = PageState.Areas;
+      needToReload = true;
+    });
   } else {
     print('Échec de la suppression de la zone : ${reponse.statusCode}');
   }
@@ -116,26 +217,31 @@ void onReactionList(Function setState, int index) {
   });
 }
 
-void setActionInCreationAreaPage(Function setState, int actionIndex, int serviceIndex) {
+void setActionInCreationAreaPage(
+    Function setState, int actionIndex, int serviceIndex) {
   setState(() {
     indexForCreationPage[0] = serviceIndex + 1;
     indexForCreationPage[1] = actionIndex + 1;
-    needsList = elements[indexForCreationPage[0] - 1].actions[indexForCreationPage[1] - 1].needs;
+    needsList = elements[indexForCreationPage[0] - 1]
+        .actions[indexForCreationPage[1] - 1]
+        .needs;
     getAllNeeds(setState);
   });
 }
 
-void setReactionInCreationAreaPage(Function setState, int reactionIndex, int serviceIndex) {
+void setReactionInCreationAreaPage(
+    Function setState, int reactionIndex, int serviceIndex) {
   setState(() {
     indexForCreationPage[2] = serviceIndex + 1;
     indexForCreationPage[3] = reactionIndex + 1;
-    needsList = elements[indexForCreationPage[2] - 1].reactions[indexForCreationPage[3] - 1].needs;
+    needsList = elements[indexForCreationPage[2] - 1]
+        .reactions[indexForCreationPage[3] - 1]
+        .needs;
     getAllNeeds(setState);
   });
 }
 
-void setAllNeeds(String need, String input)
-{
+void setAllNeeds(String need, String input) {
   switch (need) {
     case "summonerName":
       allNeedsList.riot_summonerName = input;
@@ -164,6 +270,8 @@ void setAllNeeds(String need, String input)
     case "playlistCollaborative":
       allNeedsList.spotify_playlistCollaborative = true;
       break;
+    case "playlistTracks":
+      break;
     case "playlistTracksPosition":
       allNeedsList.spotify_playlistTracksPosition = int.parse(input);
       break;
@@ -189,10 +297,10 @@ void setAllNeeds(String need, String input)
 }
 
 Future<void> addArea(String name, setState) async {
-
   print("==========================================");
   print("==========================================");
-  print("1: ${indexForCreationPage[0]}, 2: ${indexForCreationPage[1]}, 3: ${indexForCreationPage[2]}, 4: ${indexForCreationPage[3]}");
+  print(
+      "1: ${indexForCreationPage[0]}, 2: ${indexForCreationPage[1]}, 3: ${indexForCreationPage[2]}, 4: ${indexForCreationPage[3]}");
   print("==========================================");
   print("==========================================");
   final reponse = await http.post(
@@ -226,7 +334,8 @@ Future<void> addArea(String name, setState) async {
           "playlistPublic": allNeedsList.spotify_playlistPublic,
           "playlistCollaborative": allNeedsList.spotify_playlistCollaborative,
           "playlistTracksPosition": allNeedsList.spotify_playlistTracksPosition,
-          "playlistTracksUrisPosition": allNeedsList.spotify_playlistTracksUrisPosition,
+          "playlistTracksUrisPosition":
+              allNeedsList.spotify_playlistTracksUrisPosition,
         },
         "mail": {
           "to": allNeedsList.mail_to,
@@ -235,13 +344,14 @@ Future<void> addArea(String name, setState) async {
           "text": allNeedsList.mail_text,
         }
       }
-    }),  
+    }),
   );
 
   if (reponse.statusCode == 200) {
     setState(() {
       nameInput.text = '';
       indexForCreationPage = [-1, -1, -1, -1];
+      needToReload = true;
       currentPageState = PageState.Areas;
     });
   } else {
@@ -250,23 +360,47 @@ Future<void> addArea(String name, setState) async {
 }
 
 Future<void> onDeconectionTap(setState, context) async {
-  final response = await http.post(
-    Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
-  );
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirmation"),
+        content: Text("Êtes-vous sûr de vouloir vous déconnecter?"),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Annuler"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text("Déconnexion"),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final response = await http.post(
+                Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
+              );
 
-  if (response.statusCode == 200) {
-    currentPageState = PageState.Areas;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Échec de la déconnexion'),
-      ),
-    );
-  }
+              if (response.statusCode == 200) {
+                currentPageState = PageState.Areas;
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoginPage(title: 'LoginPage')),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Échec de la déconnexion'),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
 
 Future<Map<String, dynamic>> callForAllServices() async {
@@ -278,25 +412,26 @@ Future<Map<String, dynamic>> callForAllServices() async {
     final Map<String, dynamic> jsonReponse = json.decode(reponse.body);
     return jsonReponse;
   } else {
-    throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
+    throw Exception(
+        'Échec de la requête pour les zones : ${reponse.statusCode}');
   }
 }
 
 Future<Map<String, dynamic>> callForAllAreas() async {
-  final reponse = await http.get(
+  final reponse = await http.post(
     Uri.parse('http://' + globals.IPpc + ':8080/area/getUserAreas'),
+    body: {
+      'token': globals.Token,
+    },
   );
 
   if (reponse.statusCode == 200) {
-    print("==========================================");
-    print("==========================================");
-    print(reponse.body);
-    print("==========================================");
-    print("==========================================");
+    print("area body : " + reponse.body);
     final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
     return jsonResponse;
   } else {
-    throw Exception('Échec de la requête pour les zones : ${reponse.statusCode}');
+    throw Exception(
+        'Échec de la requête pour les zones : ${reponse.statusCode}');
   }
 }
 
@@ -359,8 +494,7 @@ void createServiceList(Map<String, dynamic> json) {
   });
 }
 
-void createAreaList(Map<String, dynamic> json)
-{
+void createAreaList(Map<String, dynamic> json) {
   createdAreas.clear();
   if (json.containsKey("areas")) {
     final List<dynamic> areas = json["areas"];
@@ -387,8 +521,7 @@ void createAreaList(Map<String, dynamic> json)
   }
 }
 
-Future<void> loadAll(setState) async
-{
+Future<void> loadAll(setState) async {
   final Map<String, dynamic> jsonResultServices = await callForAllServices();
   final Map<String, dynamic> jsonResultArea = await callForAllAreas();
   setState(() {
@@ -397,23 +530,58 @@ Future<void> loadAll(setState) async
   });
 }
 
-Future<bool> changeStatusOfArea(setState, int areaIndex, bool newValue) async {
+Future<bool> changeStatusOfArea(setState, int index, bool newValue) async {
   final reponse = await http.post(
     Uri.parse('http://${globals.IPpc}:8080/area/changeAreaStatus'),
-    body: {
-      'title': createdAreas[areaIndex].name,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'title': createdAreas[index].name,
       'token': globals.Token,
       'active': newValue,
-    },
+    }),
   );
 
   if (reponse.statusCode == 200) {
     setState(() {
       currentPageState = PageState.Areas;
+      needToReload = true;
     });
     return true;
   } else {
-    print('Échec de la désactivation de la zone : ${reponse.statusCode}');
+    print(
+        'Échec de la désactivation de la zone : ${reponse.statusCode}  ==  ${reponse.body}');
     return false;
+  }
+}
+
+// void setProfilInfo(setState, final Map<String, dynamic> jsonReponse) {
+//   setState(() {});
+// }
+
+Future<void> getUserInfo(setState) async {
+  final reponse = await http.post(
+    Uri.parse('http://${globals.IPpc}:8080/user/getUserInfo'),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'token': globals.Token,
+    }),
+  );
+
+  final Map<String, dynamic> jsonReponse = json.decode(reponse.body);
+  profilUser.name = jsonReponse['user']['username'];
+  profilUser.email = jsonReponse['user']['mail'];
+  profilUser.password = jsonReponse['user']['password'];
+
+  if (reponse.statusCode == 200) {
+    setState(() {
+      profilButtonPress(setState);
+    });
+  } else {
+    print(
+        'Échec de la désactivation de la zone : ${reponse.statusCode}  ==  ${reponse.body}');
   }
 }
