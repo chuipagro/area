@@ -52,7 +52,7 @@ export class GoogleService {
 				const url = `https://www.googleapis.com/forms/v1/forms`;
 				const data = {
 						'title': name,
-						'description': description,
+						'document_title': description,
 				};
 				return await axios.post(url, data, {
 						headers: {
@@ -166,7 +166,6 @@ export class GoogleService {
 								'Authorization': `Bearer ${accessToken}`,
 						},
 				}).then((response: any) => {
-						console.log(response.data);
 						return response.data;
 				});
 		}

@@ -292,6 +292,9 @@ export class AreaService {
     const googleService = new GoogleService(configService);
     await googleService.initialiseAccessToken(area.createdBy);
     
+    console.log(area.data);
+    if (area.data.google == null)
+      return null;
     if (area.data.google.message == null)
       area.data.google.message = actionData.toString();
     try {
@@ -383,6 +386,7 @@ export class AreaService {
       console.log(error);
       return null;
     }
+    return 'success'
   }
 
   async launchGoogleAction(area: IArea) : Promise<any>

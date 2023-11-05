@@ -385,11 +385,9 @@ export class AuthController {
     if (!token || !oauth) {
       throw new Error('no empty field allowed');
     }
-    console.log(tokenUser)
     const githubUserUrl = 'https://api.github.com/user';
     const githubEmailsUrl = 'https://api.github.com/user/emails';
     try {
-      console.log(tokenUser)
       const userResponse = await fetch(githubUserUrl, {
         method: 'GET',
         headers: {
@@ -399,9 +397,7 @@ export class AuthController {
       const userUsername = await userResponse.json();
       const username = userUsername['login'];
 
-      console.log(tokenUser)
       if (userResponse.status === 200) {
-        console.log(tokenUser)
         const emailResponse = await fetch(githubEmailsUrl, {
           method: 'GET',
           headers: {
@@ -411,7 +407,6 @@ export class AuthController {
 
         const userEmails = await emailResponse.json();
         const mail = userEmails[0].email;
-        console.log(tokenUser)
         return res.status(200).json({ token: await this.authService.signOAuth(mail, username, oauth, token, tokenUser) });
       } else {
         return res.status(userResponse.status).json({ error: 'Failed to fetch user data' });
@@ -451,7 +446,6 @@ export class AuthController {
     const clientSecretGithub = this.client_secret_github_area;
 
     try {
-      console.log(tokenUser)
       const response = await fetch("https://github.com/login/oauth/access_token", {
         method: "POST",
         headers: {
@@ -464,16 +458,13 @@ export class AuthController {
         }),
       });
   
-      console.log(tokenUser)
       if (response.ok) {
-        console.log(tokenUser)
         const textData = await response.text();
         const params = new URLSearchParams(textData);
 
         const accessToken = params.get('access_token');
         const token = String(accessToken);
         const oauth = "github";
-        console.log(tokenUser)
         const result = await this.OAuth2Area(res, token, oauth, tokenUser);
         return result;
       } else {
