@@ -67,12 +67,12 @@ export class UserService {
   }
 
   async changeMail(token: String, mail: String): Promise<void> {
-    const existingUser = await UserModel.findOne({ token: token });
+    const existingUser = await UserModel.findOne({ mail: mail });
     if (existingUser) {
       throw new Error('Username already in use');
     }
 
-    const user = await UserModel.findOne(token).exec();
+    const user = await UserModel.findOne({ token: token }).exec();
     if (!user) {
       throw new Error('User not found');
     }
