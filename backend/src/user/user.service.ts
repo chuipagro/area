@@ -6,6 +6,7 @@ import { JwtPayload } from '../authentication/jwt-payload.interface';
 import { IUser, UserModel } from '../models/users.model';
 import { v4 as uuidv4 } from 'uuid';
 import { AreaModel } from '../models/area.model';
+import { log } from 'console';
 
 @Injectable()
 export class UserService {
@@ -85,6 +86,7 @@ export class UserService {
     const user = await UserModel.findOne({ token: token }).exec();
 
     if (!user) {
+      console.log("MERDEEEEEE")
       throw new Error('User not found');
     }
     if (user.auth == undefined)
@@ -92,12 +94,14 @@ export class UserService {
     for (let i = 0; i < user.auth.length; i++) {
       if (user.auth[i].oauthName == oauthName)
       {
+        console.log(oauthName)
         user.auth[i].token = oauthToken.toString();
         await user.save();
         return ;
       }
     }
     user.auth.push({ oauthName: oauthName, token: oauthToken.toString(), refreshToken: null, username: username.toString(), mail: mail.toString() });
+    console.log(user.auth)
     await user.save();
   }
 

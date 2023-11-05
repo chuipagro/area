@@ -105,6 +105,26 @@ const spotify ={
   },
   actions: [
     {
+      name: "getNewReleases",
+      description: "check if new releases",
+      id: 1,
+      need: {
+        country: "country",
+        limit: "limit",
+        offset: "offset",
+      }
+    },
+    {
+      name: "getAudioFeaturesTrack",
+      description: "get audio features track",
+      id: 2,
+      need: {
+        track_id: "track_id",
+      }
+    }
+  ],
+  reactions: [
+    {
       name: "createPlaylist",
       description: "create playlist",
       id: 1,
@@ -115,28 +135,7 @@ const spotify ={
         playlistCollaborative: "playlistCollaborative",
       }
     },
-    {
-      name: "addTrackToPlaylist",
-      description: "add track to playlist",
-      id: 2,
-      need: {
-        playlistId: "playlistId",
-        playlistTracks: "playlistTracks",
-        playlistTracksPosition: "playlistTracksPosition",
-      }
-    },
-    {
-      name: "addTrackUriToPlaylist",
-      description: "add track uri to playlist",
-      id: 3,
-      need: {
-        playlistId: "playlistId",
-        playlistTracksUris: "playlistTracksUris",
-        playlistTracksUrisPosition: "playlistTracksUrisPosition",
-      }
-    },
   ],
-  reactions: [],
 }
 
 const Microsoft = {
@@ -144,9 +143,9 @@ const Microsoft = {
   name: "microsoft",
   logo: "assets/images/microsoftLogo.png",
   color: {
-    red: 255,
-    green: 255,
-    blue: 255,
+    red: 150,
+    green: 223,
+    blue: 91,
   },
   actions: [],
   reactions: [
@@ -411,12 +410,21 @@ const discord = {
   name: "discord",
   logo: "assets/images/discordLogo.png",
   color: {
-    red: 0,
-    green: 0,
-    blue: 0,
+    red: 122,
+    green: 116,
+    blue: 195,
   },
   actions: [],
   reactions: [
+    {
+      name: "sendMessage",
+      description: "send message",
+      id: 1,
+      need: {
+        channel_id: "channel_id",
+        message: "message",
+      }
+    }
   ],
 }
 
@@ -425,9 +433,9 @@ const google = {
   name: "google",
   logo: "assets/images/googleLogo.png",
   color: {
-    red: 0,
-    green: 0,
-    blue: 0,
+    red: 197,
+    green: 209,
+    blue: 31,
   },
   actions: [
     {
@@ -610,7 +618,45 @@ const google = {
   ],
 }
 
-export const allServices = [riot, spotify, Microsoft, github, discord, google];
+const clock = {
+  id: 7,
+  name: "clock",
+  logo: "assets/images/clockLogo.png",
+  color: {
+    red: 137,
+    green: 63,
+    blue: 48,
+  },
+  actions: [
+    {
+      name: "launch at chosen time",
+      description: "launch at chosen time",
+      id: 1,
+      need: {
+        time: "time in format hh:mm",
+      }
+    },
+    {
+      name: "launch every x",
+      description: "launch every x",
+      id: 2,
+      need: {
+        time: "time in format S10 for every 10 seconds there is S M H D M Y and value must be 1 - 59",
+      }
+    },
+    {
+      name: "launch at precise date",
+      description: "launch at precise date",
+      id: 3,
+      need: {
+        date: "date in format dd/mm/yyyy",
+      }
+    },
+  ],
+  reactions: [],
+}
+
+export const allServices = [riot, spotify, Microsoft, github, discord, google, clock];
 
 const ActionSchema = new Schema({
     description: { type: String, required: true},

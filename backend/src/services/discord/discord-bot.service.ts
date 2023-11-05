@@ -28,5 +28,4 @@ export class DiscordBotService {
       return response.data;
     });
   };
-
 }
