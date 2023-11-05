@@ -15,8 +15,13 @@ export const SettingAreasPage = (): JSX.Element => {
     const setupInfoAction = () => {
         const stringInfoA: InformationString[] = [];
 
-        for (const dataType of Object.keys(area.data[reaction.name])) {
-            const info = area.data[reaction.name][dataType];
+        if (area.data[action.name] === undefined) {
+          setEditableActionInfoString([]);
+          setEditableActionInfoStringM([]);
+          return;
+        }
+        for (const dataType of Object.keys(area.data[action.name])) {
+            const info = area.data[action.name][dataType];
             
             if (typeof info === 'string') {
                 stringInfoA.push(info);
@@ -29,8 +34,13 @@ export const SettingAreasPage = (): JSX.Element => {
     const setupInfoReaction = () => {
         const stringInfo: InformationString[] = [];
 
-        for (const dataType of Object.keys(area.data[action.name])) {
-            const info = area.data[action.name][dataType];
+        if (area.data[reaction.name] === undefined) {
+          setEditableReactionInfoString([]);
+          setEditableReactionInfoStringM([]);
+          return;
+        }
+        for (const dataType of Object.keys(area.data[reaction.name])) {
+            const info = area.data[reaction.name][dataType];
             
             if (typeof info === 'string') {
                 stringInfo.push(info);
@@ -53,6 +63,7 @@ export const SettingAreasPage = (): JSX.Element => {
                 "token": token,
             };
 
+            console.log(bodyBoutton);
             const response = await axios.post('http://localhost:8080/area/deleteArea', bodyBoutton);    
             if (response.status === 200) {
                 navigate('/home');

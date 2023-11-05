@@ -16,7 +16,9 @@ function Title() {
     )
 }
 
-
+/**
+ * interface for the input
+ */
 interface InputProps {
     setValue: (value: string) => void;
     placeHolder: string;
@@ -25,10 +27,20 @@ interface InputProps {
     margin: string;
 }
 
+
+/**
+ * This function display an input
+ * @param setValue
+ * @param placeHolder
+ * @param type
+ * @param color
+ * @param margin
+ * @returns Input
+ */
 export function InputText({ setValue, placeHolder, type, color, margin }: InputProps): JSX.Element {
 
     const inputStyle = {
-        width: '50%', // Adjust the width as needed
+        width: '50%',
     };
 
     return (
@@ -47,7 +59,6 @@ export function InputText({ setValue, placeHolder, type, color, margin }: InputP
 
 /**
  * This function display a page with the title and the taskbar
- * the function is to be completed
  */
 export const Profile = (): JSX.Element => {
 
@@ -109,6 +120,9 @@ export const Profile = (): JSX.Element => {
         }
     }, [jsonDataUser]);
 
+    /**
+     * this function fetch the json data from the api
+     */
     const fetchJsonDataOA2 = async () => {
         try {
             console.log('Fetching JSON data...');
@@ -135,6 +149,9 @@ export const Profile = (): JSX.Element => {
         fetchJsonDataOA2();
     }, []);
 
+    /**
+     * this function call the api to update the mail of a user
+     */
     const updateMail = async () => {
         try {
             console.log("email=" + email)
@@ -158,6 +175,9 @@ export const Profile = (): JSX.Element => {
         }
     };
 
+    /**
+     * this function call the api to update the username of a user
+     */
     const updateUsername = async () => {
         try {
 
@@ -186,6 +206,9 @@ export const Profile = (): JSX.Element => {
         }
     };
 
+    /**
+     * this function call the api to update the password of a user
+     */
     const updatePassword = async () => {
         try {
 
@@ -221,45 +244,60 @@ export const Profile = (): JSX.Element => {
     };
 
 
-    function DisplayOauthNames() {
-        const row = [];
+    /**
+     * this function display a box with the name of the oauth2 connection
+     */
+    //function DisplayOauthNames() {
+    //    const row = [];
+//
+    //    for (let i = 0; i < listOA2.length; i++) {
+    //        if (listOA2.includes(oauthNames[i])) {
+    //            console.log(oauthNames[i])
+    //            row.push(
+    //                <Box p={5}
+    //                    // onClick={}
+    //                    shadow='md'
+    //                    borderRadius={30}
+    //                    borderWidth='1px'
+    //                    boxSize={100}
+    //                    inlineSize={500}
+    //                    color={'#CCCCCC'}
+    //                    backgroundColor={"black"}>
+    //                    {oauthNames[i]}
+    //                </Box>
+    //            );
+    //        } else {
+    //            console.log(oauthNames[i])
+    //            row.push(
+    //                <Box p={5}
+    //                    // onClick=()
+    //                    shadow='md'
+    //                    borderRadius={30}
+    //                    borderWidth='1px'
+    //                    boxSize={100}
+    //                    inlineSize={500}
+    //                    color={'#CCCCCC'}
+    //                    backgroundColor={"black"}>
+    //                    Click to connect to {listOA2[i]}
+    //                </Box>
+    //            );
+    //        }
+    //    }
+    //    return (
+    //        <VStack marginLeft={"-350px"} marginTop={"5%"} spacing="0px">
+    //            <Heading marginLeft={"-160px"} size="lg" color="black" marginTop={30} >Your OAuth2 connections</Heading>
+    //            {row}
+    //        </VStack>
+    //    );
+    //}
 
-        console.log("tiens la liste de oA2 mon reuf")
-
-        for (let i = 0; i < listOA2.length; i++) {
-            if (listOA2.includes(oauthNames[i])) {
-                console.log(oauthNames[i])
-                row.push(
-                    <VStack>
-                        <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
-                            {oauthNames[i]}
-                        </Box>
-                    </VStack>
-                );
-            } else {
-                console.log(oauthNames[i])
-                row.push(
-                    <VStack>
-                        <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
-                            you are not connected to{listOA2[i]}
-                        </Box>
-                    </VStack>
-                );
-            }
-        }
-        return (
-
-            <HStack marginLeft={1} marginTop={0} spacing="0px">
-                {row}
-            </HStack>
-        );
-    }
-
-
+    /**
+     * this function display a set of inputs for the user to modify his credencials
+     */
     function Account() {
 
         const inputStyle = {
-            width: '50%', // Adjust the width as needed
+            width: '50%',
         };
 
         let placeHolderMail: string = ""
@@ -292,7 +330,6 @@ export const Profile = (): JSX.Element => {
                     <Heading size="lg" color="black" marginTop={30} >Account</Heading>
 
 
-
                     <HStack marginLeft={1} marginTop={0} spacing="0px">
                         <Text color="black" fontSize={{ base: '20px' }}
                             marginTop={30} marginLeft={0}>Change Your Email</Text>
@@ -305,7 +342,6 @@ export const Profile = (): JSX.Element => {
                         placeHolder={placeHolderMail} type="text" color="black" />
 
 
-
                     <HStack marginLeft={1} marginTop={0} spacing="0px">
                         <Text color="black" fontSize={{ base: '20px' }}
                             marginTop={30} marginLeft={0}>Change Your Username</Text>
@@ -316,7 +352,6 @@ export const Profile = (): JSX.Element => {
                     </HStack>
                     <InputText margin="2%" setValue={setUsernameTemp}
                         placeHolder={placeHolderUsername} type="text" color="black" />
-
 
 
                     <HStack marginLeft={1} marginTop={0} spacing="0px">
@@ -337,18 +372,10 @@ export const Profile = (): JSX.Element => {
             </div>
         );
     }
-    // function getInputValue1() {
-    //     console.log("mail")
-    //     console.log(mailRef.current?.value || '');
-    //     return mailRef.current?.value || '';
-    // }
-    // function getInputValue2() {
-    //     return areaName.current?.value || '';
-    // }
-    // function getInputValue3() {
-    //     return areaName.current?.value || '';
-    // }
 
+    /**
+     * this function display the page
+     */
     function Display() {
         return (
             <div>
@@ -358,7 +385,6 @@ export const Profile = (): JSX.Element => {
                     <Title></Title>
                 </VStack>
                 <Account />
-                <DisplayOauthNames />
             </div>
 
         );

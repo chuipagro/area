@@ -2,11 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../app/App.css';
 import { Text, VStack } from '@chakra-ui/react';
-import GithubLogo from "../images/githubLogo.png";
+import GithubLogo from "../images/GithubLogo.png";
 import SpotifyLogo from "../images/SpotifyLogo.png";
-import googleLogo from "../images/googleLogo.png";
+import GoogleLogo from "../images/GoogleLogo.png";
 import { Taskbar } from '../component/Taskbar';
 import axios from 'axios';
+import {
+  CLIENT_ID_GITHUB_LOGIN,
+  CLIENT_ID_GOOGLE_CREATE_AREA,
+  CLIENT_ID_SPOTIFY_CREATE_AREA
+} from './GlobalVariables';
 
 /**
  * This function display a title
@@ -24,6 +29,12 @@ function Title() {
  * the function is to be completed
  */
 export const LoginWithService = (): JSX.Element => {
+
+  const clientIdGitHubCreateArea: string = process.env.CLIENT_ID_GITHUB_CREATE_AREA || '';
+  const clientIdGitHubLogin: string = process.env.CLIENT_ID_GITHUB_LOGIN || '';
+  const clientIdGoogleCreateArea: string = process.env.CLIENT_ID_GOOGLE_CREATE_AREA || '';
+  const clientIdSpotifyCreateArea: string = process.env.CLIENT_ID_SPOTIFY_CREATE_AREA || '';
+
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
 
@@ -101,9 +112,9 @@ export const LoginWithService = (): JSX.Element => {
     "https://www.googleapis.com/auth/presentations.readonly",
   ];
 
-  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${github_id}&scope=${encodeURIComponent(githubScope.join(' '))}`;
-  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${spotify_id}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
-  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${google_id}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
+  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID_GITHUB_LOGIN}&scope=${encodeURIComponent(githubScope.join(' '))}`;
+  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID_SPOTIFY_CREATE_AREA}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
+  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${CLIENT_ID_GOOGLE_CREATE_AREA}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
 
   const navigate = useNavigate();
 

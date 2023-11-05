@@ -93,7 +93,6 @@ export const Dashboard = (): JSX.Element => {
             const response = await axios.get('http://localhost:8080/services/getAllServices');
             if (response.status === 200) {
                 setAllServices(response.data.services)
-                console.log(response.data.services);
                 if (token != null) {
                     const body = {
                         "token": token,
@@ -304,7 +303,7 @@ export const Dashboard = (): JSX.Element => {
                                     width={'34%'}
                                     height="300px"
                                     color="#CCCCCC"
-                                    backgroundColor={`rgb(${AllServices[SearchAreas[index].action.type - 1].color.red}, ${AllServices[SearchAreas[index].action.type - 1].color.green}, ${AllServices[SearchAreas[index].action.type - 1].color.blue})`}
+                                    backgroundColor={`rgb(${AllServices[SearchAreas[index].action.service - 1].color.red}, ${AllServices[SearchAreas[index].action.service - 1].color.green}, ${AllServices[SearchAreas[index].action.service - 1].color.blue})`}
                                     margin={5}
                                     borderRadius="xl"
                                     boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
@@ -319,7 +318,7 @@ export const Dashboard = (): JSX.Element => {
                                         </button>
                                     </Box>
                                     <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                                        <img src={AllServices[SearchAreas[index].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                        <img src={AllServices[SearchAreas[index].action.service - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
                                         <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].action.service - 1].actions[SearchAreas[index].action.type - 1].description}</Text>
                                         <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].reaction.service - 1].reactions[SearchAreas[index].reaction.type - 1].description}</Text>
                                     </Box>
@@ -338,7 +337,7 @@ export const Dashboard = (): JSX.Element => {
                                     width={'34%'}
                                     height="300px"
                                     color="#CCCCCC"
-                                    backgroundColor={`rgb(${AllServices[SearchAreas[index + 1].action.type - 1].color.red}, ${AllServices[SearchAreas[index + 1].action.type - 1].color.green}, ${AllServices[SearchAreas[index + 1].action.type - 1].color.blue})`}
+                                    backgroundColor={`rgb(${AllServices[SearchAreas[index + 1].action.service - 1].color.red}, ${AllServices[SearchAreas[index + 1].action.service - 1].color.green}, ${AllServices[SearchAreas[index + 1].action.service - 1].color.blue})`}
                                     margin={5}
                                     borderRadius="xl"
                                     boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
@@ -353,7 +352,7 @@ export const Dashboard = (): JSX.Element => {
                                         </button>
                                     </Box>
                                     <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                                        <img src={AllServices[SearchAreas[index + 1].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                        <img src={AllServices[SearchAreas[index + 1].action.service - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
                                         <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index + 1].action.service - 1].actions[SearchAreas[index + 1].action.type - 1].description}</Text>
                                         <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index + 1].reaction.service - 1].reactions[SearchAreas[index + 1].reaction.type - 1].description}</Text>
                                     </Box>
@@ -374,7 +373,7 @@ export const Dashboard = (): JSX.Element => {
                                 width={'70%'}
                                 height="300px"
                                 color="#CCCCCC"
-                                backgroundColor={`rgb(${AllServices[SearchAreas[index].action.type - 1].color.red}, ${AllServices[SearchAreas[index].action.type - 1].color.green}, ${AllServices[SearchAreas[index].action.type - 1].color.blue})`}
+                                backgroundColor={`rgb(${AllServices[SearchAreas[index].action.service - 1].color.red}, ${AllServices[SearchAreas[index].action.service - 1].color.green}, ${AllServices[SearchAreas[index].action.service - 1].color.blue})`}
                                 margin={5}
                                 borderRadius="xl"
                                 boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
@@ -389,7 +388,7 @@ export const Dashboard = (): JSX.Element => {
                                     </button>
                                 </Box>
                                 <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                                    <img src={AllServices[SearchAreas[index].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                    <img src={AllServices[SearchAreas[index].action.service - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
                                     <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].action.service - 1].actions[SearchAreas[index].action.type - 1].description}</Text>
                                     <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].reaction.service - 1].reactions[SearchAreas[index].reaction.type - 1].description}</Text>
                                 </Box>

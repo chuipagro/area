@@ -259,7 +259,7 @@ export class AreaController {
     status: 200,
   })
 
-  @Delete('deleteArea')
+  @Post('deleteArea')
   async deleteArea(
       @Res() res: Response,
       @Body('title') title: string,

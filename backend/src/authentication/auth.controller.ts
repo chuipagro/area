@@ -8,15 +8,11 @@ import { UserModel } from '../models/users.model';
 
 @Controller('auth')
 export class AuthController {
-  private client_id_github_login: string | undefined;
-  private client_secret_github_login: string | undefined;
-  private client_id_github_area: string | undefined;
-  private client_secret_github_area: string | undefined;
+  private client_id_github_login = this.configService.get<string>('CLIENT_ID_GITHUB_LOGIN');
+  private client_secret_github_login = this.configService.get<string>('CLIENT_SECRET_GITHUB_LOGIN');
+  private client_id_github_area = this.configService.get<string>('CLIENT_ID_GITHUB_AREA');
+  private client_secret_github_area = this.configService.get<string>('CLIENT_SECRET_GITHUB_AREA');
   constructor(private readonly authService: AuthService, private configService: ConfigService) {
-    const client_id_github_login = this.configService.get<string>('CLIENT_ID_GITHUB_LOGIN');
-    const client_secret_github_login = this.configService.get<string>('CLIENT_SECRET_GITHUB_LOGIN');
-    const client_id_github_area = this.configService.get<string>('CLIENT_ID_GITHUB_AREA');
-    const client_secret_github_area = this.configService.get<string>('CLIENT_SECRET_GITHUB_AREA');
   }
 
   @ApiBody({
@@ -397,6 +393,7 @@ export class AuthController {
       const userUsername = await userResponse.json();
       const username = userUsername['login'];
 
+      console.log(userResponse.status)
       if (userResponse.status === 200) {
         const emailResponse = await fetch(githubEmailsUrl, {
           method: 'GET',
@@ -407,6 +404,7 @@ export class AuthController {
 
         const userEmails = await emailResponse.json();
         const mail = userEmails[0].email;
+        console.log(mail)
         return res.status(200).json({ token: await this.authService.signOAuth(mail, username, oauth, token, tokenUser) });
       } else {
         return res.status(userResponse.status).json({ error: 'Failed to fetch user data' });
@@ -462,9 +460,11 @@ export class AuthController {
         const textData = await response.text();
         const params = new URLSearchParams(textData);
 
+        console.log(params.get('access_token'))
         const accessToken = params.get('access_token');
         const token = String(accessToken);
         const oauth = "github";
+        console.log(token)
         const result = await this.OAuth2Area(res, token, oauth, tokenUser);
         return result;
       } else {
