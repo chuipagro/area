@@ -7,14 +7,6 @@ import SpotifyLogo from "../images/SpotifyLogo.png";
 import googleLogo from "../images/googleLogo.png";
 import { Taskbar } from '../component/Taskbar';
 import axios from 'axios';
-import * as dotenv from 'dotenv';
-import * as path from 'path-browserify';
-
-dotenv.config();
-
-const github_id: string = process.env.CLIENT_ID_GITHUB_LOGIN as string;
-const google_id: string = process.env.CLIENT_ID_GOOGLE_CREATE_AREA  as string;
-const spotify_id: string = process.env.CLIENT_ID_SPOTIFY_CREATE_AREA as string;
 
 /**
  * This function display a title
