@@ -11,6 +11,8 @@ import { UserModel } from '../models/users.model';
 import { SpotifyService } from '../services/spotify/spotify.service';
 import { DiscordBotService } from '../services/discord/discord-bot.service';
 import { GoogleService } from '../services/google/google.service';
+import { MicrosoftService } from '../services/microsoft/microsoft.service';
+import { ClockService } from '../services/clock/clock.service';
 
 @Injectable()
 export class AreaService {
@@ -194,13 +196,46 @@ export class AreaService {
     }
   }
   
+  async launchSpotifyAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const spotifyService = new SpotifyService(configService);
+    let actionData;
+    if (area.data.spotify == null)
+      return null;
+    
+    try {
+      switch (area.action.type) {
+        case 1:
+          if(area.data.spotify.trackId != null)
+            actionData = await spotifyService.getAudioFeaturesTrack(area.data.spotify.trackId);
+          break;
+        case 2:
+          if(area.data.spotify.country != null && area.data.spotify.limit != null && area.data.spotify.offset != null)
+            actionData = await spotifyService.getNewReleases(area.data.spotify.country, area.data.spotify.limit, area.data.spotify.offset);
+          break;
+      }
+    } catch (error) {
+      console.log("connection error");
+      return null;
+    }
+    return actionData;
+  }
+  
   async launchSpotifyReaction(area: IArea, actionData : any) : Promise<any>
   {
     const configService = new ConfigService();
     const spotifyService = new SpotifyService(configService);
+    if (area.data.spotify == null)
+      return null;
     
-    
-    return null;
+    try {
+      if (area.data.spotify.username != null && area.data.spotify.name != null && area.data.spotify.description != null && area.data.spotify.playlistPublic != null)
+        await spotifyService.createPlaylist(area.data.spotify.username, area.data.spotify.name, area.data.spotify.description, area.data.spotify.playlistPublic);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
   
   async launchDiscordReaction(area: IArea, actionData : any) : Promise<any>
@@ -208,7 +243,37 @@ export class AreaService {
     const configService = new ConfigService();
     const discordBotService = new DiscordBotService(configService);
     
+    if (area.data.discord == null)
+      return null;
     
+    try {
+      if (area.data.discord.channel_id != null && area.data.discord.message != null)
+        await discordBotService.postSendMessage(area.data.discord.channel_id, area.data.discord.message);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+    return null;
+  }
+  
+  async launchMicrosoftReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const microsoftService = new MicrosoftService(configService);
+    
+    if (area.data.microsoft == null)
+      return null;
+    
+    if (area.data.microsoft.text == null)
+      area.data.microsoft.text = actionData.toString();
+    
+    try {
+      if (area.data.microsoft.to != null && area.data.microsoft.from != null && area.data.microsoft.subject != null && area.data.microsoft.text != null)
+        await microsoftService.sendMail(area.data.microsoft.to, area.data.microsoft.from, area.data.microsoft.subject, area.data.microsoft.text);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
     return null;
   }
   
@@ -329,14 +394,51 @@ export class AreaService {
     return actionData;
   }
   
+  async launchClockAction(area: IArea) : Promise<any>
+  {
+    const clockService = new ClockService();
+    
+    if (area.data.clock == null)
+      return null;
+    
+    try {
+      switch (area.action.type) {
+        case 1:
+          if (area.data.clock.time != null)
+            await clockService.launchReactionEveryDayAtGivenTime(area.data.clock.time);
+            break;
+        case 2:
+          if (area.data.clock.time != null)
+            await clockService.launchReactionEveryX(area.data.clock.time);
+            break;
+        case 3:
+          if (area.data.clock.date != null)
+            await clockService.launchReactionAtPreciseDate(area.data.clock.date);
+            break;
+      }
+    } catch (error) {
+      console.log("connection error");
+      return null;
+    }
+    return "it's time";
+  }
+  
   async launchArea(area: IArea) {
     let actionData = null;
+    
+    console.log(area.data);
     switch (area.action.service) {
       case 1:
         actionData = await this.launchRiotAction(area)
         break;
+      case 2:
+        actionData = await this.launchSpotifyAction(area)
+        break;
       case 6:
         actionData = await this.launchGoogleAction(area)
+        break;
+      case 7:
+        actionData = await this.launchClockAction(area)
         break;
       default:
         console.log("service not found");
@@ -349,6 +451,9 @@ export class AreaService {
     switch (area.reaction.service) {
       case 2:
         await this.launchSpotifyReaction(area, actionData)
+        break;
+      case 3:
+        await this.launchMicrosoftReaction(area, actionData)
         break;
       case 4:
         await this.launchGithubReaction(area, actionData)
@@ -408,7 +513,6 @@ export class AreaService {
 
   async getUserAreas(userToken: string): Promise<any> {
     const areas = await AreaModel.find({ createdBy: userToken }).exec();
-    console.log(areas);
     return areas;
   }
 
