@@ -31,6 +31,9 @@ const theme = createTheme({
     },
 });
 
+/**
+ * this function display a button to activate or desactivate an area
+ */
 const BoutonActive = ({ isActive, onToggle }: { isActive: boolean; onToggle: () => void }): JSX.Element => {
     return (
         <ThemeProvider theme={theme}>
@@ -39,6 +42,10 @@ const BoutonActive = ({ isActive, onToggle }: { isActive: boolean; onToggle: () 
     );
 };
 
+
+/**
+ * this function display the dashboard
+ */
 export const Dashboard = (): JSX.Element => {
 
     type Area = {
@@ -88,6 +95,9 @@ export const Dashboard = (): JSX.Element => {
     const [SearchAreas, setSearchAreas] = React.useState<Area[]>([]);
     const [AllServices, setAllServices] = React.useState<Service[]>([]);
 
+    /**
+     * this function fetch all the areas of the user
+     */
     const fetchJsonData = async () => {
         try {
             const response = await axios.get('http://localhost:8080/services/getAllServices');
@@ -118,6 +128,10 @@ export const Dashboard = (): JSX.Element => {
         fetchJsonData();
     }, []);
 
+    /**
+     * this function search an area
+     * @param searchTerm
+     */
     const handleSearch = (searchTerm: string) => {
         const normalizedSearch = searchTerm.toLowerCase();
         const filteredAreas = Areas.filter((item: Area) =>
@@ -130,6 +144,10 @@ export const Dashboard = (): JSX.Element => {
 
     const navigate = useNavigate();
 
+    /**
+     * this function update an area
+     * @param index
+     */
     const handleToggle = async (index: number) => {
         const updatedAreas = [...SearchAreas];
         updatedAreas[index].active = !updatedAreas[index].active;
@@ -168,6 +186,9 @@ export const Dashboard = (): JSX.Element => {
         }
     };
 
+    /**
+     * this function calculate the number of blocks in a row
+     */
     const calculateBlocksInRow = () => {
         if (searchRef.current) {
             const searchLength = searchRef.current.offsetWidth;
@@ -209,6 +230,12 @@ export const Dashboard = (): JSX.Element => {
         return [];
     };
 
+    /**
+     * this function navigate to the setting page
+     * @param area
+     * @param action
+     * @param reaction
+     */
     const handleSettingButtonClick = (area: Area, action: Service, reaction: Service) => {
         navigate('/settingAreas', { state: { area, action, reaction } });
     };

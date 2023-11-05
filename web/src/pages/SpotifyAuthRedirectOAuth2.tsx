@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 
+/**
+ * This page is used to redirect the user after a successful login with Spotify.
+ */
 export const SpotifyAuthRedirectOAuth2 = (): JSX.Element => {
   const handleSpotifyLogin = () => {
     const currentUrl = window.location.href;

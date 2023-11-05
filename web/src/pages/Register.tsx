@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Center, Text, VStack, Link, Button, Divider } from '@chakra-ui/react';
+import { Center, Text, VStack, Link, Button, Divider, Input } from '@chakra-ui/react';
 import { InputText } from '../component/TexInput';
 import { Taskbar } from '../component/Taskbar';
 import { useNavigate } from "react-router-dom"
@@ -16,6 +16,10 @@ export const Register = (): JSX.Element => {
     const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('')
     const [isError, setIsError] = React.useState(false)
+
+    const inputStyle = {
+        width: '50%',
+    };
 
     /**
      * this function call the api to register
@@ -66,6 +70,7 @@ export const Register = (): JSX.Element => {
      * @returns
      */
     function Display({ name, mail, password }: { name: string, mail: string, password: string; }): JSX.Element {
+
         let rows = [];
         if (!isError) {
             rows.push(
@@ -103,16 +108,41 @@ export const Register = (): JSX.Element => {
         <Taskbar></Taskbar>
         <VStack spacing="5px">
             <Text color="black" fontSize={{ base: '20px', md: '30px', lg: '60px' }}>Register</Text>
+            <Text marginTop={"2%"}></Text>
+            <Input
+                pr='4.5rem'
+                type={"text"}
+                color={"black"}
+                placeholder={"name"}
+                onChange={e => setName(e.target.value)}
+                style={inputStyle}
+            />
+            <Center height='50px'>
+                <Divider orientation='vertical' />
+            </Center>
 
-            <InputText setValue={setName} placeHolder="name" type="text" color={'purple'} />
+            <Input
+                pr='4.5rem'
+                type={"text"}
+                color={"black"}
+                placeholder={"Email"}
+                onChange={e => setMail(e.target.value)}
+                style={inputStyle}
+            />
+
             <Center height='50px'>
                 <Divider orientation='vertical' />
             </Center>
-            <InputText setValue={setMail} placeHolder="email" type="email" color={'purple'} />
-            <Center height='50px'>
-                <Divider orientation='vertical' />
-            </Center>
-            <InputText setValue={setPassword} placeHolder="password" type="password" color={'purple'} />
+
+            <Input
+                pr='4.5rem'
+                type={"text"}
+                color={"black"}
+                placeholder={"Password"}
+                onChange={e => setPassword(e.target.value)}
+                style={inputStyle}
+            />
+
             <Display name={name} mail={mail} password={password} ></Display>
 
             <Button colorScheme='black' variant='outline' >
