@@ -20,7 +20,7 @@ class GetStartedPage extends StatefulWidget {
 }
 
 class _GetStartedPageState extends State<GetStartedPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future<void> _authenticateWithGitHub() async {
     final authUrl = 'https://github.com/login/oauth/authorize?'
@@ -58,8 +58,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
         },
       );
       if (res.statusCode == 200) {
-        final Map<String, dynamic> jsonResponse = json.decode(res.body);
-        globals.Token = jsonResponse['token'];
        Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const HomePage()),

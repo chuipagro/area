@@ -50,16 +50,15 @@ class allNeeds {
 }
 
 class profil {
-  final String name;
-  final String email;
-  final String password;
+  String name;
+  String email;
+  String password;
 
   profil({
     required this.name,
     required this.email,
     required this.password,
   });
-
 }
 
 class actionServices {
