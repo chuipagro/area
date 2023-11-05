@@ -17,6 +17,9 @@ import { SpotifyAuthRedirect } from "../pages/SpotifyAuthRedirect";
 import { GithubAuthRedirectOAuth2 } from "../pages/GithubAuthRedirectOAuth2"
 import { GoogleAuthRedirectOAuth2 } from "../pages/GoogleAuthRedirectOAuth2";
 import { SpotifyAuthRedirectOAuth2 } from "../pages/SpotifyAuthRedirectOAuth2";
+import { SpotifyAuthRedirectProfile } from "../pages/SpotifyAuthRedirectionProfil";
+import { GithubAuthRedirectProfile } from "../pages/GithubAuthRedirectionProfile";
+import { GoogleAuthRedirectProfile } from "../pages/GoogleAuthRedirectionProfil";
 import { SettingAreasPage } from "../pages/SettingAreasPage";
 
 /**
@@ -41,6 +44,9 @@ const App = (): JSX.Element => (
       <Route path="/oauthgithubcreate" element={<GithubAuthRedirectOAuth2 />} />
       <Route path="/oauthgooglecreate" element={<GoogleAuthRedirectOAuth2 />} />
       <Route path="/oauthspotifycreate" element={<SpotifyAuthRedirectOAuth2 />} />
+      <Route path="/oauthgithubprofile" element={<GithubAuthRedirectProfile />} />
+      <Route path="/oauthgoogleprofile" element={<GoogleAuthRedirectProfile />} />
+      <Route path="/oauthspotifyprofile" element={<SpotifyAuthRedirectProfile />} />
       <Route path="/settingAreas" element={<SettingAreasPage />} />
       <Route
         path="/create"

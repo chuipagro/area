@@ -6,6 +6,11 @@ import axios from 'axios';
 import ArrowArea from '../app/ArrowArea.png'
 import leftArrow from '../app/leftArrow.png'
 import { Taskbar } from '../component/VerticalTaskbar';
+import {
+    CLIENT_ID_GITHUB_CREATE_AREA,
+    CLIENT_ID_GOOGLE_CREATE_AREA,
+    CLIENT_ID_SPOTIFY_CREATE_AREA
+  } from './GlobalVariables';
 
 /**
  * interface for the props of the create area page
@@ -22,8 +27,6 @@ interface CreateAreaProps {
     PActionsNeeds: { key: string; data: any }[];
     PReactionsNeeds: { key: string; data: any }[];
 }
-
-// dotenv.config();
 
 /**
  * This page display the create area page with the services and the actions/reactions
@@ -246,9 +249,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             console.error('Error fetching JSON data:', error);
         }
     };
-    const clientIdGithub = '09cafad7406607dc0632';
-    const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
-    const clientIdSpotify = 'a549fb0ad4554f449fa69ce2322dbfc8';
 
     const RedirectGoodle = 'http://localhost:8081/oauthgooglecreate';
     const RedirectSpotify = 'http://localhost:8081/oauthspotifycreate';
@@ -329,9 +329,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         'https://www.googleapis.com/auth/androidpublisher',
     ];
 
-    const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}&scope=${encodeURIComponent(githubScope.join(' '))}`;
-    const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
-    const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
+    const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID_GITHUB_CREATE_AREA}&scope=${encodeURIComponent(githubScope.join(' '))}`;
+    const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(CLIENT_ID_SPOTIFY_CREATE_AREA)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
+    const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(CLIENT_ID_GOOGLE_CREATE_AREA)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
 
     const [isListenerSet, setIsListenerSet] = useState(false);
     const isBackendCalled = useRef(false);
@@ -340,17 +340,21 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const [keyS, setKeyS] = useState(0);
 
     useEffect(() => {
+        console.log("YYYYYYYY");
         const handleMessageEvent = (event: MessageEvent) => {
             if (isBackendCalled.current) {
                 return;
             }
 
+            console.log("DCFVGBHJJNK");
             if (event.origin === 'http://localhost:8081') {
                 const receivedData = event.data;
                 if (receivedData && receivedData.codeS) {
                     const codeTmp = receivedData.codeS;
                     const code = String(codeTmp);
 
+                    console.log(code);
+                    console.log(token);
                     if (!isBackendCalled.current) {
                         axios.post('http://localhost:8080/auth/postTokenArea', { code: code, tokenUser: token })
                             .then(response => {
@@ -460,14 +464,14 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     }, [keyS]);
 
     const authenticateWithGithub = async () => {
-        const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
-
-        const interval = setInterval(() => {
-            if (popup?.closed) {
-                clearInterval(interval);
-                setKey(prevKey => prevKey + 1);
-            }
-        }, 1000);
+      const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
+  
+      const interval = setInterval(() => {
+        if (popup?.closed) {
+          clearInterval(interval);
+          setKey(prevKey => prevKey + 1);
+        }
+      }, 1000);
     };
 
     const authenticateWithGoogle = () => {
@@ -558,8 +562,8 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             const response = await axios.post('http://localhost:8080/area/createArea', body
             );
 
+            console.log(response.status)
             if (response.status === 200) {
-                console.log(response.data)
                 alert("AREA created successfully");
                 navigate('/home');
             } else {
