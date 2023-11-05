@@ -230,28 +230,45 @@ export const Profile = (): JSX.Element => {
             if (listOA2.includes(oauthNames[i])) {
                 console.log(oauthNames[i])
                 row.push(
-                    <VStack>
-                        <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
-                            {oauthNames[i]}
-                        </Box>
-                    </VStack>
+                    // <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
+                    //     {oauthNames[i]}
+                    // </Box>
+                    <Box p={5}
+                        shadow='md'
+                        borderRadius={30}
+                        borderWidth='1px'
+                        boxSize={100}
+                        inlineSize={500}
+                        color={'#CCCCCC'}
+                        backgroundColor={"black"}>
+                        {oauthNames[i]}
+                    </Box>
                 );
             } else {
                 console.log(oauthNames[i])
                 row.push(
-                    <VStack>
-                        <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
-                            you are not connected to{listOA2[i]}
-                        </Box>
-                    </VStack>
+                    // <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
+                    //     you are not connected to{listOA2[i]}
+                    // </Box>
+                    <Box p={5}
+                        shadow='md'
+                        borderRadius={30}
+                        borderWidth='1px'
+                        boxSize={100}
+                        inlineSize={500}
+                        color={'#CCCCCC'}
+                        backgroundColor={"black"}>
+                        you are not connected to {listOA2[i]}
+                    </Box>
                 );
             }
         }
         return (
 
-            <HStack marginLeft={1} marginTop={0} spacing="0px">
+            <VStack marginLeft={"-350px"} marginTop={"5%"} spacing="0px">
+                <Heading marginLeft={"-160px"} size="lg" color="black" marginTop={30} >Your OAuth2 connections</Heading>
                 {row}
-            </HStack>
+            </VStack>
         );
     }
 
