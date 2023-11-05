@@ -236,7 +236,6 @@ export const LoginWithService = (): JSX.Element => {
   }, [keyS]);
 
   const authenticateWithGithub = async () => {
-    console.log(process.env.REACT_APP_CLIENT_ID_GITHUB_CREATE_AREA);
     const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
 
     const interval = setInterval(() => {

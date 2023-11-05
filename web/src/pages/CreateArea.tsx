@@ -39,8 +39,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         PReactionsNeeds,
     } = props;
 
-    console.log(process.env.REACT_APP_CLIENT_ID_GITHUB_CREATE_AREA)
-
     const navigate = useNavigate()
 
     const areaName = React.useRef<HTMLInputElement | null>(null);
@@ -239,7 +237,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     };
 
 
-    console.log(process.env.REACT_APP_CLIENT_ID_GITHUB_CREATE_AREA);
     const clientIdGithub = process.env.REACT_APP_CLIENT_ID_GITHUB_CREATE_AREA as string;
     const clientIdGoogle = process.env.REACT_APP_CLIENT_ID_GOOGLE_CREATE_AREA as string;
     const clientIdSpotify = process.env.REACT_APP_CLIENT_ID_SPOTIFY_CREATE_AREA as string;
