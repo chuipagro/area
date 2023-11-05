@@ -81,6 +81,21 @@ export interface IData {
     channel_id: string | null;
     message: string | null;
   } | null;
+  steam: {
+    steamID: string | null;
+    gameID: string | null;
+  } | null;
+  
+  weather: {
+    city: string | null;
+  } | null;
+  
+  nasa: {
+  } | null;
+  
+  minecraft: {
+    serverIP: string | null;
+  } | null;
 }
 
 export interface IArea {
@@ -180,6 +195,19 @@ export const AreaSchema = new Schema<IArea>({
     discord: {
       channel_id: { type: String},
       message: { type: String},
+    },
+    steam: {
+      steamID: { type: String},
+      gameID: { type: String},
+    },
+    weather: {
+      city: { type: String},
+    },
+    
+    nasa: {},
+    
+    minecraft: {
+      serverIP: { type: String},
     },
   },
   timeAtCreation: { type: String, required: true},
