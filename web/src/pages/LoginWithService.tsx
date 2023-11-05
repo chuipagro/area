@@ -2,11 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../app/App.css';
 import { Text, VStack } from '@chakra-ui/react';
-import GithubLogo from "../images/GithubLogo.png";
+import GithubLogo from "../images/githubLogo.png";
 import SpotifyLogo from "../images/SpotifyLogo.png";
-import GoogleLogo from "../images/GoogleLogo.png";
+import googleLogo from "../images/googleLogo.png";
 import { Taskbar } from '../component/Taskbar';
 import axios from 'axios';
+import * as dotenv from 'dotenv';
+import * as path from 'path-browserify';
+
+dotenv.config();
+
+const github_id: string = process.env.CLIENT_ID_GITHUB_LOGIN as string;
+const google_id: string = process.env.CLIENT_ID_GOOGLE_CREATE_AREA  as string;
+const spotify_id: string = process.env.CLIENT_ID_SPOTIFY_CREATE_AREA as string;
 
 /**
  * This function display a title
@@ -24,10 +32,6 @@ function Title() {
  * the function is to be completed
  */
 export const LoginWithService = (): JSX.Element => {
-  const clientIdGithub = '46d5db5635abf205e5fb';
-  const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
-  const clientIdSpotify = 'a549fb0ad4554f449fa69ce2322dbfc8';
-
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
   
@@ -138,9 +142,9 @@ export const LoginWithService = (): JSX.Element => {
     "https://www.googleapis.com/auth/drive.activity.readonly",
   ];
 
-  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}&scope=${encodeURIComponent(githubScope.join(' '))}`;
-  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
-  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
+  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${github_id}&scope=${encodeURIComponent(githubScope.join(' '))}`;
+  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${spotify_id}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
+  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${google_id}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
 
   const navigate = useNavigate();
 
@@ -322,7 +326,7 @@ export const LoginWithService = (): JSX.Element => {
         marginTop: '2%',
       }}>
         <button onClick={authenticateWithGoogle} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
-          <img src={GoogleLogo} alt="Google Logo" style={{ width: 35, height: 35 }} />
+          <img src={googleLogo} alt="Google Logo" style={{ width: 35, height: 35 }} />
           <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Google</span>
         </button>
       </div>

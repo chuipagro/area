@@ -4,6 +4,7 @@ import { Input, Text, HStack, VStack, Button, Box, Heading, Grid, Stack } from '
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import ArrowArea from '../app/ArrowArea.png'
+import * as dotenv from 'dotenv';
 import { Taskbar } from '../component/VerticalTaskbar';
 
 /**
@@ -21,6 +22,8 @@ interface CreateAreaProps {
     PActionsNeeds: { key: string; data: any }[];
     PReactionsNeeds: { key: string; data: any }[];
 }
+
+dotenv.config();
 
 /**
  * This page display the create area page with the services and the actions/reactions
@@ -235,11 +238,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             console.error('Error fetching JSON data:', error);
         }
     };
-
-
-    const clientIdGithub = '09cafad7406607dc0632';
-    const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
-    const clientIdSpotify = 'a549fb0ad4554f449fa69ce2322dbfc8';
   
     const RedirectGoodle = 'http://localhost:8081/oauthgooglecreate';
     const RedirectSpotify = 'http://localhost:8081/oauthspotifycreate';
@@ -320,9 +318,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
       'https://www.googleapis.com/auth/androidpublisher',
     ];
   
-    const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}&scope=${encodeURIComponent(githubScope.join(' '))}`;
-    const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
-    const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
+    const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID_GITHUB_CREATE_AREA}&scope=${encodeURIComponent(githubScope.join(' '))}`;
+    const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${process.env.CLIENT_ID_SPOTIFY_CREATE_AREA}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
+    const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${process.env.CLIENT_ID_GOOGLE_CREATE_AREA}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
   
     const [isListenerSet, setIsListenerSet] = useState(false);
     const isBackendCalled = useRef(false);
@@ -451,7 +449,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     }, [keyS]);
   
     const authenticateWithGithub = async () => {
-        console.log("VASYYYYYYY")
       const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
   
       const interval = setInterval(() => {
