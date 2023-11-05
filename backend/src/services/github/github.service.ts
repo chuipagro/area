@@ -77,9 +77,9 @@ export class GithubService {
   
   async createRepo(name: string, description: string, homepage: string, privateRepo: boolean): Promise<void> {
     const url = `https://api.github.com/user/repos`;
+    console.log(this.accessToken);
     
     const body = {
-      org: "pablo0675",
       name: name,
       description: description,
       homepage: homepage,

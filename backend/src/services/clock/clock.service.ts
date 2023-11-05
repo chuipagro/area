@@ -5,13 +5,13 @@ import { CronGestion} from '../../utils/cronGestion';
 @Injectable()
 export class ClockService {
 		private cronGestion = new CronGestion;
-		async launchReactionEveryDayAtGivenTime(time:string): Promise<void>	{
+		async launchReactionEveryDayAtGivenTime(time:string): Promise<string>	{
 				return new Promise((resolve, reject) => {
 						const timezone = 'Europe/Paris';
 						const callAtGivenTime = () => {
 								const cronExpression = this.cronGestion.timeToCronExpression(time);
 								const job = cron.schedule(cronExpression, async () => {
-										resolve();
+										resolve("success");
 								}, {
 										scheduled: true,
 										timezone,

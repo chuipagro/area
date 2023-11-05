@@ -14,9 +14,7 @@ export interface IData {
     playlistDescription: string | null;
     playlistPublic: boolean | null;
     playlistCollaborative: boolean | null;
-    playlistTracks: string[] | null;
     playlistTracksPosition: number | null;
-    playlistTracksUris: string[] | null;
     playlistTracksUrisPosition: number | null;
     country: string | null;
     limit: number | null;
@@ -37,7 +35,7 @@ export interface IData {
   github: {
     repoName: string | null;
     repoDescription: string | null;
-    privateRepo: boolean | null;
+    private: boolean | null;
     gistId: string | null;
     description: string | null;
     newDescription: string | null;
@@ -132,11 +130,56 @@ export const AreaSchema = new Schema<IArea>({
       playlistTracksUris: { type: Array},
       playlistTracksUrisPosition: { type: Number},
     },
-    mail: {
+    microsoft: {
       to: { type: String},
       from: { type: String},
       subject: { type: String},
       text: { type: String},
+    },
+    github: {
+      repoName: { type: String},
+      repoDescription: { type: String},
+      private: { type: Boolean},
+      gistId: { type: String},
+      description: { type: String},
+      newDescription: { type: String},
+      branchName: { type: String},
+      sha: { type: String},
+      pullNumber: { type: Number},
+      title: { type: String},
+      body: { type: String},
+      head: { type: String},
+      base: { type: String},
+      issueNumber: { type: Number},
+      newBody: { type: String},
+      newTitle: { type: String},
+      newStatus: { type: String},
+      newName: { type: String},
+      homepage: { type: String},
+      newContent: { type: String},
+      fileName: { type: String},
+      name: { type: String},
+      billingEmail: { type: String},
+    },
+    cron: {
+      time: { type: String},
+    },
+    google: {
+      message: { type: String},
+      name: { type: String},
+      description: { type: String},
+      id: { type: String},
+      question: { type: String},
+      type: { type: String},
+      content: { type: String},
+    },
+    clock: {
+      time: { type: String},
+      date: { type: String},
+    },
+    discord: {
+      channel_id: { type: String},
+      message: { type: String},
     },
   },
   timeAtCreation: { type: String, required: true},
