@@ -17,6 +17,19 @@ export class NasaService {
     }
   }
 
+  async getAstronomyPictureOfTheDay(): Promise<any> {
+    const url = `https://api.nasa.gov/planetary/apod?api_key=${this.apiKEY}`;
+
+    return await axios.request({
+      method: 'GET',
+      url: url,
+      responseType: 'arraybuffer',
+    }).then((response: any) => {
+      console.log(Buffer.from(response.data, 'binary').toString('base64'));
+      return Buffer.from(response.data, 'binary').toString('base64');
+    });
+  }
+
   async getMarsWeather(): Promise<any> {
     const url = `https://api.nasa.gov/insight_weather/?api_key=${this.apiKEY}&feedtype=json&ver=1.0`;
 
@@ -31,7 +44,7 @@ export class NasaService {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
-      const checkForNewGamePlay = () => {
+      const checkForNextWeatherInfoMars = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
         const cronTimer = cronGestion.timerToCron("H1", timeAtCreation, dateAtCreation);
@@ -52,7 +65,34 @@ export class NasaService {
         });
         job.start();
       }
-      checkForNewGamePlay();
+      checkForNextWeatherInfoMars();
+    });
+  }
+
+  async waitForNewAstronomyPictureOfTheDay() : Promise<Object | null> {
+    const image = await this.getMarsWeather();
+    return new Promise<Object | null>(async (resolve, reject) => {
+      const cronGestion = new CronGestion();
+      const timezone = "Europe/Paris";
+
+      const checkForNewAstronomyPictureOfTheDay = () => {
+        const dateAtCreation = new Date().toLocaleDateString();
+        const timeAtCreation = new Date().toLocaleTimeString();
+        const cronTimer = cronGestion.timerToCron("D1", timeAtCreation, dateAtCreation);
+
+        const job = cron.schedule(cronTimer, async () => {
+          const newImage = await this.getMarsWeather();
+          if (image != newImage) {
+            resolve(newImage);
+          }
+          return null;
+        }, {
+          scheduled: true,
+          timezone,
+        });
+        job.start();
+      }
+      checkForNewAstronomyPictureOfTheDay();
     });
   }
 
