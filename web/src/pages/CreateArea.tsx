@@ -23,6 +23,8 @@ interface CreateAreaProps {
     PReactionsNeeds: { key: string; data: any }[];
 }
 
+dotenv.config();
+
 /**
  * This page display the create area page with the services and the actions/reactions
  */
@@ -244,8 +246,6 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             console.error('Error fetching JSON data:', error);
         }
     };
-
-
     const clientIdGithub = '09cafad7406607dc0632';
     const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
     const clientIdSpotify = 'a549fb0ad4554f449fa69ce2322dbfc8';
@@ -460,15 +460,14 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     }, [keyS]);
 
     const authenticateWithGithub = async () => {
-        console.log("VASYYYYYYY")
-        const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
-
-        const interval = setInterval(() => {
-            if (popup?.closed) {
-                clearInterval(interval);
-                setKey(prevKey => prevKey + 1);
-            }
-        }, 1000);
+      const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
+  
+      const interval = setInterval(() => {
+        if (popup?.closed) {
+          clearInterval(interval);
+          setKey(prevKey => prevKey + 1);
+        }
+      }, 1000);
     };
 
     const authenticateWithGoogle = () => {
