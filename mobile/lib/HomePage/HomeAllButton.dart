@@ -35,6 +35,11 @@ void returnToAddArea(Function setState) {
 }
 
 void changeArea(setState, CreatedArea area) {
+  print(area.areaIdOne);
+  print(area.areaIdTwo);
+  print(area.areaOneActionId);
+  print(area.areaTwoActionId);
+
   setState(() {
     indexForCreationPage[0] = area.areaIdOne;
     indexForCreationPage[2] = area.areaIdTwo;
