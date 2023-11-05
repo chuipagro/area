@@ -168,7 +168,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                         children: <Widget>[
                                             const SizedBox(width: 20.0),
                                             Image.asset(
-                                                'assets/images/GoogleLogo.png',
+                                                'assets/images/googleLogo.png',
                                                 width: 35.0,
                                                 height: 35.0,
                                             ),
