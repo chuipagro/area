@@ -21,7 +21,7 @@ export class CronGestion {
     const starthour = parseInt(timeAtCreation.split(':')[0]);
     const startminute = parseInt(timeAtCreation.split(':')[1]) + 2;
     console.log("intervalDays");
-    return startminute + " " + starthour + " */" + intervalDays + ' * *';
+    return startminute + " " + starthour + " *!/" + intervalDays + ' * *';
   }
 
   timerToCronMonth(time: String, timeAtCreation: string, dateAtCreation: string): String {
@@ -29,12 +29,12 @@ export class CronGestion {
     const startDay = parseInt(dateAtCreation.split('-')[0]);
     const starthour = parseInt(timeAtCreation.split(':')[0]);
     const startminute = parseInt(timeAtCreation.split(':')[1]) + 1;
-    return startminute + " " + starthour + " " + startDay + ' */' + intervalMonths + ' *';
+    return startminute + " " + starthour + " " + startDay + ' *!/' + intervalMonths + ' *';
   }
 
   timerToCronS(time: String): String {
     const intervalSeconds = parseInt(time.slice(1));
-    return '*/' + intervalSeconds + ' * * * * *';
+    return '*!/' + intervalSeconds + ' * * * * *';
   }
 
   timerToCron(time: String, timeAtCreation: string, dateAtCreation: string): string {
@@ -53,5 +53,27 @@ export class CronGestion {
       throw new Error('Invalid timer');
     }
     return conversionFunctions[index](time, timeAtCreation, dateAtCreation).toString();
+  }
+  
+  timeToCronExpression(time: string): string {
+    const timeAtCreation = new Date().toLocaleTimeString();
+    const dateAtCreation = new Date().toLocaleDateString();
+    
+    const minutes = parseInt(time.split(':')[1]);
+    const hours = parseInt(time.split(':')[0]);
+    
+    return `${minutes} ${hours} * * *`;
+  }
+  
+  everyDayToCronExpression(date: string, hour:string): string {
+    const day = parseInt(date);
+    return `0 0 ${day} * *`;
+  }
+  
+  preciseDateToCronExpression(date: string): string {
+    const day = parseInt(date.split('/')[0]);
+    const month = parseInt(date.split('/')[1]);
+    const year = parseInt(date.split('/')[2]);
+    return `0 0 ${day} ${month} * ${year}`;
   }
 }
