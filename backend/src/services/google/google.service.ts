@@ -348,8 +348,7 @@ export class GoogleService {
 						}
 						return null;
 				} catch (e) {
-						console.error('Error while getting last mail');
-						throw e;
+						return null;
 				}
 				
 		}
