@@ -354,7 +354,7 @@ export const Profile = (): JSX.Element => {
                     console.log(code);
                     console.log(token);
                     if (!isBackendCalled.current) {
-                        axios.post('http://localhost:8080/auth/postTokenArea', { code: code, tokenUser: token })
+                        axios.post('http://localhost:8080/auth/postTokenProfil', { code: code, tokenUser: token })
                             .then(response => {
                                 if (response.status === 200) {
                                     fetchJsonDataOA2();
