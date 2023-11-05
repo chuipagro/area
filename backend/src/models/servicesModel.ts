@@ -661,9 +661,9 @@ id: 8,
   name: "steam",
   logo: "assets/images/steamLogo.png",
   color: {
-    red: 130,
-    green: 120,
-    blue: 120,
+    red: 49,
+    green: 82,
+    blue: 107,
   },
   actions: [
     {
@@ -699,8 +699,8 @@ const weather = {
   name: "weather",
   logo: "assets/images/weatherLogo.png",
   color: {
-    red: 255,
-    green: 66,
+    red: 245,
+    green: 141,
     blue: 0,
   },
   actions: [
@@ -721,9 +721,9 @@ const nasa = {
   name: "nasa",
   logo: "assets/images/nasaLogo.png",
   color: {
-    red: 255,
-    green: 66,
-    blue: 0,
+    red: 0,
+    green: 129,
+    blue: 223,
   },
   actions: [
     {
@@ -747,9 +747,9 @@ const minecraft = {
   name: "minecraft",
   logo: "assets/images/minecraftLogo.png",
   color: {
-    red: 255,
-    green: 66,
-    blue: 0,
+    red: 157,
+    green: 226,
+    blue: 177,
   },
   actions: [
     {
