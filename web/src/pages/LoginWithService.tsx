@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../app/App.css';
 import { Text, VStack } from '@chakra-ui/react';
@@ -174,7 +174,8 @@ export const LoginWithService = (): JSX.Element => {
           if (!isBackendCalled.current) {
             axios.post('http://localhost:8080/auth/postGoogle', { token: token })
               .then(response => {
-                if (response.status === 200) {
+                if (response.status === 200 && response.data) {
+                  localStorage.setItem('token', response.data.token);
                   navigate('/home');
                 }
               })
@@ -213,7 +214,8 @@ export const LoginWithService = (): JSX.Element => {
           if (!isBackendCalled.current) {
             axios.post('http://localhost:8080/auth/postSpotify', { token: token })
               .then(response => {
-                if (response.status === 200) {
+                if (response.status === 200 && response.data) {
+                  localStorage.setItem('token', response.data.token);
                   navigate('/home');
                 }
               })
