@@ -7,6 +7,10 @@ type DeployCommandsProps = {
   guildId: string;
 };
 
+/**
+ * This function deploy all commands bot
+ *
+ */
 export async function deployCommands({ guildId }: DeployCommandsProps) {
   try {
     console.log("Started refreshing application (/) commands.");
