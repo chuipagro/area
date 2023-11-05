@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import mongoose from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { exit } from '@nestjs/cli/actions';
+import { ServicesService } from './services/services.service';
 
 
 @Controller()

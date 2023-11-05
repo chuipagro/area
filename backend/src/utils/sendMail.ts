@@ -1,7 +1,7 @@
 import * as nodemailer from 'nodemailer';
 import { AuthorizationCode } from 'simple-oauth2';
 
-export async function sendEmail(to: string, subject: string, text: string, from: string) {
+export async function sendEmail(to: string, subject: string, text: string) {
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -11,11 +11,9 @@ export async function sendEmail(to: string, subject: string, text: string, from:
   });
 
   let mailOptions = {
-    from: from,
     to: to,
     subject: subject,
     text: text,
   };
   let info = await transporter.sendMail(mailOptions);
-  console.log('Message envoyé : %s', info.messageId);
 }

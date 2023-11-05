@@ -182,7 +182,7 @@ const github = {
         name: "repoName",
         description: "repoDescription",
         homepage: "homepage",
-        private: "boolean",
+        private: "private",
       }
     },
     {

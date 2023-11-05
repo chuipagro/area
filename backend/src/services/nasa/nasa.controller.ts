@@ -29,4 +29,26 @@ export class NasaController {
     return res.status(200).send(result);
   }
 
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'success',
+    type: String,
+    status: 200,
+  })
+
+  @Get('getAstronomyPictureOfTheDay')
+  async getAstronomyPictureOfTheDay(
+    @Res() res: Response,
+    ): Promise<Response> {
+    const result = await this.NasaService.getAstronomyPictureOfTheDay();
+    return res.status(200).send(result);
+  }
+
 }

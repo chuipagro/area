@@ -6,6 +6,7 @@ import { JwtPayload } from '../authentication/jwt-payload.interface';
 import { IUser, UserModel } from '../models/users.model';
 import { v4 as uuidv4 } from 'uuid';
 import { AreaModel } from '../models/area.model';
+import { log } from 'console';
 
 @Injectable()
 export class UserService {
@@ -66,12 +67,12 @@ export class UserService {
   }
 
   async changeMail(token: String, mail: String): Promise<void> {
-    const existingUser = await UserModel.findOne(token);
+    const existingUser = await UserModel.findOne({ mail: mail });
     if (existingUser) {
       throw new Error('Username already in use');
     }
 
-    const user = await UserModel.findOne(token).exec();
+    const user = await UserModel.findOne({ token: token }).exec();
     if (!user) {
       throw new Error('User not found');
     }
@@ -85,6 +86,7 @@ export class UserService {
     const user = await UserModel.findOne({ token: token }).exec();
 
     if (!user) {
+      console.log("MERDEEEEEE")
       throw new Error('User not found');
     }
     if (user.auth == undefined)
@@ -92,6 +94,7 @@ export class UserService {
     for (let i = 0; i < user.auth.length; i++) {
       if (user.auth[i].oauthName == oauthName)
       {
+        console.log(oauthName)
         user.auth[i].token = oauthToken.toString();
         await user.save();
         return ;
@@ -116,18 +119,13 @@ export class UserService {
   }
 
   async changeUsername(token: String, userName: String): Promise<void> {
-    const existingUser = await UserModel.findOne({ token });
-    if (existingUser) {
-      throw new Error('Username already in use');
+    const existingUser = await UserModel.findOne({ token: token }).exec();
+    if (!existingUser) {
+      throw new Error('user not found');
     }
-
-    const user = await UserModel.findOne(token).exec();
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    user.username = userName.toString();
-    await user.save();
+    
+    existingUser.username = userName.toString();
+    await existingUser.save();
   }
 
   async disconnect(token: String): Promise<void>

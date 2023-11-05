@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
+import 'package:mobile/config.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobile/HomePage/HomePage.dart';
@@ -21,11 +22,9 @@ class GetStartedPage extends StatefulWidget {
 class _GetStartedPageState extends State<GetStartedPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final clientIdGithub = 'ecd75a418bce2c16c3f5';
-
   Future<void> _authenticateWithGitHub() async {
     final authUrl = 'https://github.com/login/oauth/authorize?'
-        'client_id=$clientIdGithub&'
+        'client_id=${Config.clientIdGithubLogin}&'
         'scope=user';
 
     final result = await FlutterWebAuth2.authenticate(
@@ -42,8 +41,8 @@ class _GetStartedPageState extends State<GetStartedPage> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'client_id': clientIdGithub,
-          'client_secret': 'c25bb753d702882f8634068356cabf8ce4c4ef8a',
+          'client_id': Config.clientIdGithubLogin,
+          'client_secret': Config.clientSecretGithubLogin,
           'code': codeParam,
         }),
     );
@@ -77,48 +76,34 @@ class _GetStartedPageState extends State<GetStartedPage> {
     }
   }
 
-  Future<void> _authenticateWithGoogle() async {
-    final _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+    Future<void> _authenticateWithSpotify() async {
+      final authUrl = "https://accounts.spotify.com/authorize?response_type=token&client_id=${Config.clientIdSpotifyLogin}&redirect_uri=area://github&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read";
 
-    try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-          final googleAuth = await googleUser.authentication;
-          final accessToken = googleAuth.accessToken;
+      final result = await FlutterWebAuth2.authenticate(
+        url: authUrl,
+        callbackUrlScheme: 'area',
+      );
 
-          final res = await http.post(
-            Uri.parse('http://'+globals.IPpc+':8080/auth/postGoogle'),
-            headers: <String, String>{
-              'Content-Type': 'application/json',
-            },
-            body: jsonEncode({
-              'token': accessToken,
-              'oauth': 'google',
-            })
+      String? accessToken = Uri.splitQueryString(Uri.parse(result).fragment)['access_token'];
+      final res = await http.post(
+        Uri.parse('http://'+globals.IPpc+':8080/auth/postSpotify'),
+        body: {
+            'token': accessToken,
+        },
+      );
+      if (res.statusCode == 200) {
+       Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
         );
-        if (res.statusCode == 200) {
-            final Map<String, dynamic> jsonResponse = json.decode(res.body);
-            globals.Token = jsonResponse['token'];
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-        } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text('Echec'),
-                ),
-            );
-        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Echec'),
+            ),
+        );
       }
-    } catch (error) {
-      print("Erreur lors de la connexion: $error");
     }
-  }
-
-  Future<void> _authenticateWithMicrosoft() async {
-      print('Erreur lors de l\'obtention du jeton d\'accès : Microsoft');
-  }
 
     @override
     Widget build(BuildContext context) {
@@ -164,43 +149,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                 ),
                                 child: TextButton(
                                     onPressed: () {
-                                        _authenticateWithGoogle();
-                                    },
-                                    style: TextButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                    ),
-                                    child: Row(
-                                        children: <Widget>[
-                                            const SizedBox(width: 20.0),
-                                            Image.asset(
-                                                'assets/images/googleLogo.png',
-                                                width: 35.0,
-                                                height: 35.0,
-                                            ),
-                                            const SizedBox(width: 20.0),
-                                            const Text(
-                                                'Continue avec Google',
-                                                style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    color: Colors.black,
-                                                ),
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                            ),
-                            const SizedBox(height: 25.0),
-
-                            Container(
-                                height: 65,
-                                width: 360,
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 255, 255, 255),
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    border: Border.all(color: Colors.black),
-                                ),
-                                child: TextButton(
-                                    onPressed: () {
                                         _authenticateWithGitHub();
                                     },
                                     style: TextButton.styleFrom(
@@ -210,7 +158,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                         children: <Widget>[
                                             const SizedBox(width: 20.0),
                                             Image.asset(
-                                                'assets/images/GithubLogo.png',
+                                                'assets/images/githubLogo.png',
                                                 width: 35.0,
                                                 height: 35.0,
                                             ),
@@ -238,7 +186,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                 ),
                                 child: TextButton(
                                     onPressed: () {
-                                        _authenticateWithMicrosoft();
+                                        _authenticateWithSpotify();
                                     },
                                     style: TextButton.styleFrom(
                                         padding: EdgeInsets.zero,
@@ -247,13 +195,13 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                         children: <Widget>[
                                             const SizedBox(width: 20.0),
                                             Image.asset(
-                                                'assets/images/microsoftLogo.png',
+                                                'assets/images/spotifyLogo.png',
                                                 width: 35.0,
                                                 height: 35.0,
                                             ),
                                             const SizedBox(width: 20.0),
                                             const Text(
-                                                'Continue avec Microsoft',
+                                                'Continue avec Github',
                                                 style: TextStyle(
                                                     fontSize: 20.0,
                                                     color: Colors.black,
@@ -263,7 +211,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                     ),
                                 ),
                             ),
-                            const SizedBox(height: 50.0),
+                            const SizedBox(height: 25.0),
     
                             RichText(
                                 text: TextSpan(

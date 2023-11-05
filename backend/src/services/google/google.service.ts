@@ -44,7 +44,7 @@ export class GoogleService {
 				if(!user) {
 						throw new Error('User not found');
 				}
-				await sendEmail(user.mail, 'AREAu stand', message, "pablo.levy@epitech.eu");
+				await sendEmail(user.mail, 'AREAu stand', message);
 		}
 		
 		async createForm(name: string, description: string): Promise<any> {
@@ -52,7 +52,7 @@ export class GoogleService {
 				const url = `https://www.googleapis.com/forms/v1/forms`;
 				const data = {
 						'title': name,
-						'description': description,
+						'document_title': description,
 				};
 				return await axios.post(url, data, {
 						headers: {
@@ -166,7 +166,6 @@ export class GoogleService {
 								'Authorization': `Bearer ${accessToken}`,
 						},
 				}).then((response: any) => {
-						console.log(response.data);
 						return response.data;
 				});
 		}
@@ -348,8 +347,7 @@ export class GoogleService {
 						}
 						return null;
 				} catch (e) {
-						console.error('Error while getting last mail');
-						throw e;
+						return null;
 				}
 				
 		}

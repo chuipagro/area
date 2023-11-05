@@ -62,7 +62,7 @@ export class CronGestion {
     const minutes = parseInt(time.split(':')[1]);
     const hours = parseInt(time.split(':')[0]);
     
-    return `${minutes} ${hours} * * *`;
+    return `5 ${minutes} ${hours} * * *`;
   }
   
   everyDayToCronExpression(date: string, hour:string): string {

@@ -1,24 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../app/App.css';
 import { Text, VStack } from '@chakra-ui/react';
-import GithubLogo from "../images/GithubLogo.png";
-import MicrosoftLogo from "../images/MicrosoftLogo.png";
+import GithubLogo from "../images/githubLogo.png";
 import SpotifyLogo from "../images/SpotifyLogo.png";
-import GoogleLogo from "../images/GoogleLogo.png";
+import googleLogo from "../images/googleLogo.png";
 import { Taskbar } from '../component/Taskbar';
-import querystring from 'query-string';
 import axios from 'axios';
 
 /**
  * This function display a title
  */
 function Title() {
-    return (
-        <VStack spacing="0px">
-            <Text color="black" fontSize={{ base: '50px' }} >page login with services to make</Text>
-        </VStack>
-    )
+  return (
+    <VStack spacing="0px">
+      <Text color="black" fontSize={{ base: '50px' }} >page login with services to make</Text>
+    </VStack>
+  )
 }
 
 /**
@@ -26,26 +24,30 @@ function Title() {
  * the function is to be completed
  */
 export const LoginWithService = (): JSX.Element => {
-  const clientIdGithub = '46d5db5635abf205e5fb';
-  const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
-  const clientIdSpotify = 'a549fb0ad4554f449fa69ce2322dbfc8';
-
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
-  
+
   const githubScope = [
     'repo',
     'repo:status',
     'repo_deployment',
+    'delete_repo',
     'public_repo',
+    "repo:invite",
+    "security_events",
+    "read:repo_hook",
     'admin:repo_hook',
     'write:repo_hook',
     'admin:org',
+    "write:org",
+    "read:org",
     'gist',
     'notifications',
     'user',
-    'delete_repo',
     'write:discussion',
+    "admin:public_key",
+    "write:public_key",
+    "read:public_key",
     'write:packages',
     'read:packages',
     'delete:packages',
@@ -56,62 +58,52 @@ export const LoginWithService = (): JSX.Element => {
     'read:user',
     'read:discussion',
     'read:enterprise',
-    'read:org',
   ]
-  
+
   const googleScope = [
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/calendar',
-    'https://www.googleapis.com/auth/drive',
-    'https://www.googleapis.com/auth/youtube',
-    'https://www.googleapis.com/auth/contacts',
-    'https://www.googleapis.com/auth/photoslibrary',
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/youtube.upload',
-    'https://www.googleapis.com/auth/youtube.force-ssl',
-    'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/documents',
-    'https://www.googleapis.com/auth/cloud-platform',
-    'https://www.googleapis.com/auth/firebase',
-    'https://www.googleapis.com/auth/games',
-    'https://www.googleapis.com/auth/fitness.activity.read',
-    'https://www.googleapis.com/auth/adsense',
-    'https://www.googleapis.com/auth/adsense.readonly',
-    'https://www.googleapis.com/auth/cloud-platform.read-only',
-    'https://www.googleapis.com/auth/cloud-platform.read-write',
-    'https://www.googleapis.com/auth/webmasters.readonly',
-    'https://www.googleapis.com/auth/webmasters',
-    'https://www.googleapis.com/auth/webmasters.verify_first_party',
-    'https://www.googleapis.com/auth/webmasters.currents',
-    'https://www.googleapis.com/auth/webmasters.currents.readonly',
-    'https://www.googleapis.com/auth/books',
-    'https://www.googleapis.com/auth/books.readonly',
-    'https://www.googleapis.com/auth/apps.licensing',
-    'https://www.googleapis.com/auth/classroom.courses',
-    'https://www.googleapis.com/auth/classroom.rosters',
-    'https://www.googleapis.com/auth/classroom.announcements',
-    'https://www.googleapis.com/auth/classroom.coursework.me',
-    'https://www.googleapis.com/auth/classroom.coursework.students',
-    'https://www.googleapis.com/auth/tasks',
-    'https://www.googleapis.com/auth/sheets',
-    'https://www.googleapis.com/auth/translate',
-    'https://www.googleapis.com/auth/translate.readonly',
-    'https://www.googleapis.com/auth/plus.me',
-    'https://www.googleapis.com/auth/plus.login',
-    'https://www.googleapis.com/auth/ads.data',
-    'https://www.googleapis.com/auth/adwords',
-    'https://www.googleapis.com/auth/adwords.readonly',
-    'https://www.googleapis.com/auth/alerts',
-    'https://www.googleapis.com/auth/analytics',
-    'https://www.googleapis.com/auth/analytics.edit',
-    'https://www.googleapis.com/auth/analytics.readonly',
-    'https://www.googleapis.com/auth/androidpublisher',
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/calendar.events",
+    "https://www.googleapis.com/auth/calendar.events.readonly",
+    "https://www.googleapis.com/auth/calendar.readonly",
+    "https://www.googleapis.com/auth/calendar.settings.readonly",
+    "https://www.googleapis.com/auth/gmail.addons.current.action.compose",
+    "https://www.googleapis.com/auth/gmail.addons.current.message.action",
+    "https://www.googleapis.com/auth/gmail.addons.current.message.metadata",
+    "https://www.googleapis.com/auth/gmail.addons.current.message.readonly",
+    "https://www.googleapis.com/auth/gmail.compose",
+    "https://www.googleapis.com/auth/gmail.insert",
+    "https://www.googleapis.com/auth/gmail.labels",
+    "https://www.googleapis.com/auth/gmail.metadata",
+    "https://www.googleapis.com/auth/gmail.modify",
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/gmail.send",
+    "https://www.googleapis.com/auth/gmail.settings.basic",
+    "https://www.googleapis.com/auth/gmail.settings.sharing",
+    "https://www.googleapis.com/auth/documents.readonly",
+    "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/drive.appdata",
+    "https://www.googleapis.com/auth/drive.metadata",
+    "https://www.googleapis.com/auth/drive.metadata.readonly",
+    "https://www.googleapis.com/auth/drive.photos.readonly",
+    "https://www.googleapis.com/auth/drive.scripts",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/spreadsheets.readonly",
+    "https://www.googleapis.com/auth/forms",
+    "https://www.googleapis.com/auth/forms.body",
+    "https://www.googleapis.com/auth/forms.readonly",
+    "https://www.googleapis.com/auth/forms.currentonly",
+    "https://www.googleapis.com/auth/documents",
+    "https://www.googleapis.com/auth/presentations",
+    "https://www.googleapis.com/auth/presentations.readonly",
   ];
 
-  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}&scope=${encodeURIComponent(githubScope.join(' '))}`;
-  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
-  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
+  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${github_id}&scope=${encodeURIComponent(githubScope.join(' '))}`;
+  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${spotify_id}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
+  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${google_id}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
 
   const navigate = useNavigate();
 
@@ -176,7 +168,8 @@ export const LoginWithService = (): JSX.Element => {
           if (!isBackendCalled.current) {
             axios.post('http://localhost:8080/auth/postGoogle', { token: token })
               .then(response => {
-                if (response.status === 200) {
+                if (response.status === 200 && response.data) {
+                  localStorage.setItem('token', response.data.token);
                   navigate('/home');
                 }
               })
@@ -215,7 +208,8 @@ export const LoginWithService = (): JSX.Element => {
           if (!isBackendCalled.current) {
             axios.post('http://localhost:8080/auth/postSpotify', { token: token })
               .then(response => {
-                if (response.status === 200) {
+                if (response.status === 200 && response.data) {
+                  localStorage.setItem('token', response.data.token);
                   navigate('/home');
                 }
               })
@@ -292,7 +286,7 @@ export const LoginWithService = (): JSX.Element => {
       }}>
         <button onClick={authenticateWithGoogle} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
           <img src={GoogleLogo} alt="Google Logo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Google</span>
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue with Google</span>
         </button>
       </div>
 
@@ -310,7 +304,7 @@ export const LoginWithService = (): JSX.Element => {
       }}>
         <button onClick={authenticateWithGithub} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
           <img src={GithubLogo} alt="GithubLogo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Github</span>
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue with Github</span>
         </button>
       </div>
 
@@ -328,12 +322,12 @@ export const LoginWithService = (): JSX.Element => {
       }}>
         <button onClick={authenticateWithSpotify} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
           <img src={SpotifyLogo} alt="SpotifyLogo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Spotify</span>
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue with Spotify</span>
         </button>
       </div>
 
-      <div style={{marginTop: '4%', fontSize: 30}}>
-        <p>Continuer avec <b onClick={() => navigate('/login')}>Log in</b> ou <b onClick={() => navigate('/register')}>Sign up</b></p>
+      <div style={{ marginTop: '4%', fontSize: 30 }}>
+        <p>Continue in <b onClick={() => navigate('/login')}>Log in</b> or <b onClick={() => navigate('/register')}>Sign up</b></p>
       </div>
     </div>
   );
