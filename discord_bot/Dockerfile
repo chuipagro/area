@@ -5,6 +5,6 @@ WORKDIR /app
 
 RUN npm install && npm run build
 
-EXPOSE 9999
+EXPOSE $PORT
 
 CMD ["npm", "run", "start"]
