@@ -14,6 +14,9 @@ import { GithubAuthRedirect } from "../pages/GithubAuthRedirect"
 import { GoogleAuthRedirect } from "../pages/GoogleAuthRedirect";
 import { Profile } from "../pages/profil"
 import { SpotifyAuthRedirect } from "../pages/SpotifyAuthRedirect";
+import { GithubAuthRedirectOAuth2 } from "../pages/GithubAuthRedirectOAuth2"
+import { GoogleAuthRedirectOAuth2 } from "../pages/GoogleAuthRedirectOAuth2";
+import { SpotifyAuthRedirectOAuth2 } from "../pages/SpotifyAuthRedirectOAuth2";
 
 /**
  * This function display the app
@@ -34,6 +37,9 @@ const App = (): JSX.Element => (
       <Route path="/oauthgithub" element={<GithubAuthRedirect />} />
       <Route path="/oauthgoogle" element={<GoogleAuthRedirect />} />
       <Route path="/oauthspotify" element={<SpotifyAuthRedirect />} />
+      <Route path="/oauthgithubcreate" element={<GithubAuthRedirectOAuth2 />} />
+      <Route path="/oauthgooglecreate" element={<GoogleAuthRedirectOAuth2 />} />
+      <Route path="/oauthspotifycreate" element={<SpotifyAuthRedirectOAuth2 />} />
       <Route
         path="/create"
         element={

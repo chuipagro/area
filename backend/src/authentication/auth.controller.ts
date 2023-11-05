@@ -341,4 +341,239 @@ export class AuthController {
       res.status(500).send('Erreur interne du serveur');
     }
   }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        },
+        oauth: {
+          type: 'string',
+        },
+        tokenUser: {
+          type: 'string',
+        },
+      },
+    },
+  })
+
+  @ApiOkResponse({
+    description: 'is connected',
+    type: Boolean,
+    status: 200,
+  })
+
+  @Post('OAuth2Area')
+  async OAuth2Area(
+    @Res() res: Response,
+    @Body('token') token: string,
+    @Body('oauth') oauth: string,
+    @Body('tokenUser') tokenUser: string)
+    : Promise<any> {
+    if (!token || !oauth) {
+      throw new Error('no empty field allowed');
+    }
+    console.log(tokenUser)
+    const githubUserUrl = 'https://api.github.com/user';
+    const githubEmailsUrl = 'https://api.github.com/user/emails';
+    try {
+      console.log(tokenUser)
+      const userResponse = await fetch(githubUserUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const userUsername = await userResponse.json();
+      const username = userUsername['login'];
+
+      console.log(tokenUser)
+      if (userResponse.status === 200) {
+        console.log(tokenUser)
+        const emailResponse = await fetch(githubEmailsUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        const userEmails = await emailResponse.json();
+        const mail = userEmails[0].email;
+        console.log(tokenUser)
+        return res.status(200).json({ token: await this.authService.signOAuth(mail, username, oauth, token, tokenUser) });
+      } else {
+        return res.status(userResponse.status).json({ error: 'Failed to fetch user data' });
+      }
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+        },
+        tokenUser: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'is connected',
+    type: Boolean,
+    status: 200,
+  })
+
+  @Post('postTokenArea')
+  async postTokenArea(
+    @Res() res: Response,
+    @Body('code') code: string,
+    @Body('tokenUser') tokenUser: string,
+  ): Promise<any> {
+    const clientIdGithub = '09cafad7406607dc0632';
+    const clientSecretGithub = '7c6e9d0e2af83aa1a6cce2578f7e153a37e56908';
+
+    try {
+      console.log(tokenUser)
+      const response = await fetch("https://github.com/login/oauth/access_token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          'client_id': clientIdGithub,
+          'client_secret': clientSecretGithub,
+          'code': code,
+        }),
+      });
+  
+      console.log(tokenUser)
+      if (response.ok) {
+        console.log(tokenUser)
+        const textData = await response.text();
+        const params = new URLSearchParams(textData);
+
+        const accessToken = params.get('access_token');
+        const token = String(accessToken);
+        const oauth = "github";
+        console.log(tokenUser)
+        const result = await this.OAuth2Area(res, token, oauth, tokenUser);
+        return result;
+      } else {
+        res.status(response.status).send('Erreur lors de la demande à GitHub');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la demande à GitHub:', error);
+      res.status(500).send('Erreur interne du serveur');
+    }
+  }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        },
+        tokenUser: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'is connected',
+    type: Boolean,
+    status: 200,
+  })
+
+  @Post('postGoogleArea')
+  async postGoogleArea(
+    @Res() res: Response,
+    @Body('token') token: string,
+    @Body('tokenUser') tokenUser: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const textData = await response.text();
+        const params = JSON.parse(textData);
+        const Smail = params.email;
+        const Susername = params.name;
+        const mail = String(Smail);
+        const username = String(Susername);
+        const oauth = "google";
+        return res.status(200).json({ result: await this.authService.signOAuth(mail, username, oauth, token, tokenUser) });
+      } else {
+        res.status(response.status).send('Erreur lors de la demande à Google');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la demande à Google:', error);
+      res.status(500).send('Erreur interne du serveur');
+    }
+  }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        },
+        tokenUser: {
+          type: 'string',
+        }
+      }
+    }
+  })
+
+  @ApiOkResponse({
+    description: 'is connected',
+    type: Boolean,
+    status: 200,
+  })
+
+  @Post('postSpotifyArea')
+  async postSpotifyArea(
+    @Res() res: Response,
+    @Body('token') token: string,
+    @Body('tokenUser') tokenUser: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const textData = await response.text();
+        const params = JSON.parse(textData);
+        const Smail = params.email;
+        const Susername = params.display_name;
+        const mail = String(Smail);
+        const username = String(Susername);
+        const oauth = "spotify";
+        return res.status(200).json({ result: await this.authService.signOAuth(mail, username, oauth, token, tokenUser) });
+      } else {
+        res.status(response.status).send('Erreur lors de la demande à Spotify');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la demande à Spotify:', error);
+      res.status(500).send('Erreur interne du serveur');
+    }
+  }
 }

@@ -75,6 +75,21 @@ export class AuthService {
       }
   }
 
+  async signOAuth(
+    mail: string,
+    username: string,
+    oauth: string,
+    tokenOauth: string,
+    tokenUser: string):
+    Promise<boolean | null> {
+      const user = await this.usersService.findByToken(tokenUser);
+      if (user) {
+        await this.usersService.connectOAuth(tokenUser, tokenOauth, mail, username, oauth);
+        return true;
+      }
+        return false;
+  }
+
   async isConnected(
     token: string):
     Promise<boolean> {
