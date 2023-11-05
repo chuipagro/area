@@ -49,11 +49,23 @@ export interface IData {
     homepage: string | null;
     newContent: string | null;
     fileName: string | null;
+    name: string | null;
+    billingEmail: string | null;
   } | null;
 
   cron: {
     time: string | "s50";
   } | null;
+  
+  google: {
+    message: string | null;
+    name: string | null;
+    description: string | null;
+    id: string | null;
+    question: string | null;
+    type: string | null;
+    content: string | null;
+  }
 }
 
 export interface IArea {

@@ -87,9 +87,9 @@ export class RiotService {
     });
   }
 
-  async waitForNewMatch(puuid: string): Promise<number | null> {
+  async waitForNewMatch(puuid: string): Promise<string | null> {
     let matchs = await this.getSummonerLastMatch(puuid.toString());
-    return new Promise<number | null>((resolve, reject) => {
+    return new Promise<string | null>((resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
@@ -101,7 +101,7 @@ export class RiotService {
         const job = cron.schedule(cronTimer, async () => {
           const checkNewMatchs = await this.getSummonerLastMatch(puuid);
           if (matchs[0] !== checkNewMatchs[0]) {
-            resolve(checkNewMatchs[0]);
+            resolve("you just finished a match");
           }
         }, {
           scheduled: true,
@@ -113,9 +113,9 @@ export class RiotService {
     });
   }
 
-  async waitForNewWin(puuid: string): Promise<object | null> {
+  async waitForNewWin(puuid: string): Promise<string | null> {
     const matchId = await this.getSummonerLastMatch(puuid.toString());
-    return new Promise<object | null>(async (resolve, reject) => {
+    return new Promise<string | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
@@ -134,7 +134,7 @@ export class RiotService {
             }
             win = match.info.participants[puuid.toString()].win;
             if (win) {
-              resolve(match);
+              resolve("you won");
             }
           }
           return null;
@@ -148,9 +148,9 @@ export class RiotService {
     });
   }
 
-  async waitForNewLose(puuid: string) : Promise<Object | null> {
+  async waitForNewLose(puuid: string) : Promise<string | null> {
     const matchId = await this.getSummonerLastMatch(puuid.toString());
-    return new Promise<Object | null>(async (resolve, reject) => {
+    return new Promise<string | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
@@ -169,7 +169,7 @@ export class RiotService {
             }
             win = match.info.participants[puuid.toString()].win;
             if (!win) {
-              resolve(match);
+              resolve("you suck");
             }
           }
           return null;
@@ -231,9 +231,9 @@ export class RiotService {
     });
   }
 
-  async getPlayerStartANewGame(summonerName: string) : Promise<Object | null>
+  async getPlayerStartANewGame(summonerName: string) : Promise<string | null>
   {
-    return new Promise<Object | null>(async (resolve, reject) => {
+    return new Promise<string | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
@@ -246,7 +246,7 @@ export class RiotService {
           const match = await this.getActiveGameBySummonerName(summonerName);
           console.log(match);
           if (match) {
-            resolve(match);
+            resolve("you started a new match");
           }
         });
         job.start();
@@ -302,11 +302,11 @@ export class RiotService {
       return response.data;
     });
   }
-  async tftCheckSummonerNewGame(puuid: string) : Promise<Object | null>
+  async tftCheckSummonerNewGame(puuid: string) : Promise<string | null>
   {
     const matchId = await this.tftGetSummonerLastMatch(puuid.toString());
     
-    return new Promise<Object | null>(async (resolve, reject) => {
+    return new Promise<string | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
   
@@ -323,7 +323,7 @@ export class RiotService {
             if (!match) {
                 return null;
             }
-            resolve(match);
+            resolve("you just finished a match");
           }
           return null;
         }, {
@@ -336,11 +336,11 @@ export class RiotService {
     });
   }
   
-  async tftCheckPlayerWin(puuid: string) : Promise<Object | null>
+  async tftCheckPlayerWin(puuid: string) : Promise<string | null>
   {
     const matchId = await this.tftGetSummonerLastMatch(puuid.toString());
     
-    return new Promise<Object | null>(async (resolve, reject) => {
+    return new Promise<string | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
   
@@ -357,7 +357,7 @@ export class RiotService {
             if (!match) {
                 return null;
             }
-            resolve(match);
+            resolve("you just won a match");
           }
           return null;
         }, {
@@ -370,11 +370,11 @@ export class RiotService {
     });
   }
   
-  async tftCheckPlayerLose(puuid: string) : Promise<Object | null>
+  async tftCheckPlayerLose(puuid: string) : Promise<string | null>
   {
     const matchId = await this.tftGetSummonerLastMatch(puuid.toString());
     
-    return new Promise<Object | null>(async (resolve, reject) => {
+    return new Promise<string | null>(async (resolve, reject) => {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
   
@@ -391,7 +391,7 @@ export class RiotService {
             if (!match) {
                 return null;
             }
-            resolve(match);
+            resolve("you suck");
           }
           return null;
         }, {

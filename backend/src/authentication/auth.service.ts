@@ -20,6 +20,8 @@ export class AuthService {
     Promise<string | null> {
     const user = await this.usersService.findByMail(mail);
     if (user) {
+      if (user.token)
+        return user.token;
       if (user.password !== password)
         return null;
       const payload: JwtPayload = { mail: mail };
@@ -48,6 +50,8 @@ export class AuthService {
       if (user) {
         if (user.username !== username)
           return null;
+        if (user.token)
+          return user.token;
         const payload: JwtPayload = { mail: mail };
         const token = this.jwtService.sign(payload);
         await this.usersService.updateUserToken(mail, token);
@@ -59,6 +63,8 @@ export class AuthService {
         if (userConnexion) {
           if (userConnexion.username !== username)
             return null;
+          if (userConnexion.token)
+            return userConnexion.token;
           const payload: JwtPayload = { mail: mail };
           const token = this.jwtService.sign(payload);
           await this.usersService.updateUserToken(mail, token);

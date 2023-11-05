@@ -4,7 +4,7 @@ import 'package:mobile/SignUpPage.dart';
 import 'package:mobile/LoginPage.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mobile/HomePage.dart';
+import 'package:mobile/HomePage/HomePage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/Globals.dart' as globals;
 import 'dart:convert';
@@ -242,7 +242,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                         children: <Widget>[
                                             const SizedBox(width: 20.0),
                                             Image.asset(
-                                                'assets/images/MicrosoftLogo.png',
+                                                'assets/images/microsoftLogo.png',
                                                 width: 35.0,
                                                 height: 35.0,
                                             ),
