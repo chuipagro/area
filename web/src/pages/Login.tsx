@@ -33,7 +33,7 @@ export const Login = (): JSX.Element => {
             });
             if (response.data) {
                 localStorage.setItem('token', response.data.token);
-                navigate('/create');
+                navigate('/home');
             }
             return response.data;
         } catch (error) {
