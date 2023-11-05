@@ -18,7 +18,7 @@ export function Taskbar() {
     const location = useLocation();
     const isHomePage = location.pathname === "/home";
     const isCreatePage = location.pathname === "/create";
-    const isProfilPage = location.pathname === "/profil";
+    const isProfilPage = location.pathname === "/profile";
 
 
     return (
@@ -39,13 +39,13 @@ export function Taskbar() {
                 py={6}
                 position="fixed"
                 borderRadius={50}
-                top="400"
+                top="100"
                 left="26"
                 boxShadow="md"
                 onClick={() => navigate('/home')}>
 
             </Box>
-            <Text position="fixed" top="450"
+            <Text position="fixed" top="150"
                 left="26" color={"white"}>Home</Text>
             <Box
                 backgroundColor={isCreatePage ? "blue" : "white"}
@@ -53,13 +53,13 @@ export function Taskbar() {
                 py={6}
                 position="fixed"
                 borderRadius={50}
-                top="500"
+                top="200"
                 left="26"
                 boxShadow="md"
                 onClick={() => navigate('/create')}>
 
             </Box>
-            <Text position="fixed" top="550"
+            <Text position="fixed" top="250"
                 left="26" color={"white"}>Create</Text>
             <Box
                 backgroundColor={isProfilPage ? "blue" : "white"}
@@ -67,13 +67,13 @@ export function Taskbar() {
                 py={6}
                 position="fixed"
                 borderRadius={50}
-                top="600"
+                top="300"
                 left="26"
                 boxShadow="md"
-                onClick={() => navigate('/profil')}>
+                onClick={() => navigate('/profile')}>
 
             </Box>
-            <Text position="fixed" top="650"
+            <Text position="fixed" top="350"
                 left="26" color={"white"}>Profile</Text>
         </Box>)
 }

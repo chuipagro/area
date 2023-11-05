@@ -4,11 +4,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { RiotService } from '../services/riot/riot.service';
-import { MicrosoftService } from '../services/microsoft/microsoft.service';
-import { v4 as uuidv4 } from 'uuid';
-import { allServices, ServicesModel } from '../models/servicesModel';
+
+import { ServicesModel } from '../models/servicesModel';
 import { GithubService } from '../services/github/github.service';
 import { UserModel } from '../models/users.model';
+import { SpotifyService } from '../services/spotify/spotify.service';
+import { DiscordBotService } from '../services/discord/discord-bot.service';
+import { GoogleService } from '../services/google/google.service';
+import { MicrosoftService } from '../services/microsoft/microsoft.service';
+import { ClockService } from '../services/clock/clock.service';
 
 @Injectable()
 export class AreaService {
@@ -31,7 +35,7 @@ export class AreaService {
       try {
         account = await riotService.getSummonerByName(area.data.riot.summonerName);
       } catch (error) {
-        console.log(error);
+        console.log("connection error");
         return null;
       }
     }
@@ -58,16 +62,17 @@ export class AreaService {
     actionData = await allAction[area.action.type - 1];
     }
     catch (error) {
-      console.log(error)
+      console.log("error")
       return null;
     }
     return actionData;
   }
   
-  async launchGithubReaction(area: IArea, actionData : any) : Promise<any>
+  async launchGithubReaction(area: IArea, actionData : string) : Promise<any>
   {
     const configService = new ConfigService();
     const githubService = new GithubService(configService);
+    await githubService.initialiseAccessToken(area.createdBy);
     const user = await UserModel.findOne({ token: area.createdBy }).exec();
     if (!user) {
       throw new Error('User not found');
@@ -85,8 +90,8 @@ export class AreaService {
     try {
       switch (area.reaction.type) {
         case 1:
-          if(area.data.github.repoName != null && area.data.github.description != null && area.data.github.privateRepo != null && area.data.github.homepage != null)
-            await githubService.createRepo(area.data.github.repoName, area.data.github.description, area.data.github.homepage, area.data.github.privateRepo);
+          if(area.data.github.repoName != null && actionData != null && area.data.github.privateRepo != null && area.data.github.homepage != null)
+            await githubService.createRepo(area.data.github.repoName, actionData, area.data.github.homepage, area.data.github.privateRepo);
           break;
         case 2:
           if(area.data.github.repoName != null && area.data.github.newName != null)
@@ -168,6 +173,202 @@ export class AreaService {
           if(area.data.github.gistId != null && area.data.github.newContent != null && area.data.github.fileName != null)
             await githubService.modifyGistContent(area.data.github.gistId, area.data.github.fileName, area.data.github.newContent);
           break;
+        case 22:
+          if (area.data.github.name != null && area.data.github.billingEmail != null && area.data.github.description != null)
+            await githubService.createOrganization(area.data.github.name, area.data.github.description, area.data.github.billingEmail);
+          break;
+        case 23:
+          if (area.data.github.name != null && area.data.github.billingEmail != null && area.data.github.description != null)
+            await githubService.modifyOrganization(area.data.github.name, area.data.github.description, area.data.github.billingEmail);
+          break;
+        case 24:
+          if (area.data.github.name != null)
+            await githubService.deleteOrganization(area.data.github.name);
+          break;
+        case 25:
+          if (area.data.github.newName != null)
+            await githubService.modifyUserName(area.data.github.newName);
+            
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+  
+  async launchSpotifyAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const spotifyService = new SpotifyService(configService);
+    let actionData;
+    if (area.data.spotify == null)
+      return null;
+    
+    try {
+      switch (area.action.type) {
+        case 1:
+          if(area.data.spotify.trackId != null)
+            actionData = await spotifyService.getAudioFeaturesTrack(area.data.spotify.trackId);
+          break;
+        case 2:
+          if(area.data.spotify.country != null && area.data.spotify.limit != null && area.data.spotify.offset != null)
+            actionData = await spotifyService.getNewReleases(area.data.spotify.country, area.data.spotify.limit, area.data.spotify.offset);
+          break;
+      }
+    } catch (error) {
+      console.log("connection error");
+      return null;
+    }
+    return actionData;
+  }
+  
+  async launchSpotifyReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const spotifyService = new SpotifyService(configService);
+    if (area.data.spotify == null)
+      return null;
+    
+    try {
+      if (area.data.spotify.username != null && area.data.spotify.name != null && area.data.spotify.description != null && area.data.spotify.playlistPublic != null)
+        await spotifyService.createPlaylist(area.data.spotify.username, area.data.spotify.name, area.data.spotify.description, area.data.spotify.playlistPublic);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+  
+  async launchDiscordReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const discordBotService = new DiscordBotService(configService);
+    
+    if (area.data.discord == null)
+      return null;
+    
+    try {
+      if (area.data.discord.channel_id != null && area.data.discord.message != null)
+        await discordBotService.postSendMessage(area.data.discord.channel_id, area.data.discord.message);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+    return null;
+  }
+  
+  async launchMicrosoftReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const microsoftService = new MicrosoftService(configService);
+    
+    if (area.data.microsoft == null)
+      return null;
+    
+    if (area.data.microsoft.text == null)
+      area.data.microsoft.text = actionData.toString();
+    
+    try {
+      if (area.data.microsoft.to != null && area.data.microsoft.from != null && area.data.microsoft.subject != null && area.data.microsoft.text != null)
+        await microsoftService.sendMail(area.data.microsoft.to, area.data.microsoft.from, area.data.microsoft.subject, area.data.microsoft.text);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+    return null;
+  }
+  
+  async launchGoogleReaction(area: IArea, actionData : any) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const googleService = new GoogleService(configService);
+    await googleService.initialiseAccessToken(area.createdBy);
+    
+    if (area.data.google.message == null)
+      area.data.google.message = actionData.toString();
+    try {
+      switch (area.reaction.type) {
+        case 1:
+          if(area.data.google.message != null)
+            await googleService.sendMail(area.data.google.message, area.createdBy);
+          break;
+        case 2:
+          if(area.data.google.name != null && area.data.google.description != null)
+            await googleService.createForm(area.data.google.name, area.data.google.description);
+          break;
+        case 3:
+          if(area.data.google.id != null && area.data.google.question != null && area.data.google.type != null)
+            await googleService.createFormQuestion(area.data.google.id, area.data.google.question, area.data.google.type);
+          break;
+        case 4:
+          if(area.data.google.id != null)
+            await googleService.deleteForm(area.data.google.id);
+          break;
+        case 5:
+          if(area.data.google.name != null)
+            await googleService.createGoogleSheet(area.data.google.name);
+          break;
+        case 6:
+          if (area.data.google.id != null)
+            await googleService.deleteGoogleSheet(area.data.google.id);
+          break;
+        case 7:
+          if(area.data.google.name != null)
+            await googleService.createGoogleDocs(area.data.google.name);
+          break;
+        case 8:
+          if(area.data.google.id != null)
+            await googleService.deleteGoogleDocs(area.data.google.id);
+          break;
+        case 9:
+          if (area.data.google.id != null && area.data.google.content != null)
+            await googleService.modifyGoogleDocs(area.data.google.id, area.data.google.content);
+          break;
+        case 10:
+          if (area.data.google.name != null)
+            await googleService.createGoogleSlides(area.data.google.name);
+          break;
+        case 11:
+          if (area.data.google.id != null)
+            await googleService.deleteGoogleSlides(area.data.google.id);
+          break;
+        case 12:
+          if (area.data.google.id != null && area.data.google.content != null)
+            await googleService.modifyGoogleSlides(area.data.google.id, area.data.google.content);
+          break;
+        case 13:
+          if (area.data.google.name != null)
+            await googleService.createGoogleCalendar(area.data.google.name);
+          break;
+        case 14:
+          if (area.data.google.id != null)
+            await googleService.deleteGoogleCalendar(area.data.google.id);
+          break;
+        case 15:
+          if (area.data.google.id != null && area.data.google.name != null)
+            await googleService.modifyGoogleCalendar(area.data.google.id, area.data.google.name);
+          break;
+        case 16:
+          if (area.data.google.name != null)
+            await googleService.createGoogleSite(area.data.google.name);
+          break;
+        case 17:
+          if (area.data.google.id != null)
+            await googleService.deleteGoogleSite(area.data.google.id);
+          break;
+        case 18:
+          if (area.data.google.id != null && area.data.google.name != null)
+            await googleService.modifyGoogleSite(area.data.google.id, area.data.google.name);
+          break;
+        case 19:
+          if (area.data.google.name != null)
+            await googleService.createGoogleDrawing(area.data.google.name);
+          break;
+        case 20:
+          if (area.data.google.id != null)
+            await googleService.deleteGoogleDrawing(area.data.google.id);
+          break;
+        default:
+          console.log("service not found");
       }
     } catch (error) {
       console.log(error);
@@ -175,11 +376,69 @@ export class AreaService {
     }
   }
 
+  async launchGoogleAction(area: IArea) : Promise<any>
+  {
+    const configService = new ConfigService();
+    const googleService = new GoogleService(configService);
+    await googleService.initialiseAccessToken(area.createdBy);
+    let actionData;
+    
+    try {
+      actionData = await googleService.checkNewMail();
+    } catch (error) {
+      console.log("connection error");
+      return null;
+    }
+    if (actionData == null)
+      return null;
+    return actionData;
+  }
+  
+  async launchClockAction(area: IArea) : Promise<any>
+  {
+    const clockService = new ClockService();
+    
+    if (area.data.clock == null)
+      return null;
+    
+    try {
+      switch (area.action.type) {
+        case 1:
+          if (area.data.clock.time != null)
+            await clockService.launchReactionEveryDayAtGivenTime(area.data.clock.time);
+            break;
+        case 2:
+          if (area.data.clock.time != null)
+            await clockService.launchReactionEveryX(area.data.clock.time);
+            break;
+        case 3:
+          if (area.data.clock.date != null)
+            await clockService.launchReactionAtPreciseDate(area.data.clock.date);
+            break;
+      }
+    } catch (error) {
+      console.log("connection error");
+      return null;
+    }
+    return "it's time";
+  }
+  
   async launchArea(area: IArea) {
     let actionData = null;
+    
+    console.log(area.data);
     switch (area.action.service) {
       case 1:
         actionData = await this.launchRiotAction(area)
+        break;
+      case 2:
+        actionData = await this.launchSpotifyAction(area)
+        break;
+      case 6:
+        actionData = await this.launchGoogleAction(area)
+        break;
+      case 7:
+        actionData = await this.launchClockAction(area)
         break;
       default:
         console.log("service not found");
@@ -190,12 +449,24 @@ export class AreaService {
     console.log(actionData);
 
     switch (area.reaction.service) {
+      case 2:
+        await this.launchSpotifyReaction(area, actionData)
+        break;
+      case 3:
+        await this.launchMicrosoftReaction(area, actionData)
+        break;
       case 4:
         await this.launchGithubReaction(area, actionData)
         break;
-        default:
-            console.log("service not found");
-            break;
+      case 5:
+        await this.launchDiscordReaction(area, actionData)
+        break;
+      case 6:
+        await this.launchGoogleReaction(area, actionData)
+        break;
+      default:
+        console.log("service not found");
+        break;
     }
   }
 

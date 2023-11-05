@@ -60,7 +60,7 @@ const riot = {
     },
     {
       name: "tftCheckPlayerLevel",
-      description: "check player level",
+      description: "check player  tft",
       id: 7,
       need: {
         summonerName: "summonerName",
@@ -68,7 +68,7 @@ const riot = {
     },
     {
       name: "tftCheckSummonerNewGame",
-      description: "check if a player started a new game",
+      description: "check if a player started a new game tft",
       id: 8,
       need: {
         summonerName: "summonerName",
@@ -76,7 +76,7 @@ const riot = {
     },
     {
       name: "tftCheckSummonerNewWin",
-      description: "check if a player won",
+      description: "check if a player won tft",
       id: 9,
       need: {
         summonerName: "summonerName",
@@ -84,7 +84,7 @@ const riot = {
     },
     {
       name: "tftCheckSummonerNewLose",
-      description: "check if a player lost",
+      description: "check if a player lost tft",
       id: 10,
       need: {
         summonerName: "summonerName",
@@ -105,6 +105,26 @@ const spotify ={
   },
   actions: [
     {
+      name: "getNewReleases",
+      description: "check if new releases",
+      id: 1,
+      need: {
+        country: "country",
+        limit: "limit",
+        offset: "offset",
+      }
+    },
+    {
+      name: "getAudioFeaturesTrack",
+      description: "get audio features track",
+      id: 2,
+      need: {
+        track_id: "track_id",
+      }
+    }
+  ],
+  reactions: [
+    {
       name: "createPlaylist",
       description: "create playlist",
       id: 1,
@@ -115,28 +135,7 @@ const spotify ={
         playlistCollaborative: "playlistCollaborative",
       }
     },
-    {
-      name: "addTrackToPlaylist",
-      description: "add track to playlist",
-      id: 2,
-      need: {
-        playlistId: "playlistId",
-        playlistTracks: "playlistTracks",
-        playlistTracksPosition: "playlistTracksPosition",
-      }
-    },
-    {
-      name: "addTrackUriToPlaylist",
-      description: "add track uri to playlist",
-      id: 3,
-      need: {
-        playlistId: "playlistId",
-        playlistTracksUris: "playlistTracksUris",
-        playlistTracksUrisPosition: "playlistTracksUrisPosition",
-      }
-    },
   ],
-  reactions: [],
 }
 
 const Microsoft = {
@@ -144,9 +143,9 @@ const Microsoft = {
   name: "microsoft",
   logo: "assets/images/microsoftLogo.png",
   color: {
-    red: 255,
-    green: 255,
-    blue: 255,
+    red: 150,
+    green: 223,
+    blue: 91,
   },
   actions: [],
   reactions: [
@@ -169,9 +168,9 @@ const github = {
   name: "github",
   logo: "assets/images/githubLogo.png",
   color: {
-    red: 0,
-    green: 0,
-    blue: 0,
+    red: 169,
+    green: 183,
+    blue: 184,
   },
   actions: [],
   reactions: [
@@ -369,6 +368,40 @@ const github = {
         files: "files",
       }
     },
+    {
+      name: "create organization",
+      description: "create organization",
+      id: 22,
+      need: {
+        orgName: "orgName",
+        billingEmail: "billingEmail",
+      }
+    },
+    {
+      name: "modify organization",
+      description: "modify organization",
+      id: 23,
+      need: {
+        orgName: "orgName",
+        billingEmail: "billingEmail",
+      }
+    },
+    {
+      name: "delete organization",
+      description: "delete organization",
+      id: 24,
+      need: {
+        orgName: "orgName",
+      }
+    },
+    {
+      name:"modify user name",
+      description: "modify user name",
+      id: 25,
+      need: {
+        newName: "newName",
+      }
+    }
   ],
 }
 
@@ -377,12 +410,21 @@ const discord = {
   name: "discord",
   logo: "assets/images/discordLogo.png",
   color: {
-    red: 0,
-    green: 0,
-    blue: 0,
+    red: 122,
+    green: 116,
+    blue: 195,
   },
   actions: [],
   reactions: [
+    {
+      name: "sendMessage",
+      description: "send message",
+      id: 1,
+      need: {
+        channel_id: "channel_id",
+        message: "message",
+      }
+    }
   ],
 }
 
@@ -391,15 +433,230 @@ const google = {
   name: "google",
   logo: "assets/images/googleLogo.png",
   color: {
-    red: 0,
-    green: 0,
-    blue: 0,
+    red: 197,
+    green: 209,
+    blue: 31,
   },
-  actions: [],
+  actions: [
+    {
+      name: "checkNewMail",
+      description: "check if new mail",
+      id: 1,
+      need: {}
+    }
+  ],
+  reactions: [
+    {
+      name: "sendMail",
+      description: "send mail",
+      id: 1,
+      need: {
+        from: "from if null send from user mail",
+        subject: "subject if null send default subject",
+        text: "text if null send actionData text",
+      }
+    },
+    {
+      name: "createForm",
+      description: "create form",
+      id: 2,
+      need: {
+        name: "name",
+        description: "description",
+      }
+    },
+    {
+      name: "createQuestion",
+      description: "create question",
+      id: 3,
+      need: {
+        id: "formId",
+        question: "question",
+        type: "questionType",
+      }
+    },
+    {
+      name: "deleteForm",
+      description: "delete form",
+      id: 4,
+      need: {
+        id: "formId",
+      }
+    },
+    {
+      name: "create Sheet",
+      description: "create sheet",
+      id: 5,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete Sheet",
+      description: "delete sheet",
+      id: 6,
+      need: {
+        id: "sheetId",
+      }
+    },
+    {
+      name: "create Doc",
+      description: "create doc",
+      id: 7,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete Doc",
+      description: "delete doc",
+      id: 8,
+      need: {
+        id: "docId",
+      }
+    },
+    {
+      name: "modify Doc",
+      description: "modify doc",
+      id: 9,
+      need: {
+        id: "docId",
+        content: "content",
+      }
+    },
+    {
+      name: "create Slide",
+      description: "create slide",
+      id: 10,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete Slide",
+      description: "delete slide",
+      id: 11,
+      need: {
+        id: "slideId",
+      }
+    },
+    {
+      name: "modify Slide",
+      description: "modify slide",
+      id: 12,
+      need: {
+        id: "slideId",
+        content: "content",
+      }
+    },
+    {
+      name: "create Calendar",
+      description: "create calendar",
+      id: 13,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete Calendar",
+      description: "delete calendar",
+      id: 14,
+      need: {
+        id: "calendarId",
+      }
+    },
+    {
+      name: "modify Calendar",
+      description: "modify calendar",
+      id: 15,
+      need: {
+        id: "calendarId",
+        name: "name",
+      }
+    },
+    {
+      name: "create site",
+      description: "create site",
+      id: 16,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete site",
+      description: "delete site",
+      id: 17,
+      need: {
+        id: "siteId",
+      }
+    },
+    {
+      name: "modify site",
+      description: "modify site",
+      id: 18,
+      need: {
+        id: "siteId",
+        name: "name",
+      }
+    },
+    {
+      name: "create drawing",
+      description: "create drawing",
+      id: 19,
+      need: {
+        name: "name",
+      }
+    },
+    {
+      name: "delete drawing",
+      description: "delete drawing",
+      id: 20,
+      need: {
+        id: "drawingId",
+      }
+    }
+  ],
+}
+
+const clock = {
+  id: 7,
+  name: "clock",
+  logo: "assets/images/clockLogo.png",
+  color: {
+    red: 137,
+    green: 63,
+    blue: 48,
+  },
+  actions: [
+    {
+      name: "launch at chosen time",
+      description: "launch at chosen time",
+      id: 1,
+      need: {
+        time: "time in format hh:mm",
+      }
+    },
+    {
+      name: "launch every x",
+      description: "launch every x",
+      id: 2,
+      need: {
+        time: "time in format S10 for every 10 seconds there is S M H D M Y and value must be 1 - 59",
+      }
+    },
+    {
+      name: "launch at precise date",
+      description: "launch at precise date",
+      id: 3,
+      need: {
+        date: "date in format dd/mm/yyyy",
+      }
+    },
+  ],
   reactions: [],
 }
 
-export const allServices = [riot, spotify, Microsoft, github, discord, google];
+export const allServices = [riot, spotify, Microsoft, github, discord, google, clock];
 
 const ActionSchema = new Schema({
     description: { type: String, required: true},

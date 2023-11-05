@@ -12,7 +12,7 @@ import { GetStarted } from "../pages/GetStarted"
 import { CreateArea } from "../pages/CreateArea";
 import { GithubAuthRedirect } from "../pages/GithubAuthRedirect"
 import { GoogleAuthRedirect } from "../pages/GoogleAuthRedirect";
-import { Profil } from "../pages/profil"
+import { Profile } from "../pages/profil"
 import { SpotifyAuthRedirect } from "../pages/SpotifyAuthRedirect";
 import { SettingAreasPage } from "../pages/SettingAreasPage";
 
@@ -45,7 +45,7 @@ const App = (): JSX.Element => (
           />
         }
       />
-      <Route path="/profil" element={<Profil />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   </Router >
 );

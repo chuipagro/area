@@ -5,6 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import { JwtPayload } from '../authentication/jwt-payload.interface';
 import { IUser, UserModel } from '../models/users.model';
 import { v4 as uuidv4 } from 'uuid';
+import { AreaModel } from '../models/area.model';
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,7 @@ export class UserService {
   async create(mail: string, username: string, password: string): Promise<typeof UserModel> {
     const uid = uuidv4();
     console.log("uid:", uid, "microsoft:", mail, "username:", username, "password:", password)
-    const createdUser = new this.userModel({ uid, mail, username, oauthName: "yolo", token: null});
+    const createdUser = new this.userModel({ uid, mail, username, oauthName: "yolo", token: null, password: password});
 
     try {
       return await createdUser.save();
@@ -101,7 +102,17 @@ export class UserService {
   }
 
   async updateUserToken(mail: string, token: string): Promise<void> {
-    await this.userModel.updateOne({ mail: mail }, { token: token }).exec();
+    const user = await UserModel.findOne({ mail: mail }).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const areas = await AreaModel.find({ createdBy: user.token }).exec();
+    user.token = token;
+    for (let i = 0; i < areas.length; i++) {
+      areas[i].createdBy = token;
+      await areas[i].save();
+    }
+    await user.save();
   }
 
   async changeUsername(token: String, userName: String): Promise<void> {

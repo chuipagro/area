@@ -18,9 +18,16 @@ export interface IData {
     playlistTracksPosition: number | null;
     playlistTracksUris: string[] | null;
     playlistTracksUrisPosition: number | null;
+    country: string | null;
+    limit: number | null;
+    offset: number | null;
+    username: string | null;
+    name: string | null;
+    description: string | null;
+    trackId: string | null;
   } | null;
 
-  mail: {
+  microsoft: {
     to: string | null;
     from: string | null;
     subject: string | null;
@@ -49,10 +56,32 @@ export interface IData {
     homepage: string | null;
     newContent: string | null;
     fileName: string | null;
+    name: string | null;
+    billingEmail: string | null;
   } | null;
 
   cron: {
     time: string | "s50";
+  } | null;
+  
+  google: {
+    message: string | null;
+    name: string | null;
+    description: string | null;
+    id: string | null;
+    question: string | null;
+    type: string | null;
+    content: string | null;
+  }
+  
+  clock: {
+    time: string | null;
+    date: string | null;
+  } | null;
+  
+  discord: {
+    channel_id: string | null;
+    message: string | null;
   } | null;
 }
 

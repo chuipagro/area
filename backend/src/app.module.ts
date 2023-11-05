@@ -15,6 +15,10 @@ import { AreaModule } from './area/area.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
+import { SteamModule } from './services/steam/steam.module';
+import { NasaModule } from './services/nasa/nasa.module';
+import { WeatherModule } from './services/weather/weather.module';
+import { MinecraftModule } from './services/minecraft/minecraft.module';
 import { ServicesModule } from './services/services.module';
 import { MicrosoftController } from './services/microsoft/microsoftController';
 import { MicrosoftService } from './services/microsoft/microsoft.service';
@@ -24,6 +28,9 @@ import { AreaModel } from './models/area.model';
 import { AboutController } from './about/about.controller';
 import { AboutService } from './about/about.service';
 import { AboutModule } from './about/about.module';
+import { GoogleController } from './services/google/google.controller';
+import { GoogleService } from './services/google/google.service';
+import { GoogleModule } from './services/google/google.module';
 
 @Module({
   imports: [
@@ -50,12 +57,17 @@ import { AboutModule } from './about/about.module';
     ServicesModule,
     RiotModule,
     SpotifyModule,
+    SteamModule,
+    NasaModule,
+    WeatherModule,
+    MinecraftModule,
     DiscordBotModule,
     MicrosoftModule,
     AboutModule,
+    GoogleModule,
   ],
-  controllers: [AppController, MicrosoftController, AboutController],
-  providers: [AppService, MicrosoftService, AboutService],
+  controllers: [AppController, MicrosoftController, AboutController, GoogleController],
+  providers: [AppService, MicrosoftService, AboutService, GoogleService],
 })
 export class AppModule {
 }
