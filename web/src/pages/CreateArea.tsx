@@ -39,6 +39,8 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         PReactionsNeeds,
     } = props;
 
+    console.log(process.env)
+
     const navigate = useNavigate()
 
     const areaName = React.useRef<HTMLInputElement | null>(null);
@@ -240,10 +242,10 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const clientIdGithub = '09cafad7406607dc0632';
     const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
     const clientIdSpotify = 'a549fb0ad4554f449fa69ce2322dbfc8';
-  
+
     const RedirectGoodle = 'http://localhost:8081/oauthgooglecreate';
     const RedirectSpotify = 'http://localhost:8081/oauthspotifycreate';
-    
+
     const githubScope = [
       'repo',
       'repo:status',

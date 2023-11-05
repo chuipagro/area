@@ -21,6 +21,8 @@ services:
 
     web:
         build: 'web/'
+        env_file:
+            - ./web/.env
         environment:
             - PORT=${FRONT_PORT}
         ports:

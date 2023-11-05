@@ -30,7 +30,7 @@ export const LoginWithService = (): JSX.Element => {
 
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
-  
+
   const githubScope = [
     'repo',
     'repo:status',
@@ -236,6 +236,8 @@ export const LoginWithService = (): JSX.Element => {
   }, [keyS]);
 
   const authenticateWithGithub = async () => {
+    console.log(process.env);
+    console.log(process.env.CLIENT_ID_GITHUB_CREATE_AREA);
     const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
 
     const interval = setInterval(() => {
