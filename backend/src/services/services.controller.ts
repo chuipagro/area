@@ -23,7 +23,6 @@ export class ServicesController {
     @Res() res: Response,
   ): Promise<Response> {
     const services = await this.ServicesService.getAllServices();
-    console.log(services);
     return res.status(200).send({ message: 'success', services: services});
   }
 }
