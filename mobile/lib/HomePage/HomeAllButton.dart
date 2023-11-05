@@ -150,7 +150,7 @@ void getAllNeeds(setState) {
 }
 
 void deleteArea(setState, areaName) async {
-  final reponse = await http.delete(
+  final reponse = await http.post(
     Uri.parse('http://' + globals.IPpc + ':8080/area/deleteArea'),
     headers: {
       'Content-Type': 'application/json',
