@@ -43,6 +43,18 @@ void changeArea(setState, CreatedArea area) {
   });
 }
 
+void setUpOAuth2(String serviceName)
+{
+  switch (serviceName) {
+    case ("spotify"):
+      break;
+    case ("google"):
+      break;
+    case ("github"):
+      break;
+  }
+}
+
 void getAllNeeds(setState) {
   needsIterate++;
   needsInput.text = '';
@@ -164,6 +176,8 @@ void setAllNeeds(String need, String input)
     case "playlistCollaborative":
       allNeedsList.spotify_playlistCollaborative = true;
       break;
+    case "playlistTracks":
+      break;
     case "playlistTracksPosition":
       allNeedsList.spotify_playlistTracksPosition = int.parse(input);
       break;
@@ -189,12 +203,6 @@ void setAllNeeds(String need, String input)
 }
 
 Future<void> addArea(String name, setState) async {
-
-  print("==========================================");
-  print("==========================================");
-  print("1: ${indexForCreationPage[0]}, 2: ${indexForCreationPage[1]}, 3: ${indexForCreationPage[2]}, 4: ${indexForCreationPage[3]}");
-  print("==========================================");
-  print("==========================================");
   final reponse = await http.post(
     Uri.parse('http://' + globals.IPpc + ':8080/area/createArea'),
     headers: {
@@ -242,6 +250,7 @@ Future<void> addArea(String name, setState) async {
     setState(() {
       nameInput.text = '';
       indexForCreationPage = [-1, -1, -1, -1];
+      needToReload = true;
       currentPageState = PageState.Areas;
     });
   } else {
@@ -250,24 +259,48 @@ Future<void> addArea(String name, setState) async {
 }
 
 Future<void> onDeconectionTap(setState, context) async {
-  final response = await http.post(
-    Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
-  );
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirmation"),
+        content: Text("Êtes-vous sûr de vouloir vous déconnecter?"),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Annuler"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text("Déconnexion"),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final response = await http.post(
+                Uri.parse('http://' + globals.IPpc + ':8080/user/disconnect'),
+              );
 
-  if (response.statusCode == 200) {
-    currentPageState = PageState.Areas;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Échec de la déconnexion'),
-      ),
-    );
-  }
+              if (response.statusCode == 200) {
+                currentPageState = PageState.Areas;
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage(title: 'LoginPage')),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Échec de la déconnexion'),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
+
 
 Future<Map<String, dynamic>> callForAllServices() async {
   final reponse = await http.get(
@@ -288,11 +321,6 @@ Future<Map<String, dynamic>> callForAllAreas() async {
   );
 
   if (reponse.statusCode == 200) {
-    print("==========================================");
-    print("==========================================");
-    print(reponse.body);
-    print("==========================================");
-    print("==========================================");
     final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
     return jsonResponse;
   } else {
