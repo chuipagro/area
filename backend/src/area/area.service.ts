@@ -386,6 +386,7 @@ export class AreaService {
       console.log(error);
       return null;
     }
+    return 'success'
   }
 
   async launchGoogleAction(area: IArea) : Promise<any>

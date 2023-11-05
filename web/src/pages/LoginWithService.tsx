@@ -97,6 +97,8 @@ export const LoginWithService = (): JSX.Element => {
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/spreadsheets.readonly",
     "https://www.googleapis.com/auth/forms",
+    "https://www.googleapis.com/auth/forms.body",
+    "https://www.googleapis.com/auth/forms.readonly",
     "https://www.googleapis.com/auth/forms.currentonly",
     "https://www.googleapis.com/auth/documents",
     "https://www.googleapis.com/auth/presentations",
