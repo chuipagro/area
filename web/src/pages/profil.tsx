@@ -146,7 +146,7 @@ export const Profile = (): JSX.Element => {
             const response = await axios.post('http://localhost:8080/user/changeMail', body
             );
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 alert("you successfully upadated your email");
             } else {
                 alert("you failed to update your email");
@@ -174,7 +174,7 @@ export const Profile = (): JSX.Element => {
             const response = await axios.post('http://localhost:8080/user/changeUsername', body
             );
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 alert("you successfully upadated your username");
             } else {
                 alert("you failed to update your username");
@@ -208,7 +208,7 @@ export const Profile = (): JSX.Element => {
             const response = await axios.post('http://localhost:8080/user/changePassword', body
             );
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 alert("you successfully upadated your password");
             } else {
                 alert("you failed to update your password");
@@ -229,10 +229,23 @@ export const Profile = (): JSX.Element => {
         for (let i = 0; i < listOA2.length; i++) {
             if (listOA2.includes(oauthNames[i])) {
                 console.log(oauthNames[i])
-                row.push(<Box color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>{oauthNames[i]}</Box>);
+                row.push(
+                    <VStack>
+                        <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
+                            {oauthNames[i]}
+                        </Box>
+                    </VStack>
+                );
+            } else {
+                console.log(oauthNames[i])
+                row.push(
+                    <VStack>
+                        <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
+                            you are not connected to{listOA2[i]}
+                        </Box>
+                    </VStack>
+                );
             }
-            console.log(oauthNames[i])
-            row.push(<Box color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>you are not connected to{listOA2[i]}</Box>);
         }
         return (
 
