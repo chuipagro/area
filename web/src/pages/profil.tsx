@@ -1,6 +1,6 @@
 import React from 'react';
 import '../app/App.css';
-import { Text, VStack, Input, Button, Heading, Stack, HStack, Box } from '@chakra-ui/react';
+import { Text, VStack, Input, Button, Heading, Stack, HStack, Box, list } from '@chakra-ui/react';
 import { Taskbar } from '../component/VerticalTaskbar';
 import { DisconnectButtun } from '../component/disconnect';
 import axios from 'axios';
@@ -67,6 +67,8 @@ export const Profile = (): JSX.Element => {
         __v: number;
         _id: string;
     };
+
+    const listOA2 = ["google", "spotify", "github"]
 
     // const mailRef = React.useRef<HTMLInputElement | null>(null);
     const [email, setEmail] = React.useState("");
@@ -224,9 +226,13 @@ export const Profile = (): JSX.Element => {
 
         console.log("tiens la liste de oA2 mon reuf")
 
-        for (let i = 0; i < oauthNames.length; i++) {
+        for (let i = 0; i < listOA2.length; i++) {
+            if (listOA2.includes(oauthNames[i])) {
+                console.log(oauthNames[i])
+                row.push(<Box color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>{oauthNames[i]}</Box>);
+            }
             console.log(oauthNames[i])
-            row.push(<Box color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>{oauthNames[i]}</Box>);
+            row.push(<Box color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>you are not connected to{listOA2[i]}</Box>);
         }
         return (
 
