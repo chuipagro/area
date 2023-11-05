@@ -7,4 +7,6 @@ RUN npm install
 
 EXPOSE $PORT
 
+ENV NODE_ENV=production
+
 CMD ["npm", "run", "start"]

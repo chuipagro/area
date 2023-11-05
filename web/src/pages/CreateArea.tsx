@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState }  from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../app/App.css';
 import { Input, Text, HStack, VStack, Button, Box, Heading, Grid, Stack } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import ArrowArea from '../app/ArrowArea.png'
+import leftArrow from '../app/leftArrow.png'
 import { Taskbar } from '../component/VerticalTaskbar';
 
 /**
@@ -21,6 +22,8 @@ interface CreateAreaProps {
     PActionsNeeds: { key: string; data: any }[];
     PReactionsNeeds: { key: string; data: any }[];
 }
+
+// dotenv.config();
 
 /**
  * This page display the create area page with the services and the actions/reactions
@@ -157,6 +160,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         };
     };
 
+    /**
+     * Types use to parse the json received from the server (user/getUserInfo call)
+     */
     type User = {
         auth: {
             oauthName: string;
@@ -181,6 +187,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const needOA2 = ["google", "github", "spotify"]
 
 
+    /**
+     * This function is used to set the name of each service the user  is connected with oa2
+     */
     React.useEffect(() => {
         if (jsonDataUser !== null) {
             setOauthNames(jsonDataUser.auth.map((authItem) => authItem.oauthName));
@@ -212,7 +221,9 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     };
 
 
-
+    /**
+     * This function fetch the json data from the server in order to display the services and the actions/reactions available
+     */
     const fetchJsonDataOA2 = async () => {
         try {
             console.log('Fetching JSON data...');
@@ -245,243 +256,242 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     const RedirectSpotify = 'http://localhost:8081/oauthspotifycreate';
 
     const githubScope = [
-      'repo',
-      'repo:status',
-      'repo_deployment',
-      'public_repo',
-      'admin:repo_hook',
-      'write:repo_hook',
-      'admin:org',
-      'gist',
-      'notifications',
-      'user',
-      'delete_repo',
-      'write:discussion',
-      'write:packages',
-      'read:packages',
-      'delete:packages',
-      'admin:gpg_key',
-      'admin:org_hook',
-      'admin:repo',
-      'admin:enterprise',
-      'read:user',
-      'read:discussion',
-      'read:enterprise',
-      'read:org',
+        'repo',
+        'repo:status',
+        'repo_deployment',
+        'public_repo',
+        'admin:repo_hook',
+        'write:repo_hook',
+        'admin:org',
+        'gist',
+        'notifications',
+        'user',
+        'delete_repo',
+        'write:discussion',
+        'write:packages',
+        'read:packages',
+        'delete:packages',
+        'admin:gpg_key',
+        'admin:org_hook',
+        'admin:repo',
+        'admin:enterprise',
+        'read:user',
+        'read:discussion',
+        'read:enterprise',
+        'read:org',
     ]
-    
+
     const googleScope = [
-      'https://www.googleapis.com/auth/userinfo.email',
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/calendar',
-      'https://www.googleapis.com/auth/drive',
-      'https://www.googleapis.com/auth/youtube',
-      'https://www.googleapis.com/auth/contacts',
-      'https://www.googleapis.com/auth/photoslibrary',
-      'https://www.googleapis.com/auth/gmail.readonly',
-      'https://www.googleapis.com/auth/youtube.upload',
-      'https://www.googleapis.com/auth/youtube.force-ssl',
-      'https://www.googleapis.com/auth/spreadsheets',
-      'https://www.googleapis.com/auth/documents',
-      'https://www.googleapis.com/auth/cloud-platform',
-      'https://www.googleapis.com/auth/firebase',
-      'https://www.googleapis.com/auth/games',
-      'https://www.googleapis.com/auth/fitness.activity.read',
-      'https://www.googleapis.com/auth/adsense',
-      'https://www.googleapis.com/auth/adsense.readonly',
-      'https://www.googleapis.com/auth/cloud-platform.read-only',
-      'https://www.googleapis.com/auth/cloud-platform.read-write',
-      'https://www.googleapis.com/auth/webmasters.readonly',
-      'https://www.googleapis.com/auth/webmasters',
-      'https://www.googleapis.com/auth/webmasters.verify_first_party',
-      'https://www.googleapis.com/auth/webmasters.currents',
-      'https://www.googleapis.com/auth/webmasters.currents.readonly',
-      'https://www.googleapis.com/auth/books',
-      'https://www.googleapis.com/auth/books.readonly',
-      'https://www.googleapis.com/auth/apps.licensing',
-      'https://www.googleapis.com/auth/classroom.courses',
-      'https://www.googleapis.com/auth/classroom.rosters',
-      'https://www.googleapis.com/auth/classroom.announcements',
-      'https://www.googleapis.com/auth/classroom.coursework.me',
-      'https://www.googleapis.com/auth/classroom.coursework.students',
-      'https://www.googleapis.com/auth/tasks',
-      'https://www.googleapis.com/auth/sheets',
-      'https://www.googleapis.com/auth/translate',
-      'https://www.googleapis.com/auth/translate.readonly',
-      'https://www.googleapis.com/auth/plus.me',
-      'https://www.googleapis.com/auth/plus.login',
-      'https://www.googleapis.com/auth/ads.data',
-      'https://www.googleapis.com/auth/adwords',
-      'https://www.googleapis.com/auth/adwords.readonly',
-      'https://www.googleapis.com/auth/alerts',
-      'https://www.googleapis.com/auth/analytics',
-      'https://www.googleapis.com/auth/analytics.edit',
-      'https://www.googleapis.com/auth/analytics.readonly',
-      'https://www.googleapis.com/auth/androidpublisher',
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/calendar',
+        'https://www.googleapis.com/auth/drive',
+        'https://www.googleapis.com/auth/youtube',
+        'https://www.googleapis.com/auth/contacts',
+        'https://www.googleapis.com/auth/photoslibrary',
+        'https://www.googleapis.com/auth/gmail.readonly',
+        'https://www.googleapis.com/auth/youtube.upload',
+        'https://www.googleapis.com/auth/youtube.force-ssl',
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/documents',
+        'https://www.googleapis.com/auth/cloud-platform',
+        'https://www.googleapis.com/auth/firebase',
+        'https://www.googleapis.com/auth/games',
+        'https://www.googleapis.com/auth/fitness.activity.read',
+        'https://www.googleapis.com/auth/adsense',
+        'https://www.googleapis.com/auth/adsense.readonly',
+        'https://www.googleapis.com/auth/cloud-platform.read-only',
+        'https://www.googleapis.com/auth/cloud-platform.read-write',
+        'https://www.googleapis.com/auth/webmasters.readonly',
+        'https://www.googleapis.com/auth/webmasters',
+        'https://www.googleapis.com/auth/webmasters.verify_first_party',
+        'https://www.googleapis.com/auth/webmasters.currents',
+        'https://www.googleapis.com/auth/webmasters.currents.readonly',
+        'https://www.googleapis.com/auth/books',
+        'https://www.googleapis.com/auth/books.readonly',
+        'https://www.googleapis.com/auth/apps.licensing',
+        'https://www.googleapis.com/auth/classroom.courses',
+        'https://www.googleapis.com/auth/classroom.rosters',
+        'https://www.googleapis.com/auth/classroom.announcements',
+        'https://www.googleapis.com/auth/classroom.coursework.me',
+        'https://www.googleapis.com/auth/classroom.coursework.students',
+        'https://www.googleapis.com/auth/tasks',
+        'https://www.googleapis.com/auth/sheets',
+        'https://www.googleapis.com/auth/translate',
+        'https://www.googleapis.com/auth/translate.readonly',
+        'https://www.googleapis.com/auth/plus.me',
+        'https://www.googleapis.com/auth/plus.login',
+        'https://www.googleapis.com/auth/ads.data',
+        'https://www.googleapis.com/auth/adwords',
+        'https://www.googleapis.com/auth/adwords.readonly',
+        'https://www.googleapis.com/auth/alerts',
+        'https://www.googleapis.com/auth/analytics',
+        'https://www.googleapis.com/auth/analytics.edit',
+        'https://www.googleapis.com/auth/analytics.readonly',
+        'https://www.googleapis.com/auth/androidpublisher',
     ];
-  
+
     const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}&scope=${encodeURIComponent(githubScope.join(' '))}`;
     const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
     const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
-  
+
     const [isListenerSet, setIsListenerSet] = useState(false);
     const isBackendCalled = useRef(false);
     const [key, setKey] = useState(0);
     const [keyG, setKeyG] = useState(0);
     const [keyS, setKeyS] = useState(0);
-  
+
     useEffect(() => {
-      const handleMessageEvent = (event: MessageEvent) => {
-        if (isBackendCalled.current) {
-          return;
-        }
-  
-        if (event.origin === 'http://localhost:8081') {
-          const receivedData = event.data;
-          if (receivedData && receivedData.codeS) {
-            const codeTmp = receivedData.codeS;
-            const code = String(codeTmp);
-  
-            if (!isBackendCalled.current) {
-              axios.post('http://localhost:8080/auth/postTokenArea', { code: code, tokenUser: token })
-                .then(response => {
-                  if (response.status === 200) {
-                    fetchJsonDataOA2();
-                    setOauthNames(oauthNames => [...oauthNames, "github"]);
-                  }
-                })
-                .catch(error => {
-                  console.error('Erreur lors de l\'appel au backend:', error);
-                });
-  
-              isBackendCalled.current = true;
+        const handleMessageEvent = (event: MessageEvent) => {
+            if (isBackendCalled.current) {
+                return;
             }
-          }
+
+            if (event.origin === 'http://localhost:8081') {
+                const receivedData = event.data;
+                if (receivedData && receivedData.codeS) {
+                    const codeTmp = receivedData.codeS;
+                    const code = String(codeTmp);
+
+                    if (!isBackendCalled.current) {
+                        axios.post('http://localhost:8080/auth/postTokenArea', { code: code, tokenUser: token })
+                            .then(response => {
+                                if (response.status === 200) {
+                                    fetchJsonDataOA2();
+                                    setOauthNames(oauthNames => [...oauthNames, "github"]);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erreur lors de l\'appel au backend:', error);
+                            });
+
+                        isBackendCalled.current = true;
+                    }
+                }
+            }
+        };
+
+        if (!isListenerSet) {
+            window.addEventListener('message', handleMessageEvent);
+            setIsListenerSet(true);
         }
-      };
-  
-      if (!isListenerSet) {
-        window.addEventListener('message', handleMessageEvent);
-        setIsListenerSet(true);
-      }
-  
-      return () => {
-        window.removeEventListener('message', handleMessageEvent);
-      };
+
+        return () => {
+            window.removeEventListener('message', handleMessageEvent);
+        };
     }, [key]);
-  
+
     useEffect(() => {
-      const handleMessageEvent = (event: MessageEvent) => {
-        if (isBackendCalled.current) {
-          return;
-        }
-  
-        if (event.origin === 'http://localhost:8081') {
-          const receivedData = event.data;
-          if (receivedData && receivedData.token) {
-            const tokenTmp = receivedData.token;
-            const tokenM = String(tokenTmp);
-  
-            if (!isBackendCalled.current) {
-              axios.post('http://localhost:8080/auth/postGoogleArea', { token: tokenM, tokenUser: token })
-                .then(response => {
-                  if (response.status === 200) {
-                    fetchJsonDataOA2();
-                    setOauthNames(oauthNames => [...oauthNames, "google"]);
-                  }
-                })
-                .catch(error => {
-                  console.error('Erreur lors de l\'appel au backend:', error);
-                });
-  
-              isBackendCalled.current = true;
+        const handleMessageEvent = (event: MessageEvent) => {
+            if (isBackendCalled.current) {
+                return;
             }
-          }
+
+            if (event.origin === 'http://localhost:8081') {
+                const receivedData = event.data;
+                if (receivedData && receivedData.token) {
+                    const tokenTmp = receivedData.token;
+                    const tokenM = String(tokenTmp);
+
+                    if (!isBackendCalled.current) {
+                        axios.post('http://localhost:8080/auth/postGoogleArea', { token: tokenM, tokenUser: token })
+                            .then(response => {
+                                if (response.status === 200) {
+                                    fetchJsonDataOA2();
+                                    setOauthNames(oauthNames => [...oauthNames, "google"]);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erreur lors de l\'appel au backend:', error);
+                            });
+
+                        isBackendCalled.current = true;
+                    }
+                }
+            }
+        };
+
+        if (!isListenerSet) {
+            window.addEventListener('message', handleMessageEvent);
+            setIsListenerSet(true);
         }
-      };
-  
-      if (!isListenerSet) {
-        window.addEventListener('message', handleMessageEvent);
-        setIsListenerSet(true);
-      }
-  
-      return () => {
-        window.removeEventListener('message', handleMessageEvent);
-      };
+
+        return () => {
+            window.removeEventListener('message', handleMessageEvent);
+        };
     }, [keyG]);
-  
+
     useEffect(() => {
-      const handleMessageEvent = (event: MessageEvent) => {
-        if (isBackendCalled.current) {
-          return;
-        }
-  
-        if (event.origin === 'http://localhost:8081') {
-          const receivedData = event.data;
-          if (receivedData && receivedData.tokenS) {
-            const tokenTmp = receivedData.tokenS;
-            const tokenM = String(tokenTmp);
-  
-            if (!isBackendCalled.current) {
-              axios.post('http://localhost:8080/auth/postSpotifyArea', { token: tokenM, tokenUser: token })
-                .then(response => {
-                  if (response.status === 200) {
-                    fetchJsonDataOA2();
-                    setOauthNames(oauthNames => [...oauthNames, "spotify"]);
-                  }
-                })
-                .catch(error => {
-                  console.error('Erreur lors de l\'appel au backend:', error);
-                });
-  
-              isBackendCalled.current = true;
+        const handleMessageEvent = (event: MessageEvent) => {
+            if (isBackendCalled.current) {
+                return;
             }
-          }
+
+            if (event.origin === 'http://localhost:8081') {
+                const receivedData = event.data;
+                if (receivedData && receivedData.tokenS) {
+                    const tokenTmp = receivedData.tokenS;
+                    const tokenM = String(tokenTmp);
+
+                    if (!isBackendCalled.current) {
+                        axios.post('http://localhost:8080/auth/postSpotifyArea', { token: tokenM, tokenUser: token })
+                            .then(response => {
+                                if (response.status === 200) {
+                                    fetchJsonDataOA2();
+                                    setOauthNames(oauthNames => [...oauthNames, "spotify"]);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erreur lors de l\'appel au backend:', error);
+                            });
+
+                        isBackendCalled.current = true;
+                    }
+                }
+            }
+        };
+
+        if (!isListenerSet) {
+            window.addEventListener('message', handleMessageEvent);
+            setIsListenerSet(true);
         }
-      };
-  
-      if (!isListenerSet) {
-        window.addEventListener('message', handleMessageEvent);
-        setIsListenerSet(true);
-      }
-  
-      return () => {
-        window.removeEventListener('message', handleMessageEvent);
-      };
+
+        return () => {
+            window.removeEventListener('message', handleMessageEvent);
+        };
     }, [keyS]);
-  
+
     const authenticateWithGithub = async () => {
-        console.log("VASYYYYYYY")
-      const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
-  
-      const interval = setInterval(() => {
-        if (popup?.closed) {
-          clearInterval(interval);
-          setKey(prevKey => prevKey + 1);
-        }
-      }, 1000);
+        const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
+
+        const interval = setInterval(() => {
+            if (popup?.closed) {
+                clearInterval(interval);
+                setKey(prevKey => prevKey + 1);
+            }
+        }, 1000);
     };
-  
+
     const authenticateWithGoogle = () => {
-      const popup = window.open(authUrlGoogle, 'authUrlGoogle', 'width=500,height=600');
-  
-      const interval = setInterval(() => {
-        if (popup?.closed) {
-          clearInterval(interval);
-          setKeyG(prevKey => prevKey + 1);
-        }
-      }, 1000);
+        const popup = window.open(authUrlGoogle, 'authUrlGoogle', 'width=500,height=600');
+
+        const interval = setInterval(() => {
+            if (popup?.closed) {
+                clearInterval(interval);
+                setKeyG(prevKey => prevKey + 1);
+            }
+        }, 1000);
     };
-  
+
     const authenticateWithSpotify = () => {
-      const popup = window.open(authUrlSpotify, 'authUrlSpotify', 'width=500,height=600');
-  
-      const interval = setInterval(() => {
-        if (popup?.closed) {
-          clearInterval(interval);
-          setKeyS(prevKey => prevKey + 1);
-        }
-      }, 1000);
+        const popup = window.open(authUrlSpotify, 'authUrlSpotify', 'width=500,height=600');
+
+        const interval = setInterval(() => {
+            if (popup?.closed) {
+                clearInterval(interval);
+                setKeyS(prevKey => prevKey + 1);
+            }
+        }, 1000);
     };
 
     const ConnexionOA2 = (title: String) => {
@@ -550,19 +560,17 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             const response = await axios.post('http://localhost:8080/area/createArea', body
             );
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 alert("AREA created successfully");
                 navigate('/home');
             } else {
                 alert("AREA not created");
-                navigate('/create');
+                navigate('/home');
             }
 
             return response.data;
         } catch (error) {
             console.error('Error:', error);
-            throw error;
-
         }
     };
 
@@ -575,31 +583,66 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     }, [name]);
 
 
+
+    /**
+    * This function handle what to display when the user click on the action button
+    */
+    const triggerReactionVisibility = () => {
+        if (!reaction)
+            setReaction(true);
+    }
+
+
+    /**
+    * This function handle what to display when the user click on the action button
+    */
+    const triggerActionVisibility = () => {
+        if (!action)
+            setAction(true);
+    }
+
     /**
      * This function handle what to display when the user click on the action button
      */
     const handleAction = () => {
-        if (!actionVisibility)
+
+        if (actionNeedDisplay) { // affichage des needs
+            setActionNeedDisplay(false);
+            return;
+        }
+        if (serviceActionJson !== "") { // pour l'affichage des actions
+            setServiceActionJson("");
+        }
+        if (!actionVisibility) { // pour l'affichage des actions
             setactionVisibility(true);
-        if (!action)
-            setAction(true);
-        if (action)
-            setAction(false)
+        }
+        if (action && actionVisibility) { // pour l'affichage des services
+            setAction(false);
+        }
         if (defaultActionDesc === "") {
             setServiceActionJson("")
         }
+
     }
+
 
     /**
      * This function handle what to display when the user click on the reaction button
      */
     const handleReaction = () => {
-        if (!reactionVisibility)
+        if (reactionNeedDisplay) { // affichage des needs
+            setReactionNeedDisplay(false);
+            return;
+        }
+        if (serviceReactionJson !== "") { // pour l'affichage des reactions
+            setServiceReactionJson("");
+        }
+        if (!reactionVisibility) { // pour l'affichage des reactions
             setReactionVisibility(true);
-        if (!reaction)
-            setReaction(true);
-        if (reaction)
-            setReaction(false)
+        }
+        if (reaction && reactionVisibility) { // pour l'affichage des services
+            setReaction(false);
+        }
         if (defaultReactionDesc === "") {
             setServiceReactionJson("")
         }
@@ -918,6 +961,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
         return (
             <div>
+                <img src={leftArrow} onClick={handleReaction} width={30} style={{ position: 'absolute', left: '7%', top: '7%' }} />
                 {dataArray.map((serviceObject, i) => (
                     <VStack key={i} display="inline-block">
                         <DisplayServiceReaction
@@ -1243,6 +1287,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
         return (
             <div>
+                <img src={leftArrow} onClick={handleAction} width={30} style={{ position: 'absolute', left: '7%', top: '7%' }} />
                 {dataArray.map((serviceObject, i) => (
                     <VStack key={i} display="inline-block">
                         <DisplayService
@@ -1273,7 +1318,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                 <HStack spacing="50px">
                     <VStack>
                         <Text justifyContent="center" fontSize="3xl" marginTop={130} > Action </Text>
-                        <Box onClick={handleAction} boxSize={370} blockSize={500} borderRadius='30' bg={defaultActionColor} color='white' px={4} h={8}>
+                        <Box onClick={triggerActionVisibility} boxSize={370} blockSize={500} borderRadius='30' bg={defaultActionColor} color='white' px={4} h={8}>
                             <Heading fontSize='xl'>{defaultActionTitle}</Heading>
                             <Text mt={4}>{defaultActionDesc}</Text>
                             {Object.keys(NeedActions).map((key) => (
@@ -1286,7 +1331,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                     <img src={ArrowArea} width={200} style={{ marginTop: '150px' }} ></img>
                     <VStack>
                         <Text justifyContent="center" fontSize="3xl" marginTop={130}  > Reaction </Text>
-                        <Box onClick={handleReaction} boxSize={370} blockSize={500} borderRadius='30' bg={defaultReactionColor} color='white' px={4} h={8}>
+                        <Box onClick={triggerReactionVisibility} boxSize={370} blockSize={500} borderRadius='30' bg={defaultReactionColor} color='white' px={4} h={8}>
                             <Heading fontSize='xl'>{defaultReactionTitle}</Heading>
                             <Text mt={4}>{defaultReactionDesc}</Text>
                             {Object.keys(NeedReactions).map((key) => (
@@ -1301,16 +1346,14 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         )
         else if (action) (
             rows.push(
-                <Stack marginTop={20} >
-                    {/* <img src={leftArrow} onClick={handleAction} width={30} style={{ marginRight: '1500px' }} ></img> */}
+                <Stack marginTop={20} marginLeft={"7%"} >
                     <Services />
                 </Stack>
             )
         )
         else if (reaction) (
             rows.push(
-                <Stack marginTop={20} >
-                    {/* <img src={leftArrow} onClick={handleReaction} width={30} style={{ marginRight: '1500px' }} ></img> */}
+                <Stack marginTop={20} marginLeft={"7%"}>
                     <ServicesReaction />
                 </Stack>
             )

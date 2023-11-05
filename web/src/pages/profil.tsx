@@ -28,7 +28,7 @@ interface InputProps {
 export function InputText({ setValue, placeHolder, type, color, margin }: InputProps): JSX.Element {
 
     const inputStyle = {
-        width: '50%', // Adjust the width as needed
+        width: '50%',
     };
 
     return (
@@ -146,7 +146,7 @@ export const Profile = (): JSX.Element => {
             const response = await axios.post('http://localhost:8080/user/changeMail', body
             );
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 alert("you successfully upadated your email");
             } else {
                 alert("you failed to update your email");
@@ -174,7 +174,7 @@ export const Profile = (): JSX.Element => {
             const response = await axios.post('http://localhost:8080/user/changeUsername', body
             );
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 alert("you successfully upadated your username");
             } else {
                 alert("you failed to update your username");
@@ -208,7 +208,7 @@ export const Profile = (): JSX.Element => {
             const response = await axios.post('http://localhost:8080/user/changePassword', body
             );
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 alert("you successfully upadated your password");
             } else {
                 alert("you failed to update your password");
@@ -229,16 +229,46 @@ export const Profile = (): JSX.Element => {
         for (let i = 0; i < listOA2.length; i++) {
             if (listOA2.includes(oauthNames[i])) {
                 console.log(oauthNames[i])
-                row.push(<Box color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>{oauthNames[i]}</Box>);
+                row.push(
+                    // <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
+                    //     {oauthNames[i]}
+                    // </Box>
+                    <Box p={5}
+                        shadow='md'
+                        borderRadius={30}
+                        borderWidth='1px'
+                        boxSize={100}
+                        inlineSize={500}
+                        color={'#CCCCCC'}
+                        backgroundColor={"black"}>
+                        {oauthNames[i]}
+                    </Box>
+                );
+            } else {
+                console.log(oauthNames[i])
+                row.push(
+                    // <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
+                    //     you are not connected to{listOA2[i]}
+                    // </Box>
+                    <Box p={5}
+                        shadow='md'
+                        borderRadius={30}
+                        borderWidth='1px'
+                        boxSize={100}
+                        inlineSize={500}
+                        color={'#CCCCCC'}
+                        backgroundColor={"black"}>
+                        you are not connected to {listOA2[i]}
+                    </Box>
+                );
             }
-            console.log(oauthNames[i])
-            row.push(<Box color="black" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>you are not connected to{listOA2[i]}</Box>);
         }
         return (
 
-            <HStack marginLeft={1} marginTop={0} spacing="0px">
+            <VStack marginLeft={"-350px"} marginTop={"5%"} spacing="0px">
+                <Heading marginLeft={"-160px"} size="lg" color="black" marginTop={30} >Your OAuth2 connections</Heading>
                 {row}
-            </HStack>
+            </VStack>
         );
     }
 

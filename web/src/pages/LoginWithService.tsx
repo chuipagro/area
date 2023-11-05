@@ -7,16 +7,21 @@ import SpotifyLogo from "../images/SpotifyLogo.png";
 import GoogleLogo from "../images/GoogleLogo.png";
 import { Taskbar } from '../component/Taskbar';
 import axios from 'axios';
+import {
+  CLIENT_ID_GITHUB_LOGIN,
+  CLIENT_ID_GOOGLE_CREATE_AREA,
+  CLIENT_ID_SPOTIFY_CREATE_AREA
+} from './GlobalVariables';
 
 /**
  * This function display a title
  */
 function Title() {
-    return (
-        <VStack spacing="0px">
-            <Text color="black" fontSize={{ base: '50px' }} >page login with services to make</Text>
-        </VStack>
-    )
+  return (
+    <VStack spacing="0px">
+      <Text color="black" fontSize={{ base: '50px' }} >page login with services to make</Text>
+    </VStack>
+  )
 }
 
 /**
@@ -24,9 +29,11 @@ function Title() {
  * the function is to be completed
  */
 export const LoginWithService = (): JSX.Element => {
-  const clientIdGithub = process.env.REACT_APP_CLIENT_ID_GITHUB_LOGIN as string;
-  const clientIdGoogle = process.env.REACT_APP_CLIENT_ID_GOOGLE_CREATE_AREA as string;
-  const clientIdSpotify = process.env.REACT_APP_CLIENT_ID_SPOTIFY_CREATE_AREA as string;
+
+  const clientIdGitHubCreateArea: string = process.env.REACT_APP_CLIENT_ID_GITHUB_CREATE_AREA || '';
+  const clientIdGitHubLogin: string = process.env.REACT_APP_CLIENT_ID_GITHUB_LOGIN || '';
+  const clientIdGoogleCreateArea: string = process.env.REACT_APP_CLIENT_ID_GOOGLE_CREATE_AREA || '';
+  const clientIdSpotifyCreateArea: string = process.env.REACT_APP_CLIENT_ID_SPOTIFY_CREATE_AREA || '';
 
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
@@ -63,7 +70,7 @@ export const LoginWithService = (): JSX.Element => {
     'read:discussion',
     'read:enterprise',
   ]
-  
+
   const googleScope = [
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/userinfo.email",
@@ -97,15 +104,17 @@ export const LoginWithService = (): JSX.Element => {
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/spreadsheets.readonly",
     "https://www.googleapis.com/auth/forms",
+    "https://www.googleapis.com/auth/forms.body",
+    "https://www.googleapis.com/auth/forms.readonly",
     "https://www.googleapis.com/auth/forms.currentonly",
     "https://www.googleapis.com/auth/documents",
     "https://www.googleapis.com/auth/presentations",
     "https://www.googleapis.com/auth/presentations.readonly",
   ];
 
-  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGithub}&scope=${encodeURIComponent(githubScope.join(' '))}`;
-  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientIdSpotify)}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
-  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${encodeURIComponent(clientIdGoogle)}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
+  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID_GITHUB_LOGIN}&scope=${encodeURIComponent(githubScope.join(' '))}`;
+  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID_SPOTIFY_CREATE_AREA}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
+  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${CLIENT_ID_GOOGLE_CREATE_AREA}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
 
   const navigate = useNavigate();
 
@@ -288,7 +297,7 @@ export const LoginWithService = (): JSX.Element => {
       }}>
         <button onClick={authenticateWithGoogle} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
           <img src={GoogleLogo} alt="Google Logo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Google</span>
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue with Google</span>
         </button>
       </div>
 
@@ -306,7 +315,7 @@ export const LoginWithService = (): JSX.Element => {
       }}>
         <button onClick={authenticateWithGithub} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
           <img src={GithubLogo} alt="GithubLogo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Github</span>
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue with Github</span>
         </button>
       </div>
 
@@ -324,12 +333,12 @@ export const LoginWithService = (): JSX.Element => {
       }}>
         <button onClick={authenticateWithSpotify} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
           <img src={SpotifyLogo} alt="SpotifyLogo" style={{ width: 35, height: 35 }} />
-          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue avec Spotify</span>
+          <span style={{ fontSize: 20, color: 'black', marginLeft: 10 }}>Continue with Spotify</span>
         </button>
       </div>
 
-      <div style={{marginTop: '4%', fontSize: 30}}>
-        <p>Continuer avec <b onClick={() => navigate('/login')}>Log in</b> ou <b onClick={() => navigate('/register')}>Sign up</b></p>
+      <div style={{ marginTop: '4%', fontSize: 30 }}>
+        <p>Continue in <b onClick={() => navigate('/login')}>Log in</b> or <b onClick={() => navigate('/register')}>Sign up</b></p>
       </div>
     </div>
   );

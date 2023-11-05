@@ -10,32 +10,32 @@ import Switch from '@mui/material/Switch';
 
 const MySwitch = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => {
     return (
-      <Switch checked={checked} onChange={onChange} />
+        <Switch checked={checked} onChange={onChange} />
     );
 };
 
 const theme = createTheme({
     components: {
-      MuiSwitch: {
-        styleOverrides: {
-          root: {
-            '&.MuiSwitch-switchBase.Mui-checked': {
-              color: '#000000',
+        MuiSwitch: {
+            styleOverrides: {
+                root: {
+                    '&.MuiSwitch-switchBase.Mui-checked': {
+                        color: '#000000',
+                    },
+                    '& + .MuiSwitch-track': {
+                        backgroundColor: '#6F625F',
+                    },
+                },
             },
-            '& + .MuiSwitch-track': {
-              backgroundColor: '#6F625F',
-            },
-          },
         },
-      },
     },
 });
 
 const BoutonActive = ({ isActive, onToggle }: { isActive: boolean; onToggle: () => void }): JSX.Element => {
     return (
-      <ThemeProvider theme={theme}>
-        <MySwitch checked={isActive} onChange={onToggle} />
-      </ThemeProvider>
+        <ThemeProvider theme={theme}>
+            <MySwitch checked={isActive} onChange={onToggle} />
+        </ThemeProvider>
     );
 };
 
@@ -98,7 +98,7 @@ export const Dashboard = (): JSX.Element => {
                     const body = {
                         "token": token,
                     };
-    
+
                     const res = await axios.post('http://localhost:8080/area/getUserAreas', body);
                     if (res.status === 200) {
                         setAreas(res.data.areas);
@@ -135,7 +135,7 @@ export const Dashboard = (): JSX.Element => {
         const updatedAreas = [...SearchAreas];
         updatedAreas[index].active = !updatedAreas[index].active;
         setSearchAreas(updatedAreas);
-    
+
         try {
             const areaToUpdate = Areas.find(area => area.title === updatedAreas[index].title);
             if (areaToUpdate) {
@@ -147,7 +147,7 @@ export const Dashboard = (): JSX.Element => {
                     }
                 };
 
-                const response = await axios.post('http://localhost:8080/area/updateArea', bodyBoutton);    
+                const response = await axios.post('http://localhost:8080/area/updateArea', bodyBoutton);
                 if (response.status === 200) {
                     if (token != null) {
                         const body = {
@@ -257,10 +257,10 @@ export const Dashboard = (): JSX.Element => {
                         width: '60%',
                     }}
                 >
-                    <FiSearch style={{ marginRight: '35px', fontSize: '30px', alignSelf: 'center' }}/>
+                    <FiSearch style={{ marginRight: '35px', fontSize: '30px', alignSelf: 'center' }} />
                     <input
                         type="text"
-                        placeholder="Rechercher..."
+                        placeholder="Search..."
                         onChange={(e) => handleSearch(e.target.value)}
                         style={{
                             border: 'none',
@@ -283,7 +283,7 @@ export const Dashboard = (): JSX.Element => {
                 }}
             >
                 <Heading as="h2" size="2xl" fontWeight="bold" marginBottom="1em" marginTop={10}>
-                    Liste de vos Areas
+                    List of your Areas
                 </Heading>
                 {blocksInRow.map((blockCounts, index) => (
                     <div
@@ -296,111 +296,111 @@ export const Dashboard = (): JSX.Element => {
                         }}
                     >
                         {blockCounts.length === 2 ? (
-                        <>
-                        <Box
-                            p={5}
-                            shadow="md"
-                            borderWidth="1px"
-                            width={'34%'}
-                            height="300px"
-                            color="#CCCCCC"
-                            backgroundColor={`rgb(${AllServices[SearchAreas[index].action.type - 1].color.red}, ${AllServices[SearchAreas[index].action.type - 1].color.green}, ${AllServices[SearchAreas[index].action.type - 1].color.blue})`}
-                            margin={5}
-                            borderRadius="xl"
-                            boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            position="relative"
-                        >
-                            <Box position="absolute" top="5px" right="5px">
-                                <button onClick={() => handleSettingButtonClick(SearchAreas[index], AllServices[SearchAreas[index].action.service - 1], AllServices[SearchAreas[index].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
-                                    <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
-                                </button>
-                            </Box>
-                            <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                                <img src={AllServices[SearchAreas[index].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
-                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].action.service - 1].actions[SearchAreas[index].action.type - 1].description}</Text>
-                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].reaction.service - 1].reactions[SearchAreas[index].reaction.type - 1].description}</Text>
-                            </Box>
-                            <Box
-                                position="absolute"
-                                bottom={5}
-                                right={5}
-                            >
-                                <BoutonActive isActive={SearchAreas[index].active} onToggle={() => handleToggle(index)} />
-                            </Box>
-                        </Box>
-                        <Box
-                            p={5}
-                            shadow="md"
-                            borderWidth="1px"
-                            width={'34%'}
-                            height="300px"
-                            color="#CCCCCC"
-                            backgroundColor={`rgb(${AllServices[SearchAreas[index + 1].action.type - 1].color.red}, ${AllServices[SearchAreas[index + 1].action.type - 1].color.green}, ${AllServices[SearchAreas[index + 1].action.type - 1].color.blue})`}
-                            margin={5}
-                            borderRadius="xl"
-                            boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            position="relative"
-                        >
-                            <Box position="absolute" top="5px" right="5px">
-                                <button onClick={() => handleSettingButtonClick(SearchAreas[index + 1], AllServices[SearchAreas[index + 1].action.service - 1], AllServices[SearchAreas[index + 1].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
-                                    <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
-                                </button>
-                            </Box>
-                            <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                                <img src={AllServices[SearchAreas[index + 1].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
-                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index + 1].action.service - 1].actions[SearchAreas[index + 1].action.type - 1].description}</Text>
-                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index + 1].reaction.service - 1].reactions[SearchAreas[index + 1].reaction.type - 1].description}</Text>
-                            </Box>
-                            <Box
-                                position="absolute"
-                                bottom={5}
-                                right={5}
-                            >
-                                <BoutonActive isActive={SearchAreas[index + 1].active} onToggle={() => handleToggle(index + 1)} />
-                            </Box>
-                        </Box>
-                        </>
+                            <>
+                                <Box
+                                    p={5}
+                                    shadow="md"
+                                    borderWidth="1px"
+                                    width={'34%'}
+                                    height="300px"
+                                    color="#CCCCCC"
+                                    backgroundColor={`rgb(${AllServices[SearchAreas[index].action.type - 1].color.red}, ${AllServices[SearchAreas[index].action.type - 1].color.green}, ${AllServices[SearchAreas[index].action.type - 1].color.blue})`}
+                                    margin={5}
+                                    borderRadius="xl"
+                                    boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
+                                    display="flex"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    position="relative"
+                                >
+                                    <Box position="absolute" top="5px" right="5px">
+                                        <button onClick={() => handleSettingButtonClick(SearchAreas[index], AllServices[SearchAreas[index].action.service - 1], AllServices[SearchAreas[index].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
+                                            <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
+                                        </button>
+                                    </Box>
+                                    <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                                        <img src={AllServices[SearchAreas[index].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                        <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].action.service - 1].actions[SearchAreas[index].action.type - 1].description}</Text>
+                                        <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].reaction.service - 1].reactions[SearchAreas[index].reaction.type - 1].description}</Text>
+                                    </Box>
+                                    <Box
+                                        position="absolute"
+                                        bottom={5}
+                                        right={5}
+                                    >
+                                        <BoutonActive isActive={SearchAreas[index].active} onToggle={() => handleToggle(index)} />
+                                    </Box>
+                                </Box>
+                                <Box
+                                    p={5}
+                                    shadow="md"
+                                    borderWidth="1px"
+                                    width={'34%'}
+                                    height="300px"
+                                    color="#CCCCCC"
+                                    backgroundColor={`rgb(${AllServices[SearchAreas[index + 1].action.type - 1].color.red}, ${AllServices[SearchAreas[index + 1].action.type - 1].color.green}, ${AllServices[SearchAreas[index + 1].action.type - 1].color.blue})`}
+                                    margin={5}
+                                    borderRadius="xl"
+                                    boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
+                                    display="flex"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    position="relative"
+                                >
+                                    <Box position="absolute" top="5px" right="5px">
+                                        <button onClick={() => handleSettingButtonClick(SearchAreas[index + 1], AllServices[SearchAreas[index + 1].action.service - 1], AllServices[SearchAreas[index + 1].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
+                                            <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
+                                        </button>
+                                    </Box>
+                                    <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                                        <img src={AllServices[SearchAreas[index + 1].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                        <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index + 1].action.service - 1].actions[SearchAreas[index + 1].action.type - 1].description}</Text>
+                                        <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index + 1].reaction.service - 1].reactions[SearchAreas[index + 1].reaction.type - 1].description}</Text>
+                                    </Box>
+                                    <Box
+                                        position="absolute"
+                                        bottom={5}
+                                        right={5}
+                                    >
+                                        <BoutonActive isActive={SearchAreas[index + 1].active} onToggle={() => handleToggle(index + 1)} />
+                                    </Box>
+                                </Box>
+                            </>
                         ) : (
                             <Box
-                            p={5}
-                            shadow="md"
-                            borderWidth="1px"
-                            width={'70%'}
-                            height="300px"
-                            color="#CCCCCC"
-                            backgroundColor={`rgb(${AllServices[SearchAreas[index].action.type - 1].color.red}, ${AllServices[SearchAreas[index].action.type - 1].color.green}, ${AllServices[SearchAreas[index].action.type - 1].color.blue})`}
-                            margin={5}
-                            borderRadius="xl"
-                            boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            position="relative"
-                        >
-                            <Box position="absolute" top="5px" right="5px">
-                                <button onClick={() => handleSettingButtonClick(SearchAreas[index], AllServices[SearchAreas[index].action.service - 1], AllServices[SearchAreas[index].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
-                                    <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
-                                </button>
-                            </Box>
-                            <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                                <img src={AllServices[SearchAreas[index].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
-                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].action.service - 1].actions[SearchAreas[index].action.type - 1].description}</Text>
-                                <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].reaction.service - 1].reactions[SearchAreas[index].reaction.type - 1].description}</Text>
-                            </Box>
-                            <Box
-                                position="absolute"
-                                bottom={5}
-                                right={5}
+                                p={5}
+                                shadow="md"
+                                borderWidth="1px"
+                                width={'70%'}
+                                height="300px"
+                                color="#CCCCCC"
+                                backgroundColor={`rgb(${AllServices[SearchAreas[index].action.type - 1].color.red}, ${AllServices[SearchAreas[index].action.type - 1].color.green}, ${AllServices[SearchAreas[index].action.type - 1].color.blue})`}
+                                margin={5}
+                                borderRadius="xl"
+                                boxShadow="4px 4px 10px 0 rgba(0,0,0,0.8)"
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                position="relative"
                             >
-                                <BoutonActive isActive={SearchAreas[index].active} onToggle={() => handleToggle(index)} />
+                                <Box position="absolute" top="5px" right="5px">
+                                    <button onClick={() => handleSettingButtonClick(SearchAreas[index], AllServices[SearchAreas[index].action.service - 1], AllServices[SearchAreas[index].reaction.service - 1])} style={{ padding: 0, border: 'none', background: 'none', display: 'flex', alignItems: 'center' }}>
+                                        <img src={"./assets/images/settingBouton.png"} alt="Setting Logo" style={{ width: 35, height: 35 }} />
+                                    </button>
+                                </Box>
+                                <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                                    <img src={AllServices[SearchAreas[index].action.type - 1].logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
+                                    <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].action.service - 1].actions[SearchAreas[index].action.type - 1].description}</Text>
+                                    <Text mt={4} color="black" fontWeight="bold">{AllServices[SearchAreas[index].reaction.service - 1].reactions[SearchAreas[index].reaction.type - 1].description}</Text>
+                                </Box>
+                                <Box
+                                    position="absolute"
+                                    bottom={5}
+                                    right={5}
+                                >
+                                    <BoutonActive isActive={SearchAreas[index].active} onToggle={() => handleToggle(index)} />
+                                </Box>
                             </Box>
-                        </Box>
                         )}
                     </div>
                 ))}
