@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { DiscordBotService } from './discord-bot.service';
 
-@Controller('DiscordBot')
+@Controller('discord')
 export class DiscordBotController {
   constructor(private readonly DiscordBotService: DiscordBotService) {}
 
@@ -36,7 +36,7 @@ export class DiscordBotController {
         channel_id: {
           type:'string'
         },
-        service: {
+        message: {
           type:'string'
         }
       }

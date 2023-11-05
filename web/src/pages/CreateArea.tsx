@@ -7,6 +7,7 @@ import leftArrow from '../app/leftArrow.png'
 import ArrowArea from '../app/ArrowArea.png'
 import { Taskbar } from '../component/VerticalTaskbar';
 import { DisconnectButtun } from '../component/disconnect';
+import { json } from 'node:stream/consumers';
 
 /**
  * interface for the props of the create area page
@@ -159,7 +160,36 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
         };
     };
 
+    type User = {
+        auth: {
+            oauthName: string;
+            token: string;
+            refreshToken: string | null;
+            _id: string;
+        }[];
+        mail: string;
+        password: string;
+        picture: string | null;
+        token: string;
+        uid: string;
+        username: string;
+        __v: number;
+        _id: string;
+    };
+
     const [jsonData, setJsonData] = React.useState<Data | {}>({});
+    const [jsonDataUser, setJsonDataUser] = React.useState<User | null>(null);
+
+    const [oauthNames, setOauthNames] = React.useState<string[]>([]);
+    const needOA2 = ["google", "github", "spotify"]
+
+
+    React.useEffect(() => {
+        if (jsonDataUser !== null) {
+            setOauthNames(jsonDataUser.auth.map((authItem) => authItem.oauthName));
+        }
+    }, [jsonDataUser]);
+
 
     /**
      * This function fetch the json data from the server in order to display the services and the actions/reactions available
@@ -196,8 +226,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
 
             const response = await axios.post('http://localhost:8080/user/getUserInfo', body);
             if (response.status === 200) {
-                console.log('list OA2 conn');
-                console.log(response.data)
+                setJsonDataUser(response.data.user);
             } else {
                 setIsErrorReceived(true);
                 console.error('Failed to fetch JSON data');
@@ -231,10 +260,22 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             const test1 = defaultActionTitle.trim()
             const test2 = defaultReactionTitle.trim()
 
-            const data = {
-                [test1]: NeedActions,
-                [test2]: NeedReactions,
-            };
+
+            let data: { [key: string]: string | { [key: string]: string } } = {};
+
+            if (Object.keys(NeedActions).length !== 0) {
+                data[test1] = NeedActions;
+            }
+            if (Object.keys(NeedReactions).length > 0) {
+                data[test2] = NeedReactions;
+            }
+
+
+            for (const action in NeedActions) {
+                if (NeedActions.hasOwnProperty(action)) {
+                    const element = NeedActions[action];
+                }
+            }
 
             const body = {
                 "title": name,
@@ -432,15 +473,36 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     function DisplayReactions({ title, reactions, color }: { title: string; reactions: { [reactionKey: string]: string }; color: string }) {
         const rows: JSX.Element[] = [];
         const reactionBoxes: JSX.Element[] = [];
+        title = title.trim()
+
+        if (oauthNames.indexOf(title) === -1 && needOA2.indexOf(title) !== -1)
+            return (
+                <div>
+                    <Box p={5}
+                        shadow='md'
+                        borderRadius={30}
+                        borderWidth='1px'
+                        boxSize={800}
+                        marginLeft={150}
+                        inlineSize={1000}
+                        color={'#CCCCCC'}
+                        backgroundColor={color}
+                    // onClick={ }
+                    >
+                        <Heading fontSize="xl">You need to connect your {title} account</Heading>
+                    </Box>
+                </div>
+
+            )
 
         Object.keys(reactions).forEach((reactionKey) => {
             const reactionDescription = reactions[reactionKey];
             let reactionBox: JSX.Element | null = null;
             if (typeof reactionDescription === 'object') {
-                if (reactionNeedDisplay) {
-                    const reactionObject = reactionDescription as ReactionObject;
-                    const desc = reactionObject.description;
-                    const need = reactionObject.need;
+                const reactionObject = reactionDescription as ReactionObject;
+                const desc = reactionObject.description;
+                const need = reactionObject.need;
+                if (reactionNeedDisplay && need !== undefined) {
 
                     if (desc !== "" && desc !== reactionDesc) {
                         rows.push(
@@ -464,24 +526,41 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                         </VStack>
                     )
                 }
-                const reactionObject = reactionDescription as ReactionObject;
-                const desc = reactionObject.description;
-                reactionBox = (
-                    <Box
-                        key={reactionKey}
-                        p={5}
-                        shadow="md"
-                        borderWidth="1px"
-                        borderRadius={30}
-                        boxSize={300}
-                        inlineSize={300}
-                        color={"#CCCCCC"}
-                        backgroundColor={color}
-                        onClick={() => setReactions({ reactionDescription: desc })}
-                    >
-                        <Heading fontSize="xl">{desc}</Heading>
-                    </Box>
-                );
+                if (need === undefined) {
+                    reactionBox = (
+                        <Box
+                            key={reactionKey}
+                            p={5}
+                            shadow="md"
+                            borderWidth="1px"
+                            borderRadius={30}
+                            boxSize={300}
+                            inlineSize={300}
+                            color={"#CCCCCC"}
+                            backgroundColor={color}
+                            onClick={() => CallEndReactions({ reactionDescription: desc, id: reactionObject.id })}
+                        >
+                            <Heading fontSize="xl">{desc}</Heading>
+                        </Box>
+                    );
+                } else {
+                    reactionBox = (
+                        <Box
+                            key={reactionKey}
+                            p={5}
+                            shadow="md"
+                            borderWidth="1px"
+                            borderRadius={30}
+                            boxSize={300}
+                            inlineSize={300}
+                            color={"#CCCCCC"}
+                            backgroundColor={color}
+                            onClick={() => setReactions({ reactionDescription: desc })}
+                        >
+                            <Heading fontSize="xl">{desc}</Heading>
+                        </Box>
+                    );
+                }
             }
             if (reactionBox !== null)
                 reactionBoxes.push(reactionBox);
@@ -698,15 +777,40 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     function DisplayActions({ title, actions, color }: { title: string; actions: { [actionKey: string]: string }; color: string }) {
         const actionBoxes: JSX.Element[] = [];
         const rows: JSX.Element[] = [];
+        title = title.trim()
+
+        if (oauthNames.indexOf(title) === -1 && needOA2.indexOf(title) !== -1)
+            return (
+                <div>
+                    <Box p={5}
+                        shadow='md'
+                        borderRadius={30}
+                        borderWidth='1px'
+                        boxSize={800}
+                        marginLeft={150}
+                        inlineSize={1000}
+                        color={'#CCCCCC'}
+                        backgroundColor={color}
+                    // onClick={ }
+                    >
+                        <Heading fontSize="xl">You need to connect your {title} account</Heading>
+                    </Box>
+                </div>
+
+            )
 
         Object.keys(actions).forEach((actionKey) => {
             let actionBox: JSX.Element | null = null;
             const actionDescription = actions[actionKey];
             if (typeof actionDescription === 'object') {
-                if (actionNeedDisplay) {
-                    const actionObject = actionDescription as ActionObject;
-                    const desc = actionObject.description;
-                    const need = actionObject.need;
+                const actionObject = actionDescription as ActionObject;
+                const desc = actionObject.description;
+                const need = actionObject.need;
+
+                if (actionNeedDisplay && need !== undefined) {
+                    // const actionObject = actionDescription as ActionObject;
+                    // const desc = actionObject.description;
+                    // const need = actionObject.need;
 
                     if (desc !== "" && desc !== actionDesc) {
                         rows.push(
@@ -729,24 +833,43 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
                         </VStack>
                     )
                 }
-                const actionObject = actionDescription as ActionObject;
-                const desc = actionObject.description;
-                actionBox = (
-                    <Box
-                        key={actionKey}
-                        p={5}
-                        shadow="md"
-                        borderWidth="1px"
-                        boxSize={300}
-                        inlineSize={300}
-                        borderRadius={30}
-                        color={"#CCCCCC"}
-                        backgroundColor={color}
-                        onClick={() => setActions({ actionDescription: desc })}
-                    >
-                        <Heading fontSize="xl">{desc}</Heading>
-                    </Box>
-                );
+                if (need === undefined) {
+                    actionBox = (
+                        <Box
+                            key={actionKey}
+                            p={5}
+                            shadow="md"
+                            borderWidth="1px"
+                            boxSize={300}
+                            inlineSize={300}
+                            borderRadius={30}
+                            color={"#CCCCCC"}
+                            backgroundColor={color}
+                            onClick={() => CallEndActions({ actionDescription: desc, id: actionObject.id })}
+                        >
+                            <Heading fontSize="xl">{desc}</Heading>
+                        </Box>
+                    );
+                } else {
+                    // const actionObject = actionDescription as ActionObject;
+                    // const desc = actionObject.description;
+                    actionBox = (
+                        <Box
+                            key={actionKey}
+                            p={5}
+                            shadow="md"
+                            borderWidth="1px"
+                            boxSize={300}
+                            inlineSize={300}
+                            borderRadius={30}
+                            color={"#CCCCCC"}
+                            backgroundColor={color}
+                            onClick={() => setActions({ actionDescription: desc })}
+                        >
+                            <Heading fontSize="xl">{desc}</Heading>
+                        </Box>
+                    );
+                }
             }
             if (actionBox !== null) {
                 actionBoxes.push(actionBox);
