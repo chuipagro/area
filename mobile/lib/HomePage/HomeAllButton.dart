@@ -4,6 +4,8 @@ import 'HomeGlobale.dart';
 import 'package:http/http.dart' as http;
 import '../Globals.dart' as globals;
 import 'package:mobile/LoginPage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'dart:convert';
 
 void homeButtonPress(Function setState) {
@@ -43,14 +45,95 @@ void changeArea(setState, CreatedArea area) {
   });
 }
 
+Future<void> _authenticateWithGitHub() async {
+    final clientIdGithub = 'ecd75a418bce2c16c3f5';
+
+    final authUrl = 'https://github.com/login/oauth/authorize?'
+        'client_id=$clientIdGithub&'
+        'scope=user';
+
+    final result = await FlutterWebAuth2.authenticate(
+      url: authUrl,
+      callbackUrlScheme: 'area',
+    );
+
+
+    String? codeParam = Uri.parse(result).queryParameters['code'];
+
+    final response = await http.post(
+        Uri.parse('https://github.com/login/oauth/access_token'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'client_id': clientIdGithub,
+          'client_secret': 'c25bb753d702882f8634068356cabf8ce4c4ef8a',
+          'code': codeParam,
+        }),
+    );
+
+    if (response.statusCode == 200) { 
+      List<String> parts = response.body.split('&');
+      String accessToken = parts[0].split('=')[1];
+      final res = await http.post(
+        Uri.parse('http://'+globals.IPpc+':8080/auth/OAuth2Area'),
+        body: {
+            'token': accessToken,
+            'oauth': 'github',
+            'tokenUser': globals.Token,
+        },
+      );
+      if (res.statusCode == 200) {
+        print('Connexion good Github!');
+      } else {
+        print('Connexion failed Github!');
+      }
+    } else {
+      print('Erreur lors de l\'obtention du jeton d\'accès : ${response.reasonPhrase}');
+    }
+  }
+
+  Future<void> _authenticateWithGoogle() async {
+    final _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+          final googleAuth = await googleUser.authentication;
+          final accessToken = googleAuth.accessToken;
+
+          final res = await http.post(
+            Uri.parse('http://'+globals.IPpc+':8080/auth/postGoogleArea'),
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({
+              'token': accessToken,
+              'oauth': 'google',
+              'tokenUser': globals.Token,
+            })
+        );
+          if (res.statusCode == 200) {
+            print('Connexion good Google!');
+          } else {
+            print('Connexion failed Google!');
+          }
+        }
+    } catch (error) {
+      print("Erreur lors de la connexion: $error");
+    }
+  }
+
 void setUpOAuth2(String serviceName)
 {
   switch (serviceName) {
     case ("spotify"):
       break;
     case ("google"):
+      _authenticateWithGoogle();
       break;
     case ("github"):
+      _authenticateWithGitHub();
       break;
   }
 }

@@ -19,7 +19,7 @@ class GetStartedPage extends StatefulWidget {
 }
 
 class _GetStartedPageState extends State<GetStartedPage> {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final clientIdGithub = 'ecd75a418bce2c16c3f5';
 
@@ -59,6 +59,8 @@ class _GetStartedPageState extends State<GetStartedPage> {
         },
       );
       if (res.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(res.body);
+        globals.Token = jsonResponse['token'];
        Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const HomePage()),
@@ -91,9 +93,12 @@ class _GetStartedPageState extends State<GetStartedPage> {
             },
             body: jsonEncode({
               'token': accessToken,
+              'oauth': 'google',
             })
         );
         if (res.statusCode == 200) {
+            final Map<String, dynamic> jsonResponse = json.decode(res.body);
+            globals.Token = jsonResponse['token'];
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()),
