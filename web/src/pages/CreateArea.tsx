@@ -551,12 +551,12 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             const response = await axios.post('http://localhost:8080/area/createArea', body
             );
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 alert("AREA created successfully");
                 navigate('/home');
             } else {
                 alert("AREA not created");
-                navigate('/create');
+                navigate('/home');
             }
 
             return response.data;
