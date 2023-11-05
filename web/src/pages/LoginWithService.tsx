@@ -7,11 +7,6 @@ import SpotifyLogo from "../images/SpotifyLogo.png";
 import GoogleLogo from "../images/GoogleLogo.png";
 import { Taskbar } from '../component/Taskbar';
 import axios from 'axios';
-import {
-  CLIENT_ID_GITHUB_LOGIN,
-  CLIENT_ID_GOOGLE_CREATE_AREA,
-  CLIENT_ID_SPOTIFY_CREATE_AREA
-} from './GlobalVariables';
 
 /**
  * This function display a title
@@ -112,9 +107,9 @@ export const LoginWithService = (): JSX.Element => {
     "https://www.googleapis.com/auth/presentations.readonly",
   ];
 
-  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID_GITHUB_LOGIN}&scope=${encodeURIComponent(githubScope.join(' '))}`;
-  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID_SPOTIFY_CREATE_AREA}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
-  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${CLIENT_ID_GOOGLE_CREATE_AREA}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
+  const authUrlGithub = `https://github.com/login/oauth/authorize?client_id=${clientIdGitHubLogin}&scope=${encodeURIComponent(githubScope.join(' '))}`;
+  const authUrlSpotify = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientIdSpotifyCreateArea}&redirect_uri=${encodeURIComponent(RedirectSpotify)}&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played user-top-read`;
+  const authUrlGoogle = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${clientIdGoogleCreateArea}&redirect_uri=${encodeURIComponent(RedirectGoodle)}&scope=${encodeURIComponent(googleScope.join(' '))}`;
 
   const navigate = useNavigate();
 
