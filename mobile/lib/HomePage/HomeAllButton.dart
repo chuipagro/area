@@ -203,6 +203,7 @@ void setAllNeeds(String need, String input)
 }
 
 Future<void> addArea(String name, setState) async {
+  print("Token : " + globals.Token);
   final reponse = await http.post(
     Uri.parse('http://' + globals.IPpc + ':8080/area/createArea'),
     headers: {
@@ -316,11 +317,15 @@ Future<Map<String, dynamic>> callForAllServices() async {
 }
 
 Future<Map<String, dynamic>> callForAllAreas() async {
-  final reponse = await http.get(
+  final reponse = await http.post(
     Uri.parse('http://' + globals.IPpc + ':8080/area/getUserAreas'),
+    body: {
+      'token': globals.Token,
+    },
   );
 
   if (reponse.statusCode == 200) {
+    print("area body : " + reponse.body);
     final Map<String, dynamic> jsonResponse = json.decode(reponse.body);
     return jsonResponse;
   } else {
@@ -425,23 +430,27 @@ Future<void> loadAll(setState) async
   });
 }
 
-Future<bool> changeStatusOfArea(setState, int areaIndex, bool newValue) async {
+Future<bool> changeStatusOfArea(setState, int index, bool newValue) async {
   final reponse = await http.post(
     Uri.parse('http://${globals.IPpc}:8080/area/changeAreaStatus'),
-    body: {
-      'title': createdAreas[areaIndex].name,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'title': createdAreas[index].name,
       'token': globals.Token,
       'active': newValue,
-    },
+    }),
   );
 
   if (reponse.statusCode == 200) {
     setState(() {
       currentPageState = PageState.Areas;
+      needToReload = true;
     });
     return true;
   } else {
-    print('Échec de la désactivation de la zone : ${reponse.statusCode}');
+    print('Échec de la désactivation de la zone : ${reponse.statusCode}  ==  ${reponse.body}');
     return false;
   }
 }

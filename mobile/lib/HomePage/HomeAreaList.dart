@@ -172,7 +172,7 @@ Widget buildHomePageContent(setState, context) {
                                 width: screenWidth * 0.08,
                                 height: screenHeight * 0.08,
                                 child: Image.asset(
-                                  elements[element.areaIdOne - 1].iconPath,
+                                  elements[element.areaIdOne].iconPath,
                                 ),
                               ),
                               Positioned(
@@ -181,7 +181,7 @@ Widget buildHomePageContent(setState, context) {
                                 width: screenWidth * 0.08,
                                 height: screenHeight * 0.08,
                                 child: Image.asset(
-                                  elements[element.areaIdTwo - 1].iconPath,
+                                  elements[element.areaIdTwo].iconPath,
                                 ),
                               ),
                               Positioned(
@@ -200,11 +200,11 @@ Widget buildHomePageContent(setState, context) {
                                 top: 50.0,
                                 left: 10.0,
                                 child: Text(
-                                  elements[element.areaIdOne - 1].actions[element.areaOneActionId - 1].name,
+                                  elements[element.areaIdOne].actions[element.areaOneActionId].name,
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, elements[element.areaIdOne - 1].red, elements[element.areaIdOne - 1].green, elements[element.areaIdOne - 1].blue),
+                                    color: Color.fromARGB(255, elements[element.areaIdOne].red, elements[element.areaIdOne].green, elements[element.areaIdOne].blue),
                                   ),
                                 ),
                               ),
@@ -212,23 +212,11 @@ Widget buildHomePageContent(setState, context) {
                                 top: 80.0,
                                 left: 10.0,
                                 child: Text(
-                                  elements[element.areaIdTwo - 1].reactions[element.areaTwoActionId - 1].name,
+                                  elements[element.areaIdTwo].reactions[element.areaTwoActionId].name,
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, elements[element.areaIdTwo - 1].red, elements[element.areaIdTwo - 1].green, elements[element.areaIdTwo - 1].blue),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: 180.0,
-                                left: 10.0,
-                                child: Text(
-                                  'Créé par ${element.createdBy}',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    color: Color.fromARGB(255, elements[element.areaIdTwo].red, elements[element.areaIdTwo].green, elements[element.areaIdTwo].blue),
                                   ),
                                 ),
                               ),
