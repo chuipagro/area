@@ -44,7 +44,7 @@ export class GoogleService {
 				if(!user) {
 						throw new Error('User not found');
 				}
-				await sendEmail(user.mail, 'AREAu stand', message, "pablo.levy@epitech.eu");
+				await sendEmail(user.mail, 'AREAu stand', message);
 		}
 		
 		async createForm(name: string, description: string): Promise<any> {

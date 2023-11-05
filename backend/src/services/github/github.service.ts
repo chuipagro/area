@@ -79,7 +79,6 @@ export class GithubService {
     const url = `https://api.github.com/user/repos`;
     
     const body = {
-      org: "pablo0675",
       name: name,
       description: description,
       homepage: homepage,
