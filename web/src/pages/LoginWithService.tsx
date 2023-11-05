@@ -24,9 +24,9 @@ function Title() {
  * the function is to be completed
  */
 export const LoginWithService = (): JSX.Element => {
-  const clientIdGithub = '46d5db5635abf205e5fb';
-  const clientIdGoogle = '148697100580-b3usc1ea8untn2ub5itd7igc2vecosl8.apps.googleusercontent.com';
-  const clientIdSpotify = 'a549fb0ad4554f449fa69ce2322dbfc8';
+  const clientIdGithub = process.env.REACT_APP_CLIENT_ID_GITHUB_LOGIN as string;
+  const clientIdGoogle = process.env.REACT_APP_CLIENT_ID_GOOGLE_CREATE_AREA as string;
+  const clientIdSpotify = process.env.REACT_APP_CLIENT_ID_SPOTIFY_CREATE_AREA as string;
 
   const RedirectGoodle = 'http://localhost:8081/oauthgoogle';
   const RedirectSpotify = 'http://localhost:8081/oauthspotify';
@@ -236,8 +236,7 @@ export const LoginWithService = (): JSX.Element => {
   }, [keyS]);
 
   const authenticateWithGithub = async () => {
-    console.log(process.env);
-    console.log(process.env.CLIENT_ID_GITHUB_CREATE_AREA);
+    console.log(process.env.REACT_APP_CLIENT_ID_GITHUB_CREATE_AREA);
     const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
 
     const interval = setInterval(() => {
