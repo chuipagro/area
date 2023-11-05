@@ -9,9 +9,9 @@ import './theme/index.css';
 /**
  * This function display the app
  */
-const dotenv = require('dotenv');
+// const dotenv = require('dotenv');
 
-dotenv.config()
+// dotenv.config()
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
