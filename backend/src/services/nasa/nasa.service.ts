@@ -31,7 +31,7 @@ export class NasaService {
       const cronGestion = new CronGestion();
       const timezone = "Europe/Paris";
 
-      const checkForNewGamePlay = () => {
+      const checkForNextWeatherInfoMars = () => {
         const dateAtCreation = new Date().toLocaleDateString();
         const timeAtCreation = new Date().toLocaleTimeString();
         const cronTimer = cronGestion.timerToCron("H1", timeAtCreation, dateAtCreation);
@@ -52,7 +52,7 @@ export class NasaService {
         });
         job.start();
       }
-      checkForNewGamePlay();
+      checkForNextWeatherInfoMars();
     });
   }
 
