@@ -224,15 +224,10 @@ export const Profile = (): JSX.Element => {
     function DisplayOauthNames() {
         const row = [];
 
-        console.log("tiens la liste de oA2 mon reuf")
-
         for (let i = 0; i < listOA2.length; i++) {
             if (listOA2.includes(oauthNames[i])) {
                 console.log(oauthNames[i])
                 row.push(
-                    // <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
-                    //     {oauthNames[i]}
-                    // </Box>
                     <Box p={5}
                         shadow='md'
                         borderRadius={30}
@@ -247,9 +242,6 @@ export const Profile = (): JSX.Element => {
             } else {
                 console.log(oauthNames[i])
                 row.push(
-                    // <Box backgroundColor={"red"} color="red" fontSize={{ base: '20px' }} marginTop={30} marginLeft={0}>
-                    //     you are not connected to{listOA2[i]}
-                    // </Box>
                     <Box p={5}
                         shadow='md'
                         borderRadius={30}
@@ -258,7 +250,7 @@ export const Profile = (): JSX.Element => {
                         inlineSize={500}
                         color={'#CCCCCC'}
                         backgroundColor={"black"}>
-                        you are not connected to {listOA2[i]}
+                        Click to connect to {listOA2[i]}
                     </Box>
                 );
             }
@@ -276,7 +268,7 @@ export const Profile = (): JSX.Element => {
     function Account() {
 
         const inputStyle = {
-            width: '50%', // Adjust the width as needed
+            width: '50%',
         };
 
         let placeHolderMail: string = ""
@@ -309,7 +301,6 @@ export const Profile = (): JSX.Element => {
                     <Heading size="lg" color="black" marginTop={30} >Account</Heading>
 
 
-
                     <HStack marginLeft={1} marginTop={0} spacing="0px">
                         <Text color="black" fontSize={{ base: '20px' }}
                             marginTop={30} marginLeft={0}>Change Your Email</Text>
@@ -322,7 +313,6 @@ export const Profile = (): JSX.Element => {
                         placeHolder={placeHolderMail} type="text" color="black" />
 
 
-
                     <HStack marginLeft={1} marginTop={0} spacing="0px">
                         <Text color="black" fontSize={{ base: '20px' }}
                             marginTop={30} marginLeft={0}>Change Your Username</Text>
@@ -333,7 +323,6 @@ export const Profile = (): JSX.Element => {
                     </HStack>
                     <InputText margin="2%" setValue={setUsernameTemp}
                         placeHolder={placeHolderUsername} type="text" color="black" />
-
 
 
                     <HStack marginLeft={1} marginTop={0} spacing="0px">
@@ -354,17 +343,6 @@ export const Profile = (): JSX.Element => {
             </div>
         );
     }
-    // function getInputValue1() {
-    //     console.log("mail")
-    //     console.log(mailRef.current?.value || '');
-    //     return mailRef.current?.value || '';
-    // }
-    // function getInputValue2() {
-    //     return areaName.current?.value || '';
-    // }
-    // function getInputValue3() {
-    //     return areaName.current?.value || '';
-    // }
 
     function Display() {
         return (
