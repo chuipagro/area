@@ -67,7 +67,7 @@ export class UserService {
   }
 
   async changeMail(token: String, mail: String): Promise<void> {
-    const existingUser = await UserModel.findOne(token);
+    const existingUser = await UserModel.findOne({ token: token });
     if (existingUser) {
       throw new Error('Username already in use');
     }
@@ -119,17 +119,12 @@ export class UserService {
   }
 
   async changeUsername(token: String, userName: String): Promise<void> {
-    const existingUser = await UserModel.findOne({ token });
-    if (existingUser) {
-      throw new Error('Username already in use');
+    const existingUser = await UserModel.findOne({ token: token });
+    if (!existingUser) {
+      throw new Error('user not found');
     }
-
-    const user = await UserModel.findOne(token).exec();
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    user.username = userName.toString();
+    
+    existingUser.username = userName.toString();
     await user.save();
   }
 
