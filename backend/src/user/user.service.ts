@@ -119,13 +119,13 @@ export class UserService {
   }
 
   async changeUsername(token: String, userName: String): Promise<void> {
-    const existingUser = await UserModel.findOne({ token: token });
+    const existingUser = await UserModel.findOne({ token: token }).exec();
     if (!existingUser) {
       throw new Error('user not found');
     }
     
     existingUser.username = userName.toString();
-    await user.save();
+    await existingUser.save();
   }
 
   async disconnect(token: String): Promise<void>
