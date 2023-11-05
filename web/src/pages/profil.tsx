@@ -28,7 +28,7 @@ interface InputProps {
 export function InputText({ setValue, placeHolder, type, color, margin }: InputProps): JSX.Element {
 
     const inputStyle = {
-        width: '50%', // Adjust the width as needed
+        width: '50%',
     };
 
     return (
