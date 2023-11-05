@@ -133,7 +133,11 @@ void setActionInCreationAreaPage(Function setState, int actionIndex, int service
     indexForCreationPage[0] = serviceIndex + 1;
     indexForCreationPage[1] = actionIndex + 1;
     needsList = elements[indexForCreationPage[0] - 1].actions[indexForCreationPage[1] - 1].needs;
-    getAllNeeds(setState);
+    if (needsList.isEmpty) {
+      currentPageState = PageState.AddArea;
+    } else {
+      getAllNeeds(setState);;
+    }
   });
 }
 
@@ -142,7 +146,11 @@ void setReactionInCreationAreaPage(Function setState, int reactionIndex, int ser
     indexForCreationPage[2] = serviceIndex + 1;
     indexForCreationPage[3] = reactionIndex + 1;
     needsList = elements[indexForCreationPage[2] - 1].reactions[indexForCreationPage[3] - 1].needs;
-    getAllNeeds(setState);
+    if (needsList.isEmpty) {
+      currentPageState = PageState.AddArea;
+    } else {
+      getAllNeeds(setState);;
+    }
   });
 }
 
