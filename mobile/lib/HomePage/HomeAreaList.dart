@@ -221,6 +221,20 @@ Widget buildHomePageContent(setState, context) {
                                 ),
                               ),
                               Positioned(
+                                bottom: 15.0,
+                                right: 10.0,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    deleteArea(setState, element.name);
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/trash-can.png',
+                                    width: 24.0,
+                                    height: 24.0,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
                                 top: screenWidth * 0.53,
                                 left: 20.0,
                                 child: Row(

@@ -64,7 +64,7 @@ void getAllNeeds(setState) {
 }
 
 void deleteArea(setState, areaName) async {
-  final reponse = await http.post(
+  final reponse = await http.delete(
     Uri.parse('http://' + globals.IPpc + ':8080/area/deleteArea'),
     headers: {
       'Content-Type': 'application/json',
@@ -76,7 +76,10 @@ void deleteArea(setState, areaName) async {
   );
 
   if (reponse.statusCode == 200) {
-    setState(() {});
+    setState(() {
+      currentPageState = PageState.Areas;
+      needToReload = true;
+    });
   } else {
     print('Échec de la suppression de la zone : ${reponse.statusCode}');
   }
@@ -149,7 +152,7 @@ void setReactionInCreationAreaPage(Function setState, int reactionIndex, int ser
     if (needsList.isEmpty) {
       currentPageState = PageState.AddArea;
     } else {
-      getAllNeeds(setState);;
+      getAllNeeds(setState);
     }
   });
 }
