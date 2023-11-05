@@ -656,7 +656,131 @@ const clock = {
   reactions: [],
 }
 
-export const allServices = [riot, spotify, Microsoft, github, discord, google, clock];
+const steam = {
+id: 8,
+  name: "steam",
+  logo: "assets/images/steamLogo.png",
+  color: {
+    red: 130,
+    green: 120,
+    blue: 120,
+  },
+  actions: [
+    {
+      name: "wait for new friend",
+      description: "wait for new friend",
+      id: 1,
+      need: {
+        steamID: "steamID",
+      }
+    },
+    {
+      name: "wait for new game",
+      description: "wait for new game",
+      id: 2,
+      need: {
+        steamID: "steamID",
+      }
+    },
+    {
+      name: "get news",
+      description: "get news",
+      id: 3,
+      need: {
+        gameID: "gameID",
+      }
+    },
+  ],
+  reactions: [],
+}
+
+const weather = {
+  id: 9,
+  name: "weather",
+  logo: "assets/images/weatherLogo.png",
+  color: {
+    red: 255,
+    green: 66,
+    blue: 0,
+  },
+  actions: [
+    {
+      name: "wait for new weather",
+      description: "wait for new weather",
+      id: 1,
+      need: {
+        city: "city",
+      }
+    }
+  ],
+  reactions: [],
+}
+
+const nasa = {
+  id: 10,
+  name: "nasa",
+  logo: "assets/images/nasaLogo.png",
+  color: {
+    red: 255,
+    green: 66,
+    blue: 0,
+  },
+  actions: [
+    {
+      name: "wait for new mars weather",
+      description: "wait for new mars weather",
+      id: 1,
+      need: {}
+    },
+    {
+      name: "wait for new astronomy picture of the day",
+      description: "wait for new astronomy picture of the day",
+      id: 2,
+      need: {}
+    },
+  ],
+  reactions: [],
+}
+
+const minecraft = {
+  id: 11,
+  name: "minecraft",
+  logo: "assets/images/minecraftLogo.png",
+  color: {
+    red: 255,
+    green: 66,
+    blue: 0,
+  },
+  actions: [
+    {
+      name: "wait for new minecraft connection",
+      description: "wait for new minecraft connection",
+      id: 1,
+      need: {
+        serverIP: "serverIP",
+      }
+    },
+    {
+      name: "wait for new minecraft disconnection",
+      description: "wait for new minecraft disconnection",
+      id: 2,
+      need: {
+        serverIP: "serverIP",
+      }
+    },
+    {
+      name: "wait for new version",
+      description: "wait for new version",
+      id: 3,
+      need: {
+        serverIP: "serverIP",
+      }
+    }
+  ],
+  reactions: [],
+}
+
+export const allServices = [riot, spotify, Microsoft, github, discord, google, clock, steam, weather, nasa, minecraft];
 
 const ActionSchema = new Schema({
     description: { type: String, required: true},

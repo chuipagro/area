@@ -44,7 +44,8 @@ export class GithubService {
       }
     }
     if (!access_token) {
-      throw new Error('User has no github auth');
+      console.log('User has no github auth');
+      return '';
     }
     return access_token;
   }
