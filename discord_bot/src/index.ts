@@ -9,6 +9,10 @@ client.once("ready", () => {
   console.log("Discord bot is ready.");
 });
 
+/**
+ * This function setup all commands
+ *
+ */
 client.on("guildCreate", async (guild) => {
   await deployCommands({ guildId: guild.id });
 });
@@ -17,11 +21,19 @@ client.login(config.DISCORD_TOKEN);
 
 const app = express();
 
+/**
+ * This function check ping of the bot
+ *
+ */
 app.use(express.json())
 app.get('/', (req, res) => {
   res.send("Area Discord Bot Is Alive !");
 })
 
+/**
+ * This function send a message to the discord bot
+ *
+ */
 app.post('/sendMessage', (req, res) => {
   client.channels.fetch(req.body['channel_id']).then((channel) => {
 
