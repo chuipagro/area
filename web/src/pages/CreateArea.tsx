@@ -23,7 +23,7 @@ interface CreateAreaProps {
     PReactionsNeeds: { key: string; data: any }[];
 }
 
-dotenv.config();
+// dotenv.config();
 
 /**
  * This page display the create area page with the services and the actions/reactions
@@ -460,14 +460,14 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
     }, [keyS]);
 
     const authenticateWithGithub = async () => {
-      const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
-  
-      const interval = setInterval(() => {
-        if (popup?.closed) {
-          clearInterval(interval);
-          setKey(prevKey => prevKey + 1);
-        }
-      }, 1000);
+        const popup = window.open(authUrlGithub, 'authUrlGithub', 'width=500,height=600');
+
+        const interval = setInterval(() => {
+            if (popup?.closed) {
+                clearInterval(interval);
+                setKey(prevKey => prevKey + 1);
+            }
+        }, 1000);
     };
 
     const authenticateWithGoogle = () => {
