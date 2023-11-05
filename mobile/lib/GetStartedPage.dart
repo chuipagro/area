@@ -75,46 +75,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
     }
   }
 
-  Future<void> _authenticateWithGoogle() async {
-    final _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
-
-    try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-          final googleAuth = await googleUser.authentication;
-          final accessToken = googleAuth.accessToken;
-
-          final res = await http.post(
-            Uri.parse('http://'+globals.IPpc+':8080/auth/postGoogle'),
-            headers: <String, String>{
-              'Content-Type': 'application/json',
-            },
-            body: jsonEncode({
-              'token': accessToken,
-            })
-        );
-        if (res.statusCode == 200) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-        } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text('Echec'),
-                ),
-            );
-        }
-      }
-    } catch (error) {
-      print("Erreur lors de la connexion: $error");
-    }
-  }
-
-  Future<void> _authenticateWithMicrosoft() async {
-      print('Erreur lors de l\'obtention du jeton d\'accès : Microsoft');
-  }
-
     @override
     Widget build(BuildContext context) {
         return Scaffold(
@@ -159,43 +119,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                 ),
                                 child: TextButton(
                                     onPressed: () {
-                                        _authenticateWithGoogle();
-                                    },
-                                    style: TextButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                    ),
-                                    child: Row(
-                                        children: <Widget>[
-                                            const SizedBox(width: 20.0),
-                                            Image.asset(
-                                                'assets/images/GoogleLogo.png',
-                                                width: 35.0,
-                                                height: 35.0,
-                                            ),
-                                            const SizedBox(width: 20.0),
-                                            const Text(
-                                                'Continue avec Google',
-                                                style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    color: Colors.black,
-                                                ),
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                            ),
-                            const SizedBox(height: 25.0),
-
-                            Container(
-                                height: 65,
-                                width: 360,
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 255, 255, 255),
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    border: Border.all(color: Colors.black),
-                                ),
-                                child: TextButton(
-                                    onPressed: () {
                                         _authenticateWithGitHub();
                                     },
                                     style: TextButton.styleFrom(
@@ -222,43 +145,6 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                 ),
                             ),
                             const SizedBox(height: 25.0),
-
-                            Container(
-                                height: 65,
-                                width: 360,
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 255, 255, 255),
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    border: Border.all(color: Colors.black),
-                                ),
-                                child: TextButton(
-                                    onPressed: () {
-                                        _authenticateWithMicrosoft();
-                                    },
-                                    style: TextButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                    ),
-                                    child: Row(
-                                        children: <Widget>[
-                                            const SizedBox(width: 20.0),
-                                            Image.asset(
-                                                'assets/images/microsoftLogo.png',
-                                                width: 35.0,
-                                                height: 35.0,
-                                            ),
-                                            const SizedBox(width: 20.0),
-                                            const Text(
-                                                'Continue avec Microsoft',
-                                                style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    color: Colors.black,
-                                                ),
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                            ),
-                            const SizedBox(height: 50.0),
     
                             RichText(
                                 text: TextSpan(
