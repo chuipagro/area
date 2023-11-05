@@ -559,6 +559,7 @@ export const CreateArea = (props: CreateAreaProps): JSX.Element => {
             );
 
             if (response.status === 200) {
+                console.log(response.data)
                 alert("AREA created successfully");
                 navigate('/home');
             } else {
