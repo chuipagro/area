@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 
+/**
+ * This page is used to redirect the user after a successful login with GitHub.
+ */
 export const GithubAuthRedirectOAuth2 = (): JSX.Element => {
   const handleGitHubLogin = () => {
     const currentURL = window.location.href;
