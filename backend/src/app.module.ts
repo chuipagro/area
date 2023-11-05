@@ -16,6 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RiotModule } from './services/riot/riot.module';
 import { SpotifyModule } from './services/spotify/spotify.module';
 import { SteamModule } from './services/steam/steam.module';
+import { NasaModule } from './services/nasa/nasa.module';
 import { ServicesModule } from './services/services.module';
 import { MicrosoftController } from './services/microsoft/microsoftController';
 import { MicrosoftService } from './services/microsoft/microsoft.service';
@@ -55,6 +56,7 @@ import { GoogleModule } from './services/google/google.module';
     RiotModule,
     SpotifyModule,
     SteamModule,
+    NasaModule,
     DiscordBotModule,
     MicrosoftModule,
     AboutModule,

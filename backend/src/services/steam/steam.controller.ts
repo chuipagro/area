@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Res, Get } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import { SteamService } from './steam.service';
@@ -24,7 +24,7 @@ export class SteamController {
     status: 200,
   })
 
-  @Post('getNewsForApp')
+  @Get('getNewsForApp')
   async getNewsForApp(
     @Res() res: Response,
     @Body('gameID') gameID: string,
@@ -50,7 +50,7 @@ export class SteamController {
     status: 200,
   })
 
-  @Post('getGlobalAchievementPercentagesForApp')
+  @Get('getGlobalAchievementPercentagesForApp')
   async getGlobalAchievementPercentagesForApp(
     @Res() res: Response,
     @Body('gameID') gameID: string,
@@ -76,7 +76,7 @@ export class SteamController {
     status: 200,
   })
 
-  @Post('getPlayerSummaries')
+  @Get('getPlayerSummaries')
   async getPlayerSummaries(
     @Res() res: Response,
     @Body('steamID') steamID: string,
@@ -102,7 +102,7 @@ export class SteamController {
     status: 200,
   })
 
-  @Post('getFriendList')
+  @Get('getFriendList')
   async getFriendList(
     @Res() res: Response,
     @Body('steamID') steamID: string,
@@ -131,7 +131,7 @@ export class SteamController {
     status: 200,
   })
 
-  @Post('getPlayerAchievements')
+  @Get('getPlayerAchievements')
   async getPlayerAchievements(
     @Res() res: Response,
     @Body('steamID') steamID: string,
@@ -158,7 +158,7 @@ export class SteamController {
     status: 200,
   })
 
-  @Post('getOwnedGames')
+  @Get('getOwnedGames')
   async getOwnedGames(
     @Res() res: Response,
     @Body('steamID') steamID: string,
@@ -184,7 +184,7 @@ export class SteamController {
     status: 200,
   })
 
-  @Post('getRecentlyPlayedGames')
+  @Get('getRecentlyPlayedGames')
   async getRecentlyPlayedGames(
     @Res() res: Response,
     @Body('steamID') steamID: string,
