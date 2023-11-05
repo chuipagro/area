@@ -4,6 +4,9 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Text, Box, Heading } from '@chakra-ui/react';
 
+/**
+ * This page display the settings for an area.
+ */
 export const SettingAreasPage = (): JSX.Element => {
   const location = useLocation();
   const { area, action, reaction } = location.state;
@@ -11,119 +14,136 @@ export const SettingAreasPage = (): JSX.Element => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  /**
+   * This function is used to setup the information of the action
+   */
+  const setupInfoAction = () => {
+    const stringInfoA: InformationString[] = [];
 
-    const setupInfoAction = () => {
-        const stringInfoA: InformationString[] = [];
+    for (const dataType of Object.keys(area.data[reaction.name])) {
+      const info = area.data[reaction.name][dataType];
 
-        for (const dataType of Object.keys(area.data[reaction.name])) {
-            const info = area.data[reaction.name][dataType];
-            
-            if (typeof info === 'string') {
-                stringInfoA.push(info);
-            }
+      if (typeof info === 'string') {
+        stringInfoA.push(info);
+      }
+    }
+    setEditableActionInfoString(stringInfoA);
+    setEditableActionInfoStringM(stringInfoA);
+  };
+
+  /**
+   * This function is used to setup the information of the reaction.
+   */
+  const setupInfoReaction = () => {
+    const stringInfo: InformationString[] = [];
+
+    for (const dataType of Object.keys(area.data[action.name])) {
+      const info = area.data[action.name][dataType];
+
+      if (typeof info === 'string') {
+        stringInfo.push(info);
+      }
+    }
+    setEditableReactionInfoString(stringInfo);
+    setEditableReactionInfoStringM(stringInfo);
+  };
+
+  React.useEffect(() => {
+    setTitle(area.title);
+    setupInfoAction();
+    setupInfoReaction();
+  }, []);
+
+  /**
+   * This function is used to delete an area.
+   */
+  const handleDelete = async () => {
+    try {
+      const bodyBoutton = {
+        "title": area.title,
+        "token": token,
+      };
+
+      const response = await axios.post('http://localhost:8080/area/deleteArea', bodyBoutton);
+      if (response.status === 200) {
+        navigate('/home');
+      } else {
+        console.error('Failed to update the area');
+      }
+    } catch (error) {
+      console.error('Error updating area:', error);
+    }
+  };
+
+  /**
+   * This function is used to validate the changes made to an area.
+   */
+  const handleValidate = async () => {
+    for (let i = 0; i < EditableActionInfoString.length; i++) {
+      for (const key of Object.keys(area.data[action.name])) {
+        if (area.data[action.name][key] === EditableActionInfoString[i]) {
+          area.data[action.name][key] = EditableActionInfoStringM[i];
         }
-        setEditableActionInfoString(stringInfoA);
-        setEditableActionInfoStringM(stringInfoA);
-    };
-
-    const setupInfoReaction = () => {
-        const stringInfo: InformationString[] = [];
-
-        for (const dataType of Object.keys(area.data[action.name])) {
-            const info = area.data[action.name][dataType];
-            
-            if (typeof info === 'string') {
-                stringInfo.push(info);
-            }
+      }
+    }
+    for (let i = 0; i < EditableReactionInfoString.length; i++) {
+      for (const key of Object.keys(area.data[reaction.name])) {
+        if (area.data[reaction.name][key] === EditableReactionInfoString[i]) {
+          area.data[reaction.name][key] = EditableReactionInfoStringM[i];
         }
-        setEditableReactionInfoString(stringInfo);
-        setEditableReactionInfoStringM(stringInfo);
-    };
+      }
+    }
 
-    React.useEffect(() => {
-        setTitle(area.title);
-        setupInfoAction();
-        setupInfoReaction();
-    }, []);
-
-    const handleDelete = async () => {
-        try {
-            const bodyBoutton = {
-                "title": area.title,
-                "token": token,
-            };
-
-            const response = await axios.post('http://localhost:8080/area/deleteArea', bodyBoutton);    
-            if (response.status === 200) {
-                navigate('/home');
-            } else {
-                console.error('Failed to update the area');
-            }
-        } catch (error) {
-            console.error('Error updating area:', error);
+    try {
+      const bodyBoutton = {
+        "title": area.title,
+        "token": token,
+        updateData: {
+          "data": area.data,
+          "title": title,
         }
-    };
+      };
 
-    const handleValidate = async () => {
-        for (let i = 0; i < EditableActionInfoString.length; i++) {
-            for (const key of Object.keys(area.data[action.name])) {
-                if (area.data[action.name][key] === EditableActionInfoString[i]) {
-                    area.data[action.name][key] = EditableActionInfoStringM[i];
-                }
-            }
-        }
-        for (let i = 0; i < EditableReactionInfoString.length; i++) {
-            for (const key of Object.keys(area.data[reaction.name])) {
-                if (area.data[reaction.name][key] === EditableReactionInfoString[i]) {
-                    area.data[reaction.name][key] = EditableReactionInfoStringM[i];
-                }
-            }
-        }
-
-        try {
-            const bodyBoutton = {
-                "title": area.title,
-                "token": token,
-                updateData: {
-                    "data": area.data,
-                    "title": title,
-                }
-            };
-
-            const response = await axios.post('http://localhost:8080/area/updateArea', bodyBoutton);    
-            if (response.status === 200) {
-                navigate('/home');
-            } else {
-                console.error('Failed to update the area');
-            }
-        } catch (error) {
-            console.error('Error updating area:', error);
-        }
-    };
+      const response = await axios.post('http://localhost:8080/area/updateArea', bodyBoutton);
+      if (response.status === 200) {
+        navigate('/home');
+      } else {
+        console.error('Failed to update the area');
+      }
+    } catch (error) {
+      console.error('Error updating area:', error);
+    }
+  };
 
 
-    type InformationString = string;
+  type InformationString = string;
 
-    const [EditableActionInfoString, setEditableActionInfoString] = useState<InformationString[]>([]);
-    const [EditableActionInfoStringM, setEditableActionInfoStringM] = useState<InformationString[]>([]);
+  const [EditableActionInfoString, setEditableActionInfoString] = useState<InformationString[]>([]);
+  const [EditableActionInfoStringM, setEditableActionInfoStringM] = useState<InformationString[]>([]);
 
-    const [EditableReactionInfoString, setEditableReactionInfoString] = useState<InformationString[]>([]);
-    const [EditableReactionInfoStringM, setEditableReactionInfoStringM] = useState<InformationString[]>([]);
+  const [EditableReactionInfoString, setEditableReactionInfoString] = useState<InformationString[]>([]);
+  const [EditableReactionInfoStringM, setEditableReactionInfoStringM] = useState<InformationString[]>([]);
 
 
-    const handleActionInfoChangeActionStringM = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-      const updatedActionInfo = [...EditableActionInfoStringM];
-      updatedActionInfo[index] = e.target.value;
-      setEditableActionInfoStringM(updatedActionInfo);
-    };
+  /**
+   * This function is used to change the information of an action.
+   */
+  const handleActionInfoChangeActionStringM = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedActionInfo = [...EditableActionInfoStringM];
+    updatedActionInfo[index] = e.target.value;
+    setEditableActionInfoStringM(updatedActionInfo);
+  };
 
-    const handleActionInfoChangeReactionStringM = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-      const updatedActionInfo = [...EditableReactionInfoStringM];
-      updatedActionInfo[index] = e.target.value;
-      setEditableActionInfoStringM(updatedActionInfo);
-    };
+  /**
+   * This function is used to change the information of a reaction.
+   */
+  const handleActionInfoChangeReactionStringM = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedActionInfo = [...EditableReactionInfoStringM];
+    updatedActionInfo[index] = e.target.value;
+    setEditableActionInfoStringM(updatedActionInfo);
+  };
 
-    return (
+  return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Box
@@ -167,7 +187,7 @@ export const SettingAreasPage = (): JSX.Element => {
 
       <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', height: '70vh' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Text fontSize="3xl" fontWeight="bold" marginBottom="10px">Action</Text>
+          <Text fontSize="3xl" fontWeight="bold" marginBottom="10px">Action</Text>
           <div style={{ height: '50vh', width: '65vh', margin: '20px' }}>
             <Box
               p={5}
@@ -186,21 +206,21 @@ export const SettingAreasPage = (): JSX.Element => {
               <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
                 <img src={action.logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
                 {EditableActionInfoStringM.map((info, index) => (
-                    <input
-                      key={`action-info-${index}`}
-                      type="text"
-                      value={info}
-                      onChange={(e) => handleActionInfoChangeActionStringM(index, e)}
-                      style={{
-                        fontSize: '16px',
-                        fontWeight: 'normal',
-                        padding: '8px',
-                        marginBottom: '10px',
-                        width: '80%',
-                        border: '1px solid #ccc',
-                        borderRadius: '5px',
-                      }}
-                    />
+                  <input
+                    key={`action-info-${index}`}
+                    type="text"
+                    value={info}
+                    onChange={(e) => handleActionInfoChangeActionStringM(index, e)}
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 'normal',
+                      padding: '8px',
+                      marginBottom: '10px',
+                      width: '80%',
+                      border: '1px solid #ccc',
+                      borderRadius: '5px',
+                    }}
+                  />
                 ))}
               </Box>
             </Box>
@@ -210,7 +230,7 @@ export const SettingAreasPage = (): JSX.Element => {
         <img src="./assets/images/arrow.png" alt="Flèche" style={{ width: '150px', height: '150px' }} />
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Text fontSize="3xl" fontWeight="bold" marginBottom="10px">Reaction</Text>
+          <Text fontSize="3xl" fontWeight="bold" marginBottom="10px">Reaction</Text>
           <div style={{ height: '50vh', width: '65vh', margin: '20px' }}>
             <Box
               p={5}
@@ -229,21 +249,21 @@ export const SettingAreasPage = (): JSX.Element => {
               <Box width="100%" height="calc(100% - 40px)" textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
                 <img src={reaction.logo} alt="Area Logo" style={{ width: '85px', height: '85px' }} />
                 {EditableReactionInfoStringM.map((info, index) => (
-                    <input
-                      key={`reaction-info-${index}`}
-                      type="text"
-                      value={info}
-                      onChange={(e) => handleActionInfoChangeReactionStringM(index, e)}
-                      style={{
-                        fontSize: '16px',
-                        fontWeight: 'normal',
-                        padding: '8px',
-                        marginBottom: '10px',
-                        width: '80%',
-                        border: '1px solid #ccc',
-                        borderRadius: '5px',
-                      }}
-                    />
+                  <input
+                    key={`reaction-info-${index}`}
+                    type="text"
+                    value={info}
+                    onChange={(e) => handleActionInfoChangeReactionStringM(index, e)}
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 'normal',
+                      padding: '8px',
+                      marginBottom: '10px',
+                      width: '80%',
+                      border: '1px solid #ccc',
+                      borderRadius: '5px',
+                    }}
+                  />
                 ))}
               </Box>
             </Box>
