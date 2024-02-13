@@ -89,7 +89,6 @@ export class UserService {
     const user = await UserModel.findOne({ token: token }).exec();
 
     if (!user) {
-      console.log("MERDEEEEEE")
       throw new Error('User not found');
     }
     if (user.auth == undefined)

@@ -20,7 +20,6 @@ export class CronGestion {
     const intervalDays = parseInt(time.slice(1));
     const starthour = parseInt(timeAtCreation.split(':')[0]);
     const startminute = parseInt(timeAtCreation.split(':')[1]) + 2;
-    console.log("intervalDays");
     return startminute + " " + starthour + " *!/" + intervalDays + ' * *';
   }
 

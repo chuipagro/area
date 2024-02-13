@@ -47,9 +47,6 @@ export class AboutService
                 reactions: reactions,
             });
         }
-        console.log(servicesList);
-        console.log(servicesList[0]);
-
         return servicesList;
     }
 }
