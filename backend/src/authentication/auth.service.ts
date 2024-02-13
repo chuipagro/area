@@ -5,6 +5,7 @@ import { JwtPayload } from './jwt-payload.interface';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 
+const argon2 = require('argon2');
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
     if (user) {
       if (user.token)
         return user.token;
-      if (user.password !== password)
+      if (!await argon2.verify(user.password, password))
         return null;
       const payload: JwtPayload = { mail: mail };
       const token = this.jwtService.sign(payload);

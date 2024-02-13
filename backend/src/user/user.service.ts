@@ -8,6 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { AreaModel } from '../models/area.model';
 import { log } from 'console';
 
+const argon2 = require('argon2');
+
 @Injectable()
 export class UserService {
   constructor(@InjectModel('User') private userModel: Model<typeof UserModel>) {}
@@ -25,7 +27,8 @@ export class UserService {
   async create(mail: string, username: string, password: string): Promise<typeof UserModel> {
     const uid = uuidv4();
     console.log("uid:", uid, "microsoft:", mail, "username:", username, "password:", password)
-    const createdUser = new this.userModel({ uid, mail, username, oauthName: "yolo", token: null, password: password});
+    const hashedPassword = await argon2.hash(password);
+    const createdUser = new this.userModel({ uid, mail, username, oauthName: "yolo", token: null, password: hashedPassword});
 
     try {
       return await createdUser.save();
@@ -58,11 +61,11 @@ export class UserService {
       throw new Error('User not found');
     }
 
-    if (user.password !== password) {
+    if (!await argon2.verify(user.password, password)) {
       throw new Error('Wrong password');
     }
 
-    user.password = newPassword.toString();
+    user.password = await argon2.hash(newPassword);
     await user.save();
   }
 
