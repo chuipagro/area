@@ -55,14 +55,20 @@ export class AboutController {
     async getAbout(
         @Body() ip: string,
     ): Promise<any> {
-        return {
-            client: {
-                host: ip,
-            },
-            server: {
-                current_time: this.aboutService.getCurrentTime(),
-                services: await this.aboutService.getAllServices(),
+        try {
+            console.log('getAbout')
+            return {
+                client: {
+                    host: ip,
+                },
+                server: {
+                    current_time: this.aboutService.getCurrentTime(),
+                    services: await this.aboutService.getAllServices(),
+                }
             }
+        } catch (e) {
+            console.error(e);
+            return null;
         }
     }
 }
