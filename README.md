@@ -7,7 +7,7 @@
 | :---: | :---: | :---: |
 
 ### Backend
-| [<img src="https://github.com/chuipagro.png?size=85" width=85><br><sub>Pablo Levy</sub>](https://github.com/pablo0675) | [<img src="https://github.com/steci.png?size=85" width=85><br><sub>Léa guillemard</sub>](https://github.com/steci)
+| [<img src="https://github.com/chuipagro.png?size=85" width=85><br><sub>Pablo Levy</sub>](https://github.com/chuipagro) | [<img src="https://github.com/steci.png?size=85" width=85><br><sub>Léa guillemard</sub>](https://github.com/steci)
 |:----------------------------------------------------------------------------------------------------------------------:| :---: |
 
 ### devops
@@ -25,7 +25,7 @@ Bienvenue sur le dépôt du projet AREA. AREA signifie Action-REAction et est in
 ## Commencer
 Pour commencer à utiliser AREA, suivez ces étapes :
 
-1. **Clonez le dépôt** : `git clone https://github.com/pablo0675/area`
+1. **Clonez le dépôt** : `git clone https://github.com/chuipagro/area`
 2. **Installez les dépendances** : `npm install` (assurez-vous d'avoir Node.js installé)
 3. **Lancez le web** : `cd web/ && PORT=8081 npm start`
 4. **Lancez le backend** : `cd backend/ && npm start`
@@ -33,7 +33,7 @@ Pour commencer à utiliser AREA, suivez ces étapes :
 
 Ou utilisez docker-compose :
 
-1. **Clonez le dépôt** : `git clone https://github.com/pablo0675/area`
+1. **Clonez le dépôt** : `git clone https://github.com/chuipagro/area`
 2. **build l'image** : `sudo docker-compose build`
 3. **Lancez l'application** : `sudo docker-compose up`
 
