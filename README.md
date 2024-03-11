@@ -7,7 +7,7 @@
 | :---: | :---: | :---: |
 
 ### Backend
-| [<img src="https://github.com/pablo0675.png?size=85" width=85><br><sub>Pablo Levy</sub>](https://github.com/pablo0675) | [<img src="https://github.com/steci.png?size=85" width=85><br><sub>Léa guillemard</sub>](https://github.com/steci)
+| [<img src="https://github.com/pablo0675.png?size=85" width=85><br><sub>Pablo Levy</sub>](https://github.com/chuipagro) | [<img src="https://github.com/steci.png?size=85" width=85><br><sub>Léa guillemard</sub>](https://github.com/steci)
 |:----------------------------------------------------------------------------------------------------------------------:| :---: |
 
 ### devops
